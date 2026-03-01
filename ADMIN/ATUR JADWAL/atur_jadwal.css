@@ -1,0 +1,481 @@
+:root{
+  --pink-bar: #f4b9bf;
+  --pink-card: #f3b3b8;
+  --panel-bg: rgba(244, 185, 191, 0.22);
+  --shadow-blue: rgba(120,160,255,.55);
+  --teal-btn: #3f6f75;
+  --text: #2d2d2d;
+  --accent-red: #ff4a5d;
+  --active-green: #2f8f6b;
+}
+
+*{ box-sizing:border-box; margin:0; padding:0; }
+
+body{
+  font-family: 'Commissioner', sans-serif;
+  background:#fff;
+  color: var(--text);
+}
+
+/* TOPBAR */
+.topbar{
+  height:70px;
+  width:100%;
+  background:var(--pink-bar);
+  display:flex;
+  align-items:center;
+  padding:0 34px;
+  gap:22px;
+}
+
+.topnav{
+  margin-left:auto;
+  display:flex;
+  gap:34px;
+  align-items:center;
+}
+
+.brand__logo{ height:46px; }
+
+.topnav__link{
+  color: var(--accent-red);
+  text-decoration:none;
+  font-weight:700;
+  font-size:14px;
+}
+
+.topbar__user{
+  margin-left:14px;
+  border:none;
+  background:transparent;
+  padding:0;
+  line-height:0;
+  cursor:pointer;
+}
+
+.topbar__userCircle{
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  border:3px solid var(--accent-red);
+  display:grid;
+  place-items:center;
+  color:var(--accent-red);
+}
+
+.topbar__userCircle svg{
+  width:22px;
+  height:22px;
+  display:block;
+}
+
+/* PAGE GRID */
+.page{
+  width:100%;
+  max-width:1600px;
+  margin:0 auto;
+  padding:22px 50px 34px;
+  display:grid;
+  grid-template-columns:360px 1fr;
+  gap:34px;
+}
+
+/* SIDEBAR */
+.sidebar{
+  padding-top:8px;
+  position:relative;
+  min-height:600px;
+}
+
+.sidebar__decor{
+  position:absolute;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+}
+
+.sidebar__decor img{
+  width:220px;
+  height:auto;
+  opacity:.95;
+}
+
+.userCard{
+  display:flex;
+  gap:14px;
+  align-items:center;
+}
+
+.userCard__avatar{
+  width:76px;
+  height:76px;
+  border-radius:50%;
+  background:var(--pink-bar);
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+}
+
+.userCard__avatar img{
+  width:64px;
+  height:64px;
+  object-fit:contain;
+}
+
+.userCard__name{
+  font-weight:800;
+  color:var(--accent-red);
+  font-size:18px;
+  margin-bottom:6px;
+}
+
+.userCard__edit{
+  display:inline-flex;
+  gap:8px;
+  align-items:center;
+  color:var(--accent-red);
+  text-decoration:none;
+  font-weight:700;
+  font-size:13px;
+}
+
+.icon-inline svg{
+  width:16px;
+  height:16px;
+  display:block;
+}
+
+/* MENU */
+.menu{ margin-top:26px; }
+
+.menu__groupTitle{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  color:var(--accent-red);
+  font-weight:800;
+  margin-bottom:10px;
+}
+
+.menu__item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 18px;
+  border-radius:999px;
+  text-decoration:none;
+  font-weight:700;
+  font-size:14px;
+  color:#ff4a5d;
+  transition:all .2s ease;
+}
+
+.menu__item.active{
+  color:var(--active-green);
+  background:#fff;
+  border:2px solid var(--active-green);
+}
+
+.menu__item.active svg{ stroke:var(--active-green); }
+
+.menu__item:hover{ background:rgba(255,74,93,.06); }
+
+.menu__item.danger{ margin-top:6px; }
+
+/* PANEL CARD */
+.panelCard{
+  width:100%;
+  background:var(--panel-bg);
+  border-radius:12px;
+  padding:26px 30px 30px;
+}
+
+.panelCard__title{
+  color:var(--accent-red);
+  font-size:28px;
+  font-weight:900;
+  margin-bottom:6px;
+}
+
+.panelCard__sub{
+  color:rgba(255,74,93,.9);
+  font-size:13px;
+  font-weight:600;
+}
+
+/* FORM */
+.scheduleForm{
+  margin-top:18px;
+  display:grid;
+  gap:14px;
+}
+
+.grid2{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+
+.field{
+  display:grid;
+  gap:8px;
+}
+
+.field label{
+  color:var(--accent-red);
+  font-weight:800;
+  font-size:13px;
+}
+
+.field input,
+.field select,
+.field textarea{
+  width:100%;
+  border-radius:14px;
+  border:1.5px solid rgba(255,74,93,.65);
+  background:#fff;
+  padding:10px 14px;
+  font-size:13px;
+  color:var(--accent-red);
+  outline:none;
+  box-shadow:0 6px 0 rgba(120,160,255,.10);
+}
+
+.field textarea{
+  resize:none;
+  min-height:44px;
+}
+
+/* SELECT ARROW FIX */
+.field select{
+  cursor:pointer;
+  -webkit-appearance:none;
+  -moz-appearance:none;
+  appearance:none;
+  padding-right:46px;
+
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6' fill='none' stroke='%23ff4a5d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 16px center;
+  background-size:18px 18px;
+}
+
+.field select::-ms-expand{ display:none; }
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus{
+  border-color:rgba(255,74,93,.9);
+}
+
+/* BUTTONS */
+.actions{
+  display:flex;
+  gap:12px;
+  margin-top:4px;
+}
+
+.btn{
+  height:44px;
+  border-radius:14px;
+  border:none;
+  cursor:pointer;
+  font-weight:900;
+  padding:0 18px;
+}
+
+.btn--primary{
+  background:var(--teal-btn);
+  color:#fff;
+  min-width:180px;
+}
+
+.btn--ghost{
+  background:transparent;
+  border:2px solid rgba(255,74,93,.55);
+  color:var(--accent-red);
+}
+
+/* LIST */
+.listHead{ margin-top:22px; }
+
+.listTitle{
+  color:var(--accent-red);
+  font-size:18px;
+  font-weight:900;
+  margin-bottom:6px;
+}
+
+.listSub{
+  color:rgba(255,74,93,.9);
+  font-size:12px;
+  font-weight:600;
+}
+
+.scheduleList{
+  margin-top:14px;
+  display:grid;
+  gap:12px;
+}
+
+.scheduleItem{
+  background:#fff;
+  border-radius:14px;
+  border:1.5px solid rgba(255,74,93,.28);
+  padding:14px 16px;
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  box-shadow:0 6px 0 rgba(120,160,255,.10);
+}
+
+.pill{
+  display:inline-flex;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1.5px solid rgba(255,74,93,.45);
+  color:var(--accent-red);
+  font-weight:900;
+  font-size:12px;
+  width:max-content;
+  margin-bottom:8px;
+}
+
+.scheduleItem__title{
+  color:var(--accent-red);
+  font-weight:900;
+  font-size:14px;
+  margin-bottom:4px;
+}
+
+.scheduleItem__desc{
+  color:rgba(45,45,45,.75);
+  font-size:12px;
+  font-weight:700;
+}
+
+.scheduleItem__right{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.miniBtn{
+  height:36px;
+  padding:0 12px;
+  border-radius:12px;
+  border:2px solid rgba(255,74,93,.45);
+  background:transparent;
+  color:var(--accent-red);
+  font-weight:900;
+  cursor:pointer;
+}
+
+.miniBtn--danger{
+  border-color:rgba(255,74,93,.65);
+  background:rgba(255,74,93,.10);
+}
+
+/* MODAL */
+.modal{
+  position: fixed;
+  inset: 0;
+  display: none;
+  z-index: 9999;
+}
+
+.modal.is-open{ display:block; }
+
+.modal__overlay{
+  position:absolute;
+  inset:0;
+  background: rgba(0,0,0,.25);
+}
+
+.modal__card{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform: translate(-50%, -50%);
+  width: min(620px, 92%);
+  background: var(--pink-card);
+  border-radius: 16px;
+  padding: 22px 24px 18px;
+  box-shadow: 10px 10px 0 var(--shadow-blue);
+  text-align: center;
+}
+
+.modal__title{
+  color: var(--accent-red);
+  font-weight: 900;
+  font-size: 22px;
+  margin-bottom: 8px;
+}
+
+.modal__text{
+  color: rgba(45,45,45,.78);
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1.35;
+  margin-bottom: 14px;
+}
+
+.modal__actions{
+  display:flex;
+  justify-content:center;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+.modalBtn{
+  height:42px;
+  padding: 0 18px;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  font-weight: 900;
+}
+
+.modalBtn--ok{
+  background: var(--teal-btn);
+  color: #fff;
+  min-width: 140px;
+}
+
+.modalBtn--danger{
+  background: #ff4a5d;
+  color:#fff;
+  min-width: 140px;
+}
+
+.modalBtn--cancel{
+  background:#fff;
+  color: var(--accent-red);
+  border: 2px solid rgba(255,74,93,.55);
+  min-width: 140px;
+}
+
+/* RESPONSIVE */
+@media (max-width:1000px){
+  .page{ grid-template-columns:1fr; }
+
+  .sidebar__decor{
+    position:static;
+    transform:none;
+    margin-top:18px;
+    display:flex;
+    justify-content:center;
+  }
+  .sidebar__decor img{ width:140px; }
+
+  .grid2{ grid-template-columns:1fr; }
+
+  .actions{ flex-direction:column; }
+  .btn--primary, .btn--ghost{ width:100%; }
+
+  .scheduleItem{ flex-direction:column; }
+  .scheduleItem__right{ justify-content:flex-end; }
+
+  .modal__actions{ flex-direction:column; }
+  .modalBtn{ width: 100%; }
+}

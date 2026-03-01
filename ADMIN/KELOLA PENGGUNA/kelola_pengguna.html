@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <title>Kelola Pengguna - Photoholic</title>
+  <link rel="stylesheet" href="kelola_pengguna.css" />
+  <link rel="stylesheet" href="layout.css">
+</head>
+<body>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <img class="brand__logo" src="assets/logo-photoholic.png" alt="Photoholic">
+
+    <nav class="topnav" aria-label="Main navigation">
+      <a class="topnav__link" href="beranda-admin.html">Beranda</a>
+      <a class="topnav__link" href="admin_pemesanan.html">Bookings</a>
+      <a class="topnav__link" href="admin_studio.html">Studio</a>
+    </nav>
+
+    <button class="topbar__user" type="button" aria-label="User menu">
+      <span class="topbar__userCircle">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12Z" fill="none" stroke="currentColor" stroke-width="2"/>
+          <path d="M4 21c1.8-4 14.2-4 16 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </span>
+    </button>
+  </header>
+
+  <!-- PAGE -->
+  <main class="page">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="userCard">
+        <div class="userCard__avatar">
+          <img src="assets/logo-photoholic.png" alt="avatar">
+        </div>
+        <div class="userCard__info">
+          <div class="userCard__name">Minphotoholic</div>
+          <a class="userCard__edit" href="#">
+            <span class="icon-inline" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 20h9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M16.5 3.5l4 4L8 20H4v-4L16.5 3.5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            Ubah Profil
+          </a>
+        </div>
+      </div>
+
+      <div class="menu">
+        <div class="menu__groupTitle">
+          <span class="icon-inline" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Z" fill="none" stroke="currentColor" stroke-width="2"/>
+              <path d="M4.5 20c1.8-4 13.2-4 15 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          Akun Saya
+        </div>
+
+        <a class="menu__item" href="profile.html">Profil</a>
+        <a class="menu__item" href="ubah-password.html">Ubah Password</a>
+
+        <a class="menu__item" href="atur_jadwal.html">
+          <span class="icon-inline" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M7 3v3M17 3v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M4 7h16v14H4V7Z" fill="none" stroke="currentColor" stroke-width="2"/>
+              <path d="M4 11h16" fill="none" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </span>
+          Atur Jadwal
+        </a>
+
+        <a class="menu__item" href="status-pemesanan.html">
+          <span class="icon-inline" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M3 7h18v10H3V7Z" fill="none" stroke="currentColor" stroke-width="2"/>
+              <path d="M3 10h18" fill="none" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </span>
+          Status Pemesanan
+        </a>
+
+        <a class="menu__item" href="riwayat-transaksi.html">
+          <span class="icon-inline" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M7 3h10v18l-2-1-3 1-3-1-2 1V3Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M9 7h6M9 11h6M9 15h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          Riwayat Transaksi
+        </a>
+
+        <!-- NEW MENU -->
+        <a class="menu__item active" href="kelola-pengguna.html">
+          <span class="icon-inline" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M16 11a3.5 3.5 0 1 0-3.5-3.5A3.5 3.5 0 0 0 16 11Z" fill="none" stroke="currentColor" stroke-width="2"/>
+              <path d="M18.5 20c.4-2.2-1.8-4-4.5-4s-4.9 1.8-4.5 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M8 11a3 3 0 1 0-3-3 3 3 0 0 0 3 3Z" fill="none" stroke="currentColor" stroke-width="2"/>
+              <path d="M3.5 20c-.3-2 1.5-3.6 3.7-3.9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          Kelola Pengguna
+        </a>
+
+        <a class="menu__item danger" href="#" id="logoutBtn">
+          <span class="icon-inline" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M10 17l5-5-5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M15 12H4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M20 4v16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          Log Out
+        </a>
+      </div>
+
+      <div class="sidebar__decor">
+        <img src="assets/logo-icon.png" alt="decor">
+      </div>
+    </aside>
+
+    <!-- PANEL -->
+    <section class="panel">
+      <div class="panelCard">
+        <h1 class="panelCard__title">Kelola Pengguna</h1>
+        <p class="panelCard__sub">Tambah, edit, nonaktifkan, dan cari akun pengguna.</p>
+
+        <!-- FILTERS -->
+        <div class="filters">
+          <div class="search">
+            <span class="search__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M10.5 18a7.5 7.5 0 1 1 7.5-7.5A7.5 7.5 0 0 1 10.5 18Z" fill="none" stroke="currentColor" stroke-width="2"/>
+                <path d="M16.5 16.5 21 21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </span>
+            <input id="q" type="text" placeholder="Cari nama / email / nomor..." />
+          </div>
+
+          <div class="selectWrap">
+            <select id="role">
+              <option value="all">Semua Role</option>
+              <option value="admin">Admin</option>
+              <option value="user">User</option>
+            </select>
+          </div>
+
+          <div class="selectWrap">
+            <select id="status">
+              <option value="all">Semua Status</option>
+              <option value="active">Aktif</option>
+              <option value="inactive">Nonaktif</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- LIST -->
+        <div class="userList" id="userList"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FAB -->
+  <button class="fab" id="addUserBtn" type="button" aria-label="Tambah pengguna">+</button>
+
+  <!-- MODAL (Add/Edit + Confirm) -->
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="modal__overlay" data-close="true"></div>
+    <div class="modal__card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <h3 class="modal__title" id="modalTitle">Title</h3>
+      <p class="modal__text" id="modalText">Text</p>
+
+      <div class="modal__form" id="modalForm" hidden>
+        <div class="mField">
+          <label for="mName">Nama</label>
+          <input id="mName" type="text" placeholder="Nama pengguna">
+        </div>
+        <div class="mField">
+          <label for="mEmail">Email</label>
+          <input id="mEmail" type="email" placeholder="email@contoh.com">
+        </div>
+        <div class="mGrid2">
+          <div class="mField">
+            <label for="mPhone">No. Telepon</label>
+            <input id="mPhone" type="tel" placeholder="08xxxxxxxxxx">
+          </div>
+          <div class="mField">
+            <label for="mRole">Role</label>
+            <select id="mRole">
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+        </div>
+        <div class="mField">
+          <label for="mStatus">Status</label>
+          <select id="mStatus">
+            <option value="active">Aktif</option>
+            <option value="inactive">Nonaktif</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="modal__actions" id="modalActions"></div>
+    </div>
+  </div>
+
+  <script src="kelola_pengguna.js"></script>
+</body>
+</html>

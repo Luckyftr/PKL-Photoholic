@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <title>Riwayat Transaksi - Photoholic</title>
+  <link rel="stylesheet" href="riwayat_transaksi.css"/>
+  <link rel="stylesheet" href="layout.css">
+</head>
+<body>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <img class="brand__logo" src="assets/logo-photoholic.png" alt="Photoholic">
+
+    <nav class="topnav" aria-label="Main navigation">
+      <a class="topnav__link is-active" href="#">Beranda</a>
+      <a class="topnav__link" href="#">Pemesanan</a>
+      <a class="topnav__link" href="#">Studio</a>
+    </nav>
+
+    <button class="topbar__user" type="button" aria-label="User menu">
+      <span class="topbar__userCircle">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12Z" fill="none" stroke="currentColor" stroke-width="2"/>
+          <path d="M4 21c1.8-4 14.2-4 16 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </span>
+    </button>
+  </header>
+
+  <!-- PAGE -->
+  <main class="page">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="userCard">
+        <div class="userCard__avatar">
+          <img src="assets/logo-photoholic.png" alt="avatar">
+        </div>
+        <div class="userCard__info">
+          <div class="userCard__name">Minphotoholic</div>
+          <a class="userCard__edit" href="#">
+            <span class="icon-inline" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 20h9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M16.5 3.5l4 4L8 20H4v-4L16.5 3.5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            Ubah Profil
+          </a>
+        </div>
+      </div>
+
+      <div class="menu">
+        <div class="menu__groupTitle">
+          <span class="icon-inline" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Z" fill="none" stroke="currentColor" stroke-width="2"/>
+              <path d="M4.5 20c1.8-4 13.2-4 15 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          Akun Saya
+        </div>
+
+        <a class="menu__item" href="profile.html">Profil</a>
+        <a class="menu__item" href="ubah-password.html">Ubah Password</a>
+
+        <a class="menu__item" href="atur_jadwal.html">
+          <span class="icon-inline" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M7 3v3M17 3v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M4 7h16v14H4V7Z" fill="none" stroke="currentColor" stroke-width="2"/>
+              <path d="M4 11h16" fill="none" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </span>
+          Atur Jadwal
+        </a>
+
+        <a class="menu__item" href="#">
+          <span class="icon-inline" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M3 7h18v10H3V7Z" fill="none" stroke="currentColor" stroke-width="2"/>
+              <path d="M3 10h18" fill="none" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </span>
+          Status Pemesanan
+        </a>
+
+        <a class="menu__item active" href="riwayat_transaksi.html">
+          <span class="icon-inline" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M7 3h10v18l-2-1-3 1-3-1-2 1V3Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M9 7h6M9 11h6M9 15h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          Riwayat Transaksi
+        </a>
+
+        <a class="menu__item danger" href="#" id="logoutBtn">
+          <span class="icon-inline" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M10 17l5-5-5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M15 12H4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M20 4v16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          Log Out
+        </a>
+      </div>
+
+      <div class="sidebar__decor">
+        <img src="assets/logo-icon.png" alt="decor">
+      </div>
+    </aside>
+
+    <!-- PANEL -->
+    <section class="panel">
+      <div class="panelCard">
+        <h1 class="panelCard__title">Riwayat Transaksi</h1>
+        <p class="panelCard__sub">Klik <b>Detail</b> atau <b>Invoice</b> untuk melihat bukti seperti contoh gambarmu.</p>
+
+        <div class="trxList" id="trxList">
+          <!-- CONTOH ITEM (data-* dipakai buat isi modal) -->
+          <article class="trxItem"
+            data-id="1234512J10QR"
+            data-date="30 Oktober 2025"
+            data-time="15:00 WIB - 15:05 WIB"
+            data-studio="Lavatory"
+            data-studio_code="SA049"
+            data-to_name="Lovina Putri"
+            data-to_phone="081234567889"
+            data-to_email="lovinaputriiii@gmail.com"
+            data-method="QRIS"
+            data-status="Lunas"
+            data-price="45000"
+            data-sessions="1"
+            data-tax="0"
+          >
+            <div class="trxLeft">
+              <div class="pillDate">30 Okt 2025</div>
+              <div class="trxTitle">Lavatory • 15:00 - 15:05</div>
+              <div class="trxMeta">
+                <span>ID: <b>1234512J10QR</b></span>
+                <span class="dot">•</span>
+                <span>Metode: <b>QRIS</b></span>
+                <span class="dot">•</span>
+                <span>Status: <b>Lunas</b></span>
+              </div>
+              <div class="trxNote">Catatan: tidak ada catatan.</div>
+            </div>
+
+            <div class="trxRight">
+              <div class="trxTotal">Total: Rp45.000</div>
+              <div class="trxActions">
+                <button class="miniBtn" type="button" data-action="detail">Detail</button>
+                <button class="miniBtn" type="button" data-action="invoice">Invoice</button>
+              </div>
+            </div>
+          </article>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- MODAL -->
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="modal__overlay" data-close="true"></div>
+
+    <div class="receipt" role="dialog" aria-modal="true" aria-labelledby="rcTitle">
+      <button class="receipt__close" type="button" aria-label="Close" data-close="true">×</button>
+
+      <div class="receipt__head">
+        <h2 class="receipt__title" id="rcTitle">Bukti Pembayaran</h2>
+        <div class="receipt__headRight">
+          <div class="receipt__small" id="rcDate">-</div>
+          <div class="receipt__small">Bukti No. <b id="rcProof">-</b></div>
+        </div>
+      </div>
+
+      <div class="receipt__hr"></div>
+
+      <div class="receipt__grid2">
+        <div>
+          <div class="receipt__label">Ditagihkan Kepada:</div>
+          <div class="receipt__text" id="rcToName">-</div>
+          <div class="receipt__text" id="rcToPhone">-</div>
+          <div class="receipt__text" id="rcToEmail">-</div>
+        </div>
+
+        <div>
+          <div class="receipt__label">Informasi Pemesanan:</div>
+          <div class="receipt__text" id="rcInfoDate">-</div>
+          <div class="receipt__text" id="rcInfoStudio">-</div>
+          <div class="receipt__text" id="rcInfoTime">-</div>
+        </div>
+      </div>
+
+      <div class="receipt__hr"></div>
+
+      <div class="receipt__table">
+        <div class="receipt__tableHead">
+          <div>Deskripsi</div>
+          <div>Harga</div>
+          <div>Sesi</div>
+          <div>Jumlah</div>
+        </div>
+        <div class="receipt__tableRow">
+          <div id="rcDesc">-</div>
+          <div id="rcPrice">-</div>
+          <div id="rcSess">-</div>
+          <div id="rcAmount">-</div>
+        </div>
+      </div>
+
+      <div class="receipt__hr"></div>
+
+      <div class="receipt__payGrid">
+        <div>
+          <div class="receipt__label">Metode Pembayaran</div>
+          <div class="receipt__text" id="rcMethod">-</div>
+          <div class="receipt__text">Status: <b id="rcStatus">-</b></div>
+          <div class="receipt__text">ID Transaksi: <b id="rcTrxId">-</b></div>
+        </div>
+
+        <div class="receipt__sum">
+          <div class="sumRow"><span>Subtotal</span><b id="rcSubtotal">-</b></div>
+          <div class="sumRow"><span>Pajak(0%)</span><b id="rcTax">-</b></div>
+          <div class="sumRow sumRow--total"><span>Total</span><b id="rcTotal">-</b></div>
+        </div>
+      </div>
+
+      <div class="receipt__footer">
+        <div class="receipt__brand">
+          <b>Photoholic Indonesia</b><br>
+          Pasar Tunjungan Lt.2 No.84-86<br>
+          08512400 0950
+        </div>
+        <img class="receipt__logo" src="assets/logo-photoholic.png" alt="logo">
+      </div>
+
+      <div class="receipt__actions" id="rcActions"></div>
+    </div>
+  </div>
+
+  <script src="riwayat_transaksi.js"></script>
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <title>Ubah Password - Photoholic</title>
+  <link rel="stylesheet" href="layout.css">
+  <link rel="stylesheet" href="ubah_pw.css" />
+</head>
+<body>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <img class="brand__logo" src="assets/logo-photoholic.png" alt="Photoholic">
+
+    <nav class="topnav" aria-label="Main navigation">
+      <a class="topnav__link is-active" href="#">Beranda</a>
+      <a class="topnav__link" href="#">Pemesanan</a>
+      <a class="topnav__link" href="#">Studio</a>
+    </nav>
+
+    <button class="topbar__user" type="button" aria-label="User menu">
+      <span class="topbar__userCircle">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12Z" fill="none" stroke="currentColor" stroke-width="2"/>
+          <path d="M4 21c1.8-4 14.2-4 16 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </span>
+    </button>
+  </header>
+
+  <!-- PAGE -->
+  <main class="page">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="userCard">
+        <div class="userCard__avatar">
+          <img src="assets/logo-photoholic.png" alt="avatar">
+        </div>
+        <div class="userCard__info">
+          <div class="userCard__name">Minphotoholic</div>
+          <a class="userCard__edit" href="#">
+            <span class="icon-inline" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 20h9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M16.5 3.5l4 4L8 20H4v-4L16.5 3.5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            Ubah Profil
+          </a>
+        </div>
+      </div>
+
+      <div class="menu">
+        <div class="menu__groupTitle">
+          <span class="icon-inline" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Z" fill="none" stroke="currentColor" stroke-width="2"/>
+              <path d="M4.5 20c1.8-4 13.2-4 15 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          Akun Saya
+        </div>
+
+        <a class="menu__item" href="profile.html">Profil</a>
+
+        <a class="menu__item active" href="ubah-password.html">
+          <span class="icon-inline" aria-hidden="true">
+            <!-- lock -->
+            <svg viewBox="0 0 24 24">
+              <path d="M7 11V8a5 5 0 0 1 10 0v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M6 11h12v10H6V11Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M12 15v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          Ubah Password
+        </a>
+
+        <a class="menu__item" href="atur_jadwal.html">
+          <span class="icon-inline" aria-hidden="true">
+            <!-- calendar -->
+            <svg viewBox="0 0 24 24">
+              <path d="M7 3v3M17 3v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M4 7h16v14H4V7Z" fill="none" stroke="currentColor" stroke-width="2"/>
+              <path d="M4 11h16" fill="none" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </span>
+          Atur Jadwal
+        </a>
+
+        <a class="menu__item" href="#">
+          <span class="icon-inline" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M3 7h18v10H3V7Z" fill="none" stroke="currentColor" stroke-width="2"/>
+              <path d="M3 10h18" fill="none" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </span>
+          Status Pemesanan
+        </a>
+
+        <a class="menu__item" href="#">
+          <span class="icon-inline" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M7 3h10v18l-2-1-3 1-3-1-2 1V3Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M9 7h6M9 11h6M9 15h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          Riwayat Transaksi
+        </a>
+
+        <a class="menu__item danger" href="#" id="logoutBtn">
+          <span class="icon-inline" aria-hidden="true">
+            <!-- logout -->
+            <svg viewBox="0 0 24 24">
+              <path d="M10 17l5-5-5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M15 12H4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M20 4v16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          Log Out
+        </a>
+      </div>
+
+      <div class="sidebar__decor">
+        <img src="assets/logo-icon.png" alt="decor">
+      </div>
+    </aside>
+
+    <!-- PANEL -->
+    <section class="panel">
+      <div class="panelCard">
+        <h1 class="panelCard__title">Ubah Password</h1>
+        <p class="panelCard__sub">Pastikan password baru berbeda dari password sebelumnya.</p>
+
+        <form class="passForm" id="passForm">
+          <div class="field">
+            <label for="oldPass">Password Lama</label>
+            <div class="inputIcon">
+              <input id="oldPass" type="password" placeholder="Masukkan password lama" required>
+
+              <button class="eyeBtn" type="button" data-target="oldPass" data-state="hidden" aria-label="toggle password">
+                <!-- eye open -->
+                <svg class="icon-eye icon-eye-open" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                  <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
+                        fill="none" stroke="currentColor" stroke-width="2"/>
+                </svg>
+
+                <!-- eye off -->
+                <svg class="icon-eye icon-eye-off" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M3 3l18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M10.6 10.6a2.5 2.5 0 0 0 3.4 3.4" fill="none" stroke="currentColor" stroke-width="2"/>
+                  <path d="M6.5 6.5C4 8.5 2 12 2 12s3.5 7 10 7c2 0 3.8-.5 5.3-1.4"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                  <path d="M9.5 4.3A10.8 10.8 0 0 1 12 5c6.5 0 10 7 10 7a18 18 0 0 1-3.2 4.5"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                </svg>
+              </button>
+            </div>          
+          </div>
+
+          <div class="field">
+            <label for="newPass">Password Baru</label>
+            <div class="inputIcon">
+              <input id="newPass" type="password" placeholder="Masukkan password baru" required>
+              <button class="eyeBtn" type="button" data-target="newPass" data-state="hidden" aria-label="toggle password">
+                <svg class="icon-eye icon-eye-open" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                  <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" fill="none" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                <svg class="icon-eye icon-eye-off" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M3 3l18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M10.6 10.6a2.5 2.5 0 0 0 3.4 3.4" fill="none" stroke="currentColor" stroke-width="2"/>
+                  <path d="M6.5 6.5C4 8.5 2 12 2 12s3.5 7 10 7c2 0 3.8-.5 5.3-1.4" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                  <path d="M9.5 4.3A10.8 10.8 0 0 1 12 5c6.5 0 10 7 10 7a18 18 0 0 1-3.2 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="confirmPass">Konfirmasi Password</label>
+            <div class="inputIcon">
+              <input id="confirmPass" type="password" placeholder="Ulangi password baru" required>
+              <button class="eyeBtn" type="button" data-target="confirmPass" data-state="hidden" aria-label="toggle password">
+                <svg class="icon-eye icon-eye-open" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                  <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" fill="none" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                <svg class="icon-eye icon-eye-off" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M3 3l18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M10.6 10.6a2.5 2.5 0 0 0 3.4 3.4" fill="none" stroke="currentColor" stroke-width="2"/>
+                  <path d="M6.5 6.5C4 8.5 2 12 2 12s3.5 7 10 7c2 0 3.8-.5 5.3-1.4" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                  <path d="M9.5 4.3A10.8 10.8 0 0 1 12 5c6.5 0 10 7 10 7a18 18 0 0 1-3.2 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="btn btn--primary" type="submit" id="saveBtn">Simpan Perubahan</button>
+            <button class="btn btn--ghost" type="button" id="resetBtn">Reset</button>
+          </div>
+        </form>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- MODAL -->
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="modal__overlay" data-close="true"></div>
+
+    <div class="modal__card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <h3 class="modal__title" id="modalTitle">Title</h3>
+      <p class="modal__text" id="modalText">Text</p>
+      <div class="modal__actions" id="modalActions"></div>
+    </div>
+  </div>
+
+  <script src="ubah_pw.js"></script>
+</body>
+</html>

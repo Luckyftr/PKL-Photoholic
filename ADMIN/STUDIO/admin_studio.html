@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <title>Studio Admin - Photoholic</title>
+  <link rel="stylesheet" href="admin_studio.css" />
+</head>
+<body class="page-studio">
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <img class="brand__logo" src="assets/logo-photoholic.png" alt="Photoholic">
+
+    <nav class="topnav" aria-label="Main navigation">
+      <a class="topnav__link" href="beranda-admin.html">Beranda</a>
+      <a class="topnav__link" href="admin_pemesanan.html">Bookings</a>
+      <a class="topnav__link is-active" href="admin_studio.html">Studio</a>
+    </nav>
+
+    <button class="topbar__user" type="button" aria-label="User menu">
+      <span class="topbar__userCircle">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12Z" fill="none" stroke="currentColor" stroke-width="2"/>
+          <path d="M4 21c1.8-4 14.2-4 16 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </span>
+    </button>
+  </header>
+
+  <!-- PAGE -->
+  <main class="page">
+    <div class="layout">
+
+      <!-- LIST -->
+      <section class="panel panel--list">
+        <div class="panelHead">
+          <h1 class="panelTitle">Studio</h1>
+          <span class="hint">Kelola studio & harga sesi.</span>
+        </div>
+
+        <div class="list" id="studioList">
+          <!-- diisi JS -->
+        </div>
+      </section>
+
+      <!-- FORM -->
+      <section class="panel panel--form" id="formPanel">
+        <div class="formHead">
+          <button class="backBtn" id="backBtn" type="button" aria-label="Kembali">
+            <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <h2 class="formTitle" id="formTitle">Tambah Studio</h2>
+        </div>
+
+        <div class="photoArea">
+          <div class="photoBox" id="photoBox">
+            <img id="photoPreview" src="" alt="Preview" />
+            <div class="photoEmpty" id="photoEmpty">
+              <div class="photoEmpty__icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M4 7h16v12H4V7Z" fill="none" stroke="currentColor" stroke-width="2"/>
+                  <path d="M8 7l2-3h4l2 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                  <path d="M9 13a3 3 0 1 0 6 0 3 3 0 0 0-6 0Z" fill="none" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </div>
+              <div class="photoEmpty__text">No image</div>
+            </div>
+          </div>
+
+          <input class="fileInput" id="photoInput" type="file" accept="image/*" hidden>
+          <button class="photoBtn" id="photoBtn" type="button">Tambahkan Foto</button>
+        </div>
+
+        <form class="studioForm" id="studioForm" autocomplete="off">
+          <div class="field">
+            <label for="name">Nama Studio</label>
+            <input id="name" type="text" placeholder="Contoh: Classy" required>
+          </div>
+
+          <div class="field">
+            <label for="desc">Deskripsi</label>
+            <input id="desc" type="text" placeholder="Contoh: Max 10 Orang, Paper Negatif Film" required>
+          </div>
+
+          <div class="field">
+            <label for="price">Harga Per Sesi</label>
+            <div class="money">
+              <span class="money__prefix">Rp</span>
+              <input id="price" type="number" min="0" step="1000" placeholder="45000" required>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="btn btn--primary" id="submitBtn" type="submit">Tambah Studio</button>
+            <button class="btn btn--ghost" id="cancelBtn" type="button">Batalkan</button>
+          </div>
+        </form>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- FLOATING PLUS -->
+  <button class="fab" id="addBtn" type="button" aria-label="Tambah studio">+</button>
+
+  <!-- MODAL -->
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="modal__overlay" data-close="true"></div>
+    <div class="modal__card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <h3 class="modal__title" id="modalTitle">Title</h3>
+      <p class="modal__text" id="modalText">Text</p>
+      <div class="modal__actions" id="modalActions"></div>
+    </div>
+  </div>
+
+  <script src="admin_studio.js"></script>
+</body>
+</html>

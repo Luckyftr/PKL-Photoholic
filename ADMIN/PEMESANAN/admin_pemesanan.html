@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Commissioner:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet"
+  />
+
+  <title>Pemesanan - Photoholic</title>
+  <link rel="stylesheet" href="admin_pemesanan.css" />
+</head>
+<body>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <img class="brand__logo" src="assets/logo-photoholic.png" alt="Photoholic">
+
+    <nav class="topnav" aria-label="Main navigation">
+      <a class="topnav__link" href="beranda-admin.html">Beranda</a>
+      <a class="topnav__link is-active" href="admin_pemesanan.html">Bookings</a>
+      <a class="topnav__link" href="#">Studio</a>
+    </nav>
+
+    <button class="topbar__user" type="button" aria-label="User menu">
+      <span class="topbar__userCircle">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12Z" fill="none" stroke="currentColor" stroke-width="2"/>
+          <path d="M4 21c1.8-4 14.2-4 16 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </span>
+    </button>
+  </header>
+
+  <!-- PAGE -->
+  <main class="page">
+    <div class="layout">
+
+      <!-- LEFT: DAFTAR PEMESANAN -->
+      <section class="panel panel--list">
+        <div class="panelHead">
+          <h1 class="panelTitle">Daftar Pemesanan</h1>
+        </div>
+
+        <div class="filters">
+          <!-- search -->
+          <div class="search">
+            <span class="search__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" fill="none" stroke="currentColor" stroke-width="2"/>
+                <path d="M16.5 16.5 21 21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </span>
+            <input id="q" type="text" placeholder="Cari pemesanan..." />
+          </div>
+
+          <!-- sort -->
+          <div class="selectWrap">
+            <select id="sort">
+              <option value="newest" selected>Terbaru</option>
+              <option value="oldest">Terlama</option>
+            </select>
+          </div>
+
+          <!-- status -->
+          <div class="selectWrap">
+            <select id="status">
+              <option value="all" selected>Semua</option>
+              <option value="lunas">Lunas</option>
+              <option value="pending">Pending</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="list" id="bookingList">
+          <!-- diisi JS -->
+        </div>
+      </section>
+
+      <!-- RIGHT: RINCIAN PEMESANAN -->
+      <section class="panel panel--detail">
+        <div class="detailHead">
+          <button class="backBtn" type="button" id="backBtn" aria-label="Kembali">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M15 18 9 12l6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <h2 class="detailTitle">Rincian Pemesanan</h2>
+        </div>
+
+        <div class="detailBody" id="detailBody">
+          <!-- diisi JS -->
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- FLOATING ADD BUTTON -->
+  <button class="fab" type="button" id="addBtn" aria-label="Tambah pemesanan">
+    <span aria-hidden="true">+</span>
+  </button>
+
+  <!-- MODAL: BUKTI PEMBAYARAN -->
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="modal__overlay" data-close="true"></div>
+
+    <div class="modal__card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal__top">
+        <div>
+          <div class="invoiceHeader__big" id="modalTitle">Bukti Pembayaran</div>
+        </div>
+        <button class="modal__close" type="button" data-close="true" aria-label="Tutup">
+          ✕
+        </button>
+      </div>
+
+      <div class="invoice" id="invoice">
+        <!-- diisi JS -->
+      </div>
+    </div>
+  </div>
+
+  <script src="admin_pemesanan.js"></script>
+</body>
+</html>

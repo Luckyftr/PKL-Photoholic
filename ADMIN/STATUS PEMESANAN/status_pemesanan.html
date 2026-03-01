@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <title>Status Pemesanan - Photoholic</title>
+  <link rel="stylesheet" href="layout.css">
+  <link rel="stylesheet" href="status_pemesanan.css" />
+</head>
+<body>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <img class="brand__logo" src="assets/logo-photoholic.png" alt="Photoholic">
+
+    <nav class="topnav" aria-label="Main navigation">
+      <a class="topnav__link is-active" href="#">Beranda</a>
+      <a class="topnav__link" href="#">Pemesanan</a>
+      <a class="topnav__link" href="#">Studio</a>
+    </nav>
+
+    <button class="topbar__user" type="button" aria-label="User menu">
+      <span class="topbar__userCircle">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12Z" fill="none" stroke="currentColor" stroke-width="2"/>
+          <path d="M4 21c1.8-4 14.2-4 16 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </span>
+    </button>
+  </header>
+
+  <!-- PAGE -->
+  <main class="page">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="userCard">
+        <div class="userCard__avatar">
+          <img src="assets/logo-photoholic.png" alt="avatar">
+        </div>
+        <div class="userCard__info">
+          <div class="userCard__name">Minphotoholic</div>
+          <a class="userCard__edit" href="#">
+            <span class="icon-inline" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 20h9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M16.5 3.5l4 4L8 20H4v-4L16.5 3.5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            Ubah Profil
+          </a>
+        </div>
+      </div>
+
+      <div class="menu">
+        <div class="menu__groupTitle">
+          <span class="icon-inline" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Z" fill="none" stroke="currentColor" stroke-width="2"/>
+              <path d="M4.5 20c1.8-4 13.2-4 15 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          Akun Saya
+        </div>
+
+        <a class="menu__item" href="profile.html">Profil</a>
+        <a class="menu__item" href="ubah-password.html">Ubah Password</a>
+
+        <a class="menu__item" href="atur_jadwal.html">
+          <span class="icon-inline" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M7 3v3M17 3v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M4 7h16v14H4V7Z" fill="none" stroke="currentColor" stroke-width="2"/>
+              <path d="M4 11h16" fill="none" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </span>
+          Atur Jadwal
+        </a>
+
+        <!-- ACTIVE -->
+        <a class="menu__item active" href="status_pemesanan.html">
+          <span class="icon-inline" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M3 7h18v10H3V7Z" fill="none" stroke="currentColor" stroke-width="2"/>
+              <path d="M3 10h18" fill="none" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </span>
+          Status Pemesanan
+        </a>
+
+        <a class="menu__item" href="riwayat_transaksi.html">
+          <span class="icon-inline" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M7 3h10v18l-2-1-3 1-3-1-2 1V3Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M9 7h6M9 11h6M9 15h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          Riwayat Transaksi
+        </a>
+
+        <a class="menu__item danger" href="#" id="logoutBtn">
+          <span class="icon-inline" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M10 17l5-5-5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M15 12H4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M20 4v16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          Log Out
+        </a>
+      </div>
+
+      <div class="sidebar__decor">
+        <img src="assets/logo-icon.png" alt="decor">
+      </div>
+    </aside>
+
+    <!-- PANEL -->
+    <section class="panel">
+      <div class="panelCard">
+
+        <h1 class="panelCard__title">Status Pemesanan</h1>
+        <p class="panelCard__sub">Pantau status booking kamu. Kamu bisa lihat detail atau batalkan jika masih menunggu.</p>
+
+        <!-- FILTER -->
+        <div class="filters">
+          <button class="chip is-active" type="button" data-filter="all">Semua</button>
+          <button class="chip" type="button" data-filter="menunggu">Menunggu</button>
+          <button class="chip" type="button" data-filter="diproses">Diproses</button>
+          <button class="chip" type="button" data-filter="selesai">Selesai</button>
+          <button class="chip" type="button" data-filter="dibatalkan">Dibatalkan</button>
+        </div>
+
+        <!-- LIST -->
+        <div class="bookingList" id="bookingList">
+          <!-- DATA CONTOH (JS juga bisa isi, ini biar langsung tampil) -->
+          <article class="bookingItem" data-status="menunggu" data-id="BK-10231">
+            <div class="bookingLeft">
+              <div class="pillDate">20 Feb 2026</div>
+              <div class="bookingTitle">Classy • 11:00 - 11:30</div>
+              <div class="bookingMeta">
+                <span class="meta">ID: <b>BK-10231</b></span>
+                <span class="dot">•</span>
+                <span class="meta">Atas nama: <b>Minphotoholic</b></span>
+              </div>
+              <div class="bookingNote">Catatan: tidak ada catatan.</div>
+            </div>
+
+            <div class="bookingRight">
+              <span class="badge badge--wait">Menunggu</span>
+              <div class="bookingActions">
+                <button class="miniBtn" type="button" data-action="detail">Detail</button>
+                <button class="miniBtn miniBtn--danger" type="button" data-action="cancel">Batalkan</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="bookingItem" data-status="diproses" data-id="BK-10299">
+            <div class="bookingLeft">
+              <div class="pillDate">22 Feb 2026</div>
+              <div class="bookingTitle">Spotlight • 19:00 - 19:30</div>
+              <div class="bookingMeta">
+                <span class="meta">ID: <b>BK-10299</b></span>
+                <span class="dot">•</span>
+                <span class="meta">Atas nama: <b>Minphotoholic</b></span>
+              </div>
+              <div class="bookingNote">Catatan: request background putih.</div>
+            </div>
+
+            <div class="bookingRight">
+              <span class="badge badge--process">Diproses</span>
+              <div class="bookingActions">
+                <button class="miniBtn" type="button" data-action="detail">Detail</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="bookingItem" data-status="selesai" data-id="BK-10010">
+            <div class="bookingLeft">
+              <div class="pillDate">10 Feb 2026</div>
+              <div class="bookingTitle">Aquarium • 20:00 - 20:20</div>
+              <div class="bookingMeta">
+                <span class="meta">ID: <b>BK-10010</b></span>
+                <span class="dot">•</span>
+                <span class="meta">Atas nama: <b>Minphotoholic</b></span>
+              </div>
+              <div class="bookingNote">Catatan: sudah selesai.</div>
+            </div>
+
+            <div class="bookingRight">
+              <span class="badge badge--done">Selesai</span>
+              <div class="bookingActions">
+                <button class="miniBtn" type="button" data-action="detail">Detail</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="bookingItem" data-status="dibatalkan" data-id="BK-09001">
+            <div class="bookingLeft">
+              <div class="pillDate">01 Jan 2026</div>
+              <div class="bookingTitle">Oven • 11:00 - 11:10</div>
+              <div class="bookingMeta">
+                <span class="meta">ID: <b>BK-09001</b></span>
+                <span class="dot">•</span>
+                <span class="meta">Atas nama: <b>Minphotoholic</b></span>
+              </div>
+              <div class="bookingNote">Catatan: dibatalkan.</div>
+            </div>
+
+            <div class="bookingRight">
+              <span class="badge badge--cancel">Dibatalkan</span>
+              <div class="bookingActions">
+                <button class="miniBtn" type="button" data-action="detail">Detail</button>
+              </div>
+            </div>
+          </article>
+
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- MODAL -->
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="modal__overlay" data-close="true"></div>
+
+    <div class="modal__card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <h3 class="modal__title" id="modalTitle">Title</h3>
+      <p class="modal__text" id="modalText">Text</p>
+      <div class="modal__actions" id="modalActions"></div>
+    </div>
+  </div>
+
+  <script src="status_pemesanan.js"></script>
+</body>
+</html>

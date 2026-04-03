@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <title>Beranda - Photoholic</title>
+  <link rel="stylesheet" href="beranda.css" />
+</head>
+<body>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="topbar__left">
+      <img class="brand__logo" src="assets/logo-photoholic.png" alt="Photoholic">
+    </div>
+
+    <nav class="topnav" aria-label="Main navigation">
+      <a class="topnav__link active" href="#">Home</a>
+      <a class="topnav__link" href="#">Studio</a>
+      <a class="topnav__link" href="#">Blog</a>
+      <a class="topnav__link" href="#">Bookings</a>
+    </nav>
+
+    <button class="topbar__user" type="button" aria-label="User menu">
+      <span class="topbar__userCircle">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12Z" fill="none" stroke="currentColor" stroke-width="2"/>
+          <path d="M4 21c1.8-4 14.2-4 16 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </span>
+    </button>
+  </header>
+
+  <!-- MAIN -->
+  <main class="homePage">
+
+    <!-- TITLE -->
+    <section class="availabilityHead">
+      <a href="#" class="backBtn" aria-label="Kembali">
+        <svg viewBox="0 0 24 24">
+          <path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+      <h1>CEK KETERSEDIAAN</h1>
+    </section>
+
+    <!-- BANNER -->
+    <section class="bannerCard">
+      <div class="bannerText">
+        <p class="bannerBadge">Cheers!!!</p>
+        <h2>Happy Weekend!</h2>
+        <p>Yuk booking studio favoritmu sekarang sebelum slot habis ✨</p>
+      </div>
+
+      <div class="bannerImage">
+        <img src="assets/banner-weekend.png" alt="Happy Weekend">
+      </div>
+    </section>
+
+    <!-- FILTER -->
+    <section class="filterBar">
+      <button class="filterChip active">Semua</button>
+      <button class="filterChip">Tersedia</button>
+      <button class="filterChip">Tidak Tersedia</button>
+      <button class="filterChip">Classy</button>
+      <button class="filterChip">Oven</button>
+      <button class="filterChip">Lavatory</button>
+      <button class="filterChip">Spotlight</button>
+      <button class="filterChip">Aquarium</button>
+    </section>
+
+    <!-- STUDIO LIST -->
+    <section class="studioGrid">
+
+      <!-- CARD 1 -->
+      <article class="studioCard">
+        <div class="studioCard__img">
+          <img src="assets/studio-classy.jpg" alt="Studio Classy">
+        </div>
+
+        <div class="studioCard__content">
+          <div class="studioCard__top">
+            <div>
+              <h3>Studio Classy</h3>
+              <p>Max 10 Orang • Paper Negatif Film</p>
+            </div>
+            <span class="status available">Tersedia</span>
+          </div>
+
+          <div class="studioCard__meta">
+            <p>Jumat, 17 Oktober 2025</p>
+            <p>15:00 WIB - 15:05 WIB</p>
+          </div>
+
+          <p class="studioPrice">Harga : Rp45.000/Sesi</p>
+
+          <a href="#" class="bookBtn">Book Now</a>
+        </div>
+      </article>
+
+      <!-- CARD 2 -->
+      <article class="studioCard">
+        <div class="studioCard__img">
+          <img src="assets/studio-classy.jpg" alt="Studio Spotlight">
+        </div>
+
+        <div class="studioCard__content">
+          <div class="studioCard__top">
+            <div>
+              <h3>Studio Spotlight</h3>
+              <p>Max 8 Orang • Flash Portrait</p>
+            </div>
+            <span class="status available">Tersedia</span>
+          </div>
+
+          <div class="studioCard__meta">
+            <p>Jumat, 17 Oktober 2025</p>
+            <p>16:00 WIB - 16:05 WIB</p>
+          </div>
+
+          <p class="studioPrice">Harga : Rp45.000/Sesi</p>
+
+          <a href="#" class="bookBtn">Book Now</a>
+        </div>
+      </article>
+
+      <!-- CARD 3 -->
+      <article class="studioCard">
+        <div class="studioCard__img">
+          <img src="assets/studio-classy.jpg" alt="Studio Oven">
+        </div>
+
+        <div class="studioCard__content">
+          <div class="studioCard__top">
+            <div>
+              <h3>Studio Oven</h3>
+              <p>Max 6 Orang • Warm Vintage Room</p>
+            </div>
+            <span class="status available">Tersedia</span>
+          </div>
+
+          <div class="studioCard__meta">
+            <p>Sabtu, 18 Oktober 2025</p>
+            <p>13:30 WIB - 13:35 WIB</p>
+          </div>
+
+          <p class="studioPrice">Harga : Rp35.000/Sesi</p>
+
+          <a href="#" class="bookBtn">Book Now</a>
+        </div>
+      </article>
+
+      <!-- CARD 4 -->
+      <article class="studioCard">
+        <div class="studioCard__img">
+          <img src="assets/studio-classy.jpg" alt="Studio Lavatory">
+        </div>
+
+        <div class="studioCard__content">
+          <div class="studioCard__top">
+            <div>
+              <h3>Studio Lavatory</h3>
+              <p>Max 7 Orang • Clean Minimal Vibes</p>
+            </div>
+            <span class="status unavailable">Tidak Tersedia</span>
+          </div>
+
+          <div class="studioCard__meta">
+            <p>Sabtu, 18 Oktober 2025</p>
+            <p>15:00 WIB - 15:05 WIB</p>
+          </div>
+
+          <p class="studioPrice">Harga : Rp35.000/Sesi</p>
+
+          <button class="bookBtn disabled" disabled>Book Now</button>
+        </div>
+      </article>
+
+      <!-- CARD 5 -->
+      <article class="studioCard">
+        <div class="studioCard__img">
+          <img src="assets/studio-classy.jpg" alt="Studio Aquarium">
+        </div>
+
+        <div class="studioCard__content">
+          <div class="studioCard__top">
+            <div>
+              <h3>Studio Aquarium</h3>
+              <p>Max 6 Orang • Blue Dreamy Theme</p>
+            </div>
+            <span class="status unavailable">Tidak Tersedia</span>
+          </div>
+
+          <div class="studioCard__meta">
+            <p>Minggu, 19 Oktober 2025</p>
+            <p>18:00 WIB - 18:05 WIB</p>
+          </div>
+
+          <p class="studioPrice">Harga : Rp35.000/Sesi</p>
+
+          <button class="bookBtn disabled" disabled>Book Now</button>
+        </div>
+      </article>
+
+      <!-- CARD 6 -->
+      <article class="studioCard">
+        <div class="studioCard__img">
+          <img src="assets/studio-classy.jpg" alt="Studio Classy">
+        </div>
+
+        <div class="studioCard__content">
+          <div class="studioCard__top">
+            <div>
+              <h3>Studio Classy</h3>
+              <p>Max 10 Orang • Elegant Clean Room</p>
+            </div>
+            <span class="status unavailable">Tidak Tersedia</span>
+          </div>
+
+          <div class="studioCard__meta">
+            <p>Minggu, 19 Oktober 2025</p>
+            <p>20:00 WIB - 20:05 WIB</p>
+          </div>
+
+          <p class="studioPrice">Harga : Rp45.000/Sesi</p>
+
+          <button class="bookBtn disabled" disabled>Book Now</button>
+        </div>
+      </article>
+
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer__item">📞 0851-2400-0950</div>
+    <div class="footer__item">✉ adminphotoholic@gmail.com</div>
+    <div class="footer__item">📷 @photoholic.indonesia</div>
+    <div class="footer__item">🎀 @photoholic.indonesia</div>
+  </footer>
+
+</body>
+</html>

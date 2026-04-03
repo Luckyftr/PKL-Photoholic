@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <title>Register Success - Photoholic</title>
+  <link rel="stylesheet" href="register-success.css" />
+</head>
+<body>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="brand">
+      <img class="brand__logo" src="assets/logo-photoholic.png" alt="Photoholic" />
+    </div>
+    <a class="help" href="#">Need Help?</a>
+  </header>
+
+  <!-- CONTENT -->
+  <main class="content">
+
+    <!-- LEFT -->
+    <section class="left">
+      <div class="logoGroup">
+        <img class="left__illus" src="assets/logo-icon.png" alt="Illustration" />
+        <img class="left__bigLogo" src="assets/test-photoholic.png" alt="photoholic" />
+      </div>
+    </section>
+
+    <!-- RIGHT -->
+    <section class="right">
+      <div class="card card--success">
+        <h2 class="card__title card__title--center">Registration Successful!</h2>
+
+        <div class="checkCircle" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M20 6L9 17l-5-5" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <p class="successText">
+          You will be redirected to the<br>
+          login page in <span id="countdown">5</span> seconds...
+        </p>
+
+        <p class="miniText">
+          Click <a href="login.html">here</a> if you are not redirected<br>
+          automatically
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    let t = 5;
+    const el = document.getElementById("countdown");
+    const timer = setInterval(() => {
+      t--;
+      el.textContent = t;
+
+      if (t <= 0) {
+        clearInterval(timer);
+        window.location.href = "login.html"; 
+      }
+    }, 1000);
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <title>Riwayat Pembayaran - Photoholic</title>
+  <link rel="stylesheet" href="riwayat.css" />
+  <link rel="stylesheet" href="layout.css">
+</head>
+<body>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="topbar__left">
+      <img class="brand__logo" src="assets/logo-photoholic.png" alt="Photoholic">
+    </div>
+
+    <nav class="topnav" aria-label="Main navigation">
+      <a class="topnav__link" href="#">Beranda</a>
+      <a class="topnav__link" href="#">Studio</a>
+      <a class="topnav__link" href="#">Bookings</a>
+    </nav>
+
+    <button class="topbar__user" type="button" aria-label="User menu">
+      <span class="topbar__userCircle">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12Z" fill="none" stroke="currentColor" stroke-width="2"/>
+          <path d="M4 21c1.8-4 14.2-4 16 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </span>
+    </button>
+  </header>
+
+  <!-- PAGE -->
+  <main class="page">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="userCard">
+        <div class="userCard__avatar">
+          <img src="assets/image1.png" alt="avatar">
+        </div>
+        <div class="userCard__info">
+          <div class="userCard__name">Berlian Ika</div>
+          <a class="userCard__edit" href="profile.html">
+            <span class="icon-inline" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 20h9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M16.5 3.5l4 4L8 20H4v-4L16.5 3.5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            Ubah Profil
+          </a>
+        </div>
+      </div>
+
+      <div class="menu">
+        <div class="menu__groupTitle">
+          <span class="icon-inline" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Z" fill="none" stroke="currentColor" stroke-width="2"/>
+              <path d="M4.5 20c1.8-4 13.2-4 15 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          Akun Saya
+        </div>
+
+        <a class="menu__item" href="profile.html">Profil</a>
+        <a class="menu__item" href="#">Ubah Password</a>
+
+        <a class="menu__item" href="jadwal.html">
+          <span class="icon-inline" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M7 3v3M17 3v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M4 7h16v14H4V7Z" fill="none" stroke="currentColor" stroke-width="2"/>
+              <path d="M4 11h16" fill="none" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </span>
+          Jadwal Saya
+        </a>
+
+        <a class="menu__item active" href="riwayat-pembayaran.html">
+          <span class="icon-inline" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M3 7h18v10H3V7Z" fill="none" stroke="currentColor" stroke-width="2"/>
+              <path d="M3 10h18" fill="none" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </span>
+          Riwayat Pembayaran
+        </a>
+
+        <button class="menu__item danger logoutBtn" type="button" id="logoutBtn">
+          <span class="icon-inline" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M10 17l5-5-5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M15 12H4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M20 4v16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          Log Out
+        </button>
+      </div>
+
+      <div class="sidebar__decor">
+        <img src="assets/logo-icon.png" alt="decor">
+      </div>
+    </aside>
+
+    <!-- CONTENT -->
+    <section class="panel">
+      <div class="panelCard">
+        <div class="panelCard__head">
+          <div>
+            <h1 class="panelCard__title">Riwayat Pembayaran</h1>
+            <p class="panelCard__sub">
+              Lihat daftar transaksi pembayaran booking studio Anda
+            </p>
+          </div>
+
+          <div class="filterWrap">
+            <button class="filterBtn active">Semua</button>
+            <button class="filterBtn">Berhasil</button>
+            <button class="filterBtn">Menunggu</button>
+            <button class="filterBtn">Gagal</button>
+          </div>
+        </div>
+
+        <div class="paymentLayout">
+
+          <!-- LEFT -->
+          <div class="paymentList">
+
+            <!-- CARD 1 -->
+            <div class="paymentCard">
+              <div class="paymentCard__top">
+                <div>
+                  <p class="paymentCard__id">Pembayaran #PAY240301</p>
+                  <h3 class="paymentCard__theme">Classy Studio</h3>
+                </div>
+                <span class="statusBadge statusBadge--success">Berhasil</span>
+              </div>
+
+              <div class="paymentInfoGrid">
+                <div class="paymentInfoItem">
+                  <span class="paymentInfoLabel">Tanggal Transaksi</span>
+                  <span class="paymentInfoValue">03 April 2026</span>
+                </div>
+                <div class="paymentInfoItem">
+                  <span class="paymentInfoLabel">Tanggal Booking</span>
+                  <span class="paymentInfoValue">05 April 2026</span>
+                </div>
+                <div class="paymentInfoItem">
+                  <span class="paymentInfoLabel">Jam Booking</span>
+                  <span class="paymentInfoValue">14.30 WIB</span>
+                </div>
+                <div class="paymentInfoItem">
+                  <span class="paymentInfoLabel">Metode Pembayaran</span>
+                  <span class="paymentInfoValue">QRIS</span>
+                </div>
+                <div class="paymentInfoItem">
+                  <span class="paymentInfoLabel">Durasi</span>
+                  <span class="paymentInfoValue">1 sesi / 5 menit</span>
+                </div>
+                <div class="paymentInfoItem">
+                  <span class="paymentInfoLabel">Total Bayar</span>
+                  <span class="paymentInfoValue price">Rp45.000</span>
+                </div>
+              </div>
+
+              <div class="paymentCard__bottom">
+                <p class="paymentNote">Pembayaran berhasil dan booking Anda sudah dikonfirmasi.</p>
+                <div class="paymentActions">
+                  <a href="invoice.html" class="paymentBtn">Lihat Detail</a>
+                  <a href="#" class="paymentBtn paymentBtn--outline">Unduh Invoice</a>
+                </div>
+              </div>
+            </div>
+
+            <!-- CARD 2 -->
+            <div class="paymentCard">
+              <div class="paymentCard__top">
+                <div>
+                  <p class="paymentCard__id">Pembayaran #PAY240302</p>
+                  <h3 class="paymentCard__theme">Aquarium Studio</h3>
+                </div>
+                <span class="statusBadge statusBadge--waiting">Menunggu</span>
+              </div>
+
+              <div class="paymentInfoGrid">
+                <div class="paymentInfoItem">
+                  <span class="paymentInfoLabel">Tanggal Transaksi</span>
+                  <span class="paymentInfoValue">03 April 2026</span>
+                </div>
+                <div class="paymentInfoItem">
+                  <span class="paymentInfoLabel">Tanggal Booking</span>
+                  <span class="paymentInfoValue">06 April 2026</span>
+                </div>
+                <div class="paymentInfoItem">
+                  <span class="paymentInfoLabel">Jam Booking</span>
+                  <span class="paymentInfoValue">18.15 WIB</span>
+                </div>
+                <div class="paymentInfoItem">
+                  <span class="paymentInfoLabel">Metode Pembayaran</span>
+                  <span class="paymentInfoValue">QRIS</span>
+                </div>
+                <div class="paymentInfoItem">
+                  <span class="paymentInfoLabel">Durasi</span>
+                  <span class="paymentInfoValue">1 sesi / 5 menit</span>
+                </div>
+                <div class="paymentInfoItem">
+                  <span class="paymentInfoLabel">Total Bayar</span>
+                  <span class="paymentInfoValue price">Rp35.000</span>
+                </div>
+              </div>
+
+              <div class="paymentCard__bottom">
+                <p class="paymentNote">Pembayaran belum diselesaikan. Silakan lanjutkan pembayaran di halaman booking.</p>
+                <div class="paymentActions">
+                  <a href="invoice.html" class="paymentBtn">Lihat Detail</a>
+                </div>
+              </div>
+            </div>
+
+            <!-- CARD 3 -->
+            <div class="paymentCard">
+              <div class="paymentCard__top">
+                <div>
+                  <p class="paymentCard__id">Pembayaran #PAY240277</p>
+                  <h3 class="paymentCard__theme">Lavatory Studio</h3>
+                </div>
+                <span class="statusBadge statusBadge--failed">Gagal</span>
+              </div>
+
+              <div class="paymentInfoGrid">
+                <div class="paymentInfoItem">
+                  <span class="paymentInfoLabel">Tanggal Transaksi</span>
+                  <span class="paymentInfoValue">27 Maret 2026</span>
+                </div>
+                <div class="paymentInfoItem">
+                  <span class="paymentInfoLabel">Tanggal Booking</span>
+                  <span class="paymentInfoValue">27 Maret 2026</span>
+                </div>
+                <div class="paymentInfoItem">
+                  <span class="paymentInfoLabel">Jam Booking</span>
+                  <span class="paymentInfoValue">13.45 WIB</span>
+                </div>
+                <div class="paymentInfoItem">
+                  <span class="paymentInfoLabel">Metode Pembayaran</span>
+                  <span class="paymentInfoValue">QRIS</span>
+                </div>
+                <div class="paymentInfoItem">
+                  <span class="paymentInfoLabel">Durasi</span>
+                  <span class="paymentInfoValue">1 sesi / 5 menit</span>
+                </div>
+                <div class="paymentInfoItem">
+                  <span class="paymentInfoLabel">Total Bayar</span>
+                  <span class="paymentInfoValue price">Rp35.000</span>
+                </div>
+              </div>
+
+              <div class="paymentCard__bottom">
+                <p class="paymentNote">Pembayaran tidak berhasil diproses sehingga booking tidak dikonfirmasi.</p>
+                <div class="paymentActions">
+                  <a href="invoice.html" class="paymentBtn">Lihat Detail</a>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- RIGHT -->
+          <aside class="paymentSide">
+
+            <div class="infoBox">
+              <h3 class="infoBox__title">Ringkasan Pembayaran</h3>
+              <div class="summaryItem">
+                <span>Total Transaksi</span>
+                <strong>3</strong>
+              </div>
+              <div class="summaryItem">
+                <span>Pembayaran Berhasil</span>
+                <strong>1</strong>
+              </div>
+              <div class="summaryItem">
+                <span>Menunggu Pembayaran</span>
+                <strong>1</strong>
+              </div>
+              <div class="summaryItem">
+                <span>Pembayaran Gagal</span>
+                <strong>1</strong>
+              </div>
+            </div>
+
+            <div class="infoBox">
+              <h3 class="infoBox__title">Metode Pembayaran</h3>
+              <div class="infoPill">QRIS</div>
+              <p class="infoText">
+                Semua transaksi booking studio dilakukan melalui QRIS dan akan terhubung dengan sistem booking Anda.
+              </p>
+            </div>
+
+            <div class="infoBox">
+              <h3 class="infoBox__title">Catatan</h3>
+              <ul class="noteList">
+                <li>Booking yang sudah dibayar tidak dapat dibatalkan.</li>
+                <li>Booking akan otomatis gagal jika pembayaran tidak diselesaikan.</li>
+                <li>Barcode booking akan tersedia setelah pembayaran berhasil.</li>
+              </ul>
+            </div>
+
+          </aside>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- LOGOUT POPUP -->
+  <div class="modal" id="logoutModal" aria-hidden="true">
+    <div class="modal__overlay" id="logoutOverlay"></div>
+
+    <div class="modal__box" role="dialog" aria-modal="true" aria-labelledby="logoutTitle">
+      <h2 class="modal__title" id="logoutTitle">Apakah anda yakin ingin<br>mengeluarkan akun?</h2>
+
+      <div class="modal__actions">
+        <button class="modal__btn modal__btn--yes" type="button" id="logoutYes" aria-label="Yes logout">
+          <span class="modal__circle modal__circle--yes">✓</span>
+        </button>
+
+        <button class="modal__btn modal__btn--no" type="button" id="logoutNo" aria-label="Cancel logout">
+          <span class="modal__circle modal__circle--no">✕</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const logoutBtn = document.getElementById("logoutBtn");
+    const modal = document.getElementById("logoutModal");
+    const overlay = document.getElementById("logoutOverlay");
+    const noBtn = document.getElementById("logoutNo");
+    const yesBtn = document.getElementById("logoutYes");
+
+    function openModal(){
+      modal.classList.add("is-open");
+      modal.setAttribute("aria-hidden", "false");
+      document.body.classList.add("no-scroll");
+    }
+
+    function closeModal(){
+      modal.classList.remove("is-open");
+      modal.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("no-scroll");
+    }
+
+    logoutBtn.addEventListener("click", openModal);
+    overlay.addEventListener("click", closeModal);
+    noBtn.addEventListener("click", closeModal);
+
+    yesBtn.addEventListener("click", () => {
+      window.location.href = "login.html";
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if(e.key === "Escape" && modal.classList.contains("is-open")){
+        closeModal();
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <title>Bookings - Photoholic</title>
+  <link rel="stylesheet" href="booking.css" />
+</head>
+<body>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="topbar__left">
+      <img class="brand__logo" src="assets/logo-photoholic.png" alt="Photoholic">
+    </div>
+
+    <nav class="topnav">
+      <a class="topnav__link" href="beranda.html">Home</a>
+      <a class="topnav__link" href="#">Studio</a>
+      <a class="topnav__link active" href="bookings.html">Bookings</a>
+      <a class="topnav__link" href="profile.html">Profil</a>
+    </nav>
+
+    <button class="topbar__user" type="button" aria-label="User menu">
+      <span class="topbar__userCircle">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12Z" fill="none" stroke="currentColor" stroke-width="2"/>
+          <path d="M4 21c1.8-4 14.2-4 16 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </span>
+    </button>
+  </header>
+
+  <main class="bookingPage">
+
+    <!-- HEADER -->
+    <section class="bookingHead">
+      <h1>Bookings</h1>
+      <p>Pilih slot studio favoritmu dan selesaikan booking dengan cepat ✨</p>
+    </section>
+
+    <!-- STEPS -->
+    <div class="stepper">
+      <div class="step active" data-step="1">1. Pilih Slot</div>
+      <div class="step" data-step="2">2. Detail Pemesanan</div>
+      <div class="step" data-step="3">3. Pembayaran</div>
+      <div class="step" data-step="4">4. Status</div>
+      <div class="step" data-step="5">5. Invoice</div>
+    </div>
+
+    <!-- WRAPPER -->
+    <section class="bookingCard">
+
+      <!-- STEP 1 -->
+      <div class="bookingStep active" id="step1">
+        <div class="sectionTitle">
+          <h2>Pilih Slot Studio</h2>
+          <p>Pilih studio, tanggal, dan jam yang tersedia</p>
+        </div>
+
+        <div class="studioPreview">
+          <img src="assets/studio-classy.jpg" alt="Studio Classy">
+          <div class="studioPreview__info">
+            <span class="studioBadge">Tersedia</span>
+            <h3 id="selectedStudioTitle">Studio Classy</h3>
+            <p>Max 10 Orang • Paper Negatif Film</p>
+            <strong id="selectedStudioPrice">Rp45.000 / Sesi</strong>
+          </div>
+        </div>
+
+        <div class="bookingFormGrid">
+          <div class="inputGroup">
+            <label for="studio">Pilih Studio</label>
+            <select id="studio">
+              <option value="Studio Classy|Rp45.000 / Sesi">Studio Classy</option>
+              <option value="Studio Oven|Rp35.000 / Sesi">Studio Oven</option>
+              <option value="Studio Lavatory|Rp35.000 / Sesi">Studio Lavatory</option>
+              <option value="Studio Spotlight|Rp45.000 / Sesi">Studio Spotlight</option>
+              <option value="Studio Aquarium|Rp35.000 / Sesi">Studio Aquarium</option>
+            </select>
+          </div>
+
+          <div class="inputGroup">
+            <label for="tanggal">Tanggal Booking</label>
+            <input type="date" id="tanggal">
+          </div>
+        </div>
+
+        <div class="slotSection">
+          <h3>Pilih Jam Kosong</h3>
+          <div class="slotGrid">
+            <button class="slotBtn">11:00</button>
+            <button class="slotBtn">11:05</button>
+            <button class="slotBtn">11:10</button>
+            <button class="slotBtn">11:15</button>
+            <button class="slotBtn">11:20</button>
+            <button class="slotBtn">11:25</button>
+            <button class="slotBtn">15:00</button>
+            <button class="slotBtn">15:05</button>
+            <button class="slotBtn">15:10</button>
+            <button class="slotBtn unavailable" disabled>15:15</button>
+            <button class="slotBtn unavailable" disabled>15:20</button>
+            <button class="slotBtn">15:25</button>
+          </div>
+        </div>
+
+        <div class="actionRow">
+          <button class="primaryBtn" id="toStep2">Lanjut Isi Data</button>
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="bookingStep" id="step2">
+        <div class="sectionTitle">
+          <h2>Detail Pemesanan</h2>
+          <p>Lengkapi data booking kamu</p>
+        </div>
+
+        <form class="detailForm" id="bookingForm">
+          <div class="inputGroup">
+            <label for="nama">Nama Lengkap</label>
+            <input type="text" id="nama" placeholder="Masukkan nama lengkap">
+          </div>
+
+          <div class="inputGroup">
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="Masukkan email">
+          </div>
+
+          <div class="inputGroup">
+            <label for="telp">No. Telepon</label>
+            <input type="tel" id="telp" placeholder="Masukkan nomor telepon">
+          </div>
+
+          <div class="inputGroup">
+            <label for="jumlah">Jumlah Orang</label>
+            <input type="number" id="jumlah" min="1" max="10" placeholder="Contoh: 4">
+          </div>
+
+          <div class="inputGroup full">
+            <label for="catatan">Catatan (Opsional)</label>
+            <textarea id="catatan" rows="4" placeholder="Contoh: ingin tone foto clean, datang 5 menit sebelum sesi"></textarea>
+          </div>
+        </form>
+
+        <div class="summaryBox">
+          <h3>Ringkasan Booking</h3>
+          <div class="summaryRow"><span>Studio</span><span id="sumStudio">Studio Classy</span></div>
+          <div class="summaryRow"><span>Tanggal</span><span id="sumTanggal">-</span></div>
+          <div class="summaryRow"><span>Jam</span><span id="sumJam">-</span></div>
+          <div class="summaryRow"><span>Durasi</span><span>5 Menit</span></div>
+          <div class="summaryRow total"><span>Total</span><span id="sumHarga">Rp45.000</span></div>
+        </div>
+
+        <div class="actionRow between">
+          <button class="secondaryBtn" id="backTo1">Kembali</button>
+          <button class="primaryBtn" id="toStep3">Lanjut Pembayaran</button>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="bookingStep" id="step3">
+        <div class="sectionTitle">
+          <h2>Pembayaran QRIS</h2>
+          <p>Scan QRIS berikut untuk menyelesaikan booking</p>
+        </div>
+
+        <div class="paymentWrap">
+          <div class="paymentBox">
+            <img src="assets/qris.png" alt="QRIS Pembayaran" class="qrisImg">
+            <div class="paymentInfo">
+              <p><strong>ID Pembayaran:</strong> PAY240301</p>
+              <p><strong>Studio:</strong> <span id="payStudio">Studio Classy</span></p>
+              <p><strong>Jadwal:</strong> <span id="payJadwal">-</span></p>
+              <p><strong>Total:</strong> <span id="payHarga">Rp45.000</span></p>
+            </div>
+          </div>
+
+          <div class="paymentNote">
+            <p>⚠ Setelah pembayaran berhasil, booking tidak dapat dibatalkan.</p>
+            <p>Status akan otomatis berubah menjadi <strong>Berhasil</strong> atau <strong>Gagal</strong>.</p>
+          </div>
+        </div>
+
+        <div class="actionRow between">
+          <button class="secondaryBtn" id="backTo2">Kembali</button>
+          <div class="paymentActionGroup">
+            <button class="dangerBtn" id="simulateFail">Simulasi Gagal</button>
+            <button class="primaryBtn" id="simulateSuccess">Saya Sudah Bayar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 4 -->
+      <div class="bookingStep" id="step4">
+        <div class="statusWrap" id="statusWrap">
+          <div class="statusIcon success" id="statusIcon">✓</div>
+          <h2 id="statusTitle">Pembayaran Berhasil</h2>
+          <p id="statusText">Booking kamu berhasil dibuat dan sudah masuk ke jadwal saya.</p>
+
+          <div class="statusSummary">
+            <div class="summaryRow"><span>Studio</span><span id="statusStudio">Studio Classy</span></div>
+            <div class="summaryRow"><span>Tanggal</span><span id="statusTanggal">-</span></div>
+            <div class="summaryRow"><span>Jam</span><span id="statusJam">-</span></div>
+            <div class="summaryRow total"><span>Total</span><span id="statusHarga">Rp45.000</span></div>
+          </div>
+        </div>
+
+        <div class="actionRow center">
+          <button class="primaryBtn" id="toStep5">Lihat Invoice</button>
+        </div>
+      </div>
+
+      <!-- STEP 5 -->
+      <div class="bookingStep" id="step5">
+        <div class="sectionTitle">
+          <h2>Invoice Booking</h2>
+          <p>Berikut nota booking kamu</p>
+        </div>
+
+        <div class="miniInvoice">
+          <div class="miniInvoice__head">
+            <h3>Invoice</h3>
+            <div>
+              <p>16 Oktober 2025</p>
+              <p><strong>Invoice No. 12345</strong></p>
+            </div>
+          </div>
+
+          <hr>
+
+          <div class="miniInvoice__info">
+            <div>
+              <h4>Billed to :</h4>
+              <p id="invNama">-</p>
+              <p id="invTelp">-</p>
+              <p id="invEmail">-</p>
+            </div>
+
+            <div class="right">
+              <h4>Booking Info:</h4>
+              <p id="invTanggal">-</p>
+              <p id="invStudio">-</p>
+              <p id="invJam">-</p>
+            </div>
+          </div>
+
+          <hr>
+
+          <table class="invoiceTable">
+            <thead>
+              <tr>
+                <th>Deskripsi</th>
+                <th>Harga</th>
+                <th>Sesi</th>
+                <th>Jumlah</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td id="invDesk">Studio Classy</td>
+                <td id="invHarga">Rp45.000 / Sesi</td>
+                <td>1</td>
+                <td id="invJumlah">Rp45.000</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="invoiceTotal">
+            <div class="summaryRow"><span>Subtotal</span><span id="invSubtotal">Rp45.000</span></div>
+            <div class="summaryRow"><span>Pajak (0%)</span><span>Rp0</span></div>
+            <div class="summaryRow total"><span>Total</span><span id="invTotal">Rp45.000</span></div>
+          </div>
+        </div>
+
+        <div class="actionRow center">
+          <button class="primaryBtn" onclick="window.print()">Cetak Invoice</button>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <script>
+    const steps = document.querySelectorAll(".bookingStep");
+    const stepIndicators = document.querySelectorAll(".step");
+
+    function showStep(stepNumber){
+      steps.forEach(step => step.classList.remove("active"));
+      stepIndicators.forEach(step => step.classList.remove("active"));
+
+      document.getElementById(`step${stepNumber}`).classList.add("active");
+      document.querySelector(`.step[data-step="${stepNumber}"]`).classList.add("active");
+    }
+
+    // DATA
+    const studioSelect = document.getElementById("studio");
+    const tanggalInput = document.getElementById("tanggal");
+    const slotButtons = document.querySelectorAll(".slotBtn:not(.unavailable)");
+    let selectedSlot = "";
+
+    const selectedStudioTitle = document.getElementById("selectedStudioTitle");
+    const selectedStudioPrice = document.getElementById("selectedStudioPrice");
+
+    function formatTanggal(tanggal){
+      if(!tanggal) return "-";
+      const date = new Date(tanggal);
+      return date.toLocaleDateString("id-ID", {
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+      });
+    }
+
+    function updateStudioPreview(){
+      const [studio, harga] = studioSelect.value.split("|");
+      selectedStudioTitle.textContent = studio;
+      selectedStudioPrice.textContent = harga;
+    }
+
+    function updateSummary(){
+      const [studio, harga] = studioSelect.value.split("|");
+      const tanggal = formatTanggal(tanggalInput.value);
+      const jam = selectedSlot ? `${selectedSlot} WIB - ${addFiveMinutes(selectedSlot)} WIB` : "-";
+
+      document.getElementById("sumStudio").textContent = studio;
+      document.getElementById("sumTanggal").textContent = tanggal;
+      document.getElementById("sumJam").textContent = jam;
+      document.getElementById("sumHarga").textContent = harga.replace(" / Sesi", "");
+
+      document.getElementById("payStudio").textContent = studio;
+      document.getElementById("payJadwal").textContent = `${tanggal} • ${jam}`;
+      document.getElementById("payHarga").textContent = harga.replace(" / Sesi", "");
+
+      document.getElementById("statusStudio").textContent = studio;
+      document.getElementById("statusTanggal").textContent = tanggal;
+      document.getElementById("statusJam").textContent = jam;
+      document.getElementById("statusHarga").textContent = harga.replace(" / Sesi", "");
+
+      document.getElementById("invTanggal").textContent = tanggal;
+      document.getElementById("invStudio").textContent = studio;
+      document.getElementById("invJam").textContent = jam;
+      document.getElementById("invDesk").textContent = studio;
+      document.getElementById("invHarga").textContent = harga;
+      document.getElementById("invJumlah").textContent = harga.replace(" / Sesi", "");
+      document.getElementById("invSubtotal").textContent = harga.replace(" / Sesi", "");
+      document.getElementById("invTotal").textContent = harga.replace(" / Sesi", "");
+    }
+
+    function addFiveMinutes(timeStr){
+      const [hour, minute] = timeStr.split(":").map(Number);
+      const date = new Date();
+      date.setHours(hour, minute + 5);
+      return date.toLocaleTimeString("id-ID", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false
+      });
+    }
+
+    studioSelect.addEventListener("change", () => {
+      updateStudioPreview();
+      updateSummary();
+    });
+
+    tanggalInput.addEventListener("change", updateSummary);
+
+    slotButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        slotButtons.forEach(b => b.classList.remove("selected"));
+        btn.classList.add("selected");
+        selectedSlot = btn.textContent;
+        updateSummary();
+      });
+    });
+
+    // NAV
+    document.getElementById("toStep2").addEventListener("click", () => {
+      if(!tanggalInput.value || !selectedSlot){
+        alert("Silakan pilih tanggal dan slot terlebih dahulu.");
+        return;
+      }
+      updateSummary();
+      showStep(2);
+    });
+
+    document.getElementById("backTo1").addEventListener("click", () => showStep(1));
+
+    document.getElementById("toStep3").addEventListener("click", () => {
+      const nama = document.getElementById("nama").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const telp = document.getElementById("telp").value.trim();
+      const jumlah = document.getElementById("jumlah").value.trim();
+
+      if(!nama || !email || !telp || !jumlah){
+        alert("Silakan lengkapi data pemesanan.");
+        return;
+      }
+
+      document.getElementById("invNama").textContent = nama;
+      document.getElementById("invEmail").textContent = email;
+      document.getElementById("invTelp").textContent = telp;
+
+      showStep(3);
+    });
+
+    document.getElementById("backTo2").addEventListener("click", () => showStep(2));
+
+    document.getElementById("simulateSuccess").addEventListener("click", () => {
+      document.getElementById("statusIcon").textContent = "✓";
+      document.getElementById("statusIcon").className = "statusIcon success";
+      document.getElementById("statusTitle").textContent = "Pembayaran Berhasil";
+      document.getElementById("statusText").textContent = "Booking kamu berhasil dibuat dan sudah masuk ke jadwal saya.";
+      showStep(4);
+    });
+
+    document.getElementById("simulateFail").addEventListener("click", () => {
+      document.getElementById("statusIcon").textContent = "✕";
+      document.getElementById("statusIcon").className = "statusIcon fail";
+      document.getElementById("statusTitle").textContent = "Pembayaran Gagal";
+      document.getElementById("statusText").textContent = "Pembayaran belum berhasil. Silakan coba lagi atau scan QRIS ulang.";
+      showStep(4);
+    });
+
+    document.getElementById("toStep5").addEventListener("click", () => {
+      const title = document.getElementById("statusTitle").textContent;
+      if(title === "Pembayaran Gagal"){
+        alert("Invoice hanya tersedia jika pembayaran berhasil.");
+        return;
+      }
+      showStep(5);
+    });
+
+    updateStudioPreview();
+    updateSummary();
+  </script>
+
+</body>
+</html>

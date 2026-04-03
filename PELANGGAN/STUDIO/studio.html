@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <title>Studio - Photoholic</title>
+  <link rel="stylesheet" href="studio.css" />
+</head>
+<body>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="topbar__left">
+      <img class="brand__logo" src="assets/logo-photoholic.png" alt="Photoholic">
+    </div>
+
+    <nav class="topnav">
+      <a class="topnav__link" href="beranda.html">Beranda</a>
+      <a class="topnav__link is-active" href="studio.html">Studio</a>
+      <a class="topnav__link" href="bookings.html">Bookings</a>
+    </nav>
+
+    <button class="topbar__user" type="button" aria-label="User menu">
+      <span class="topbar__userCircle">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12Z" fill="none" stroke="currentColor" stroke-width="2"/>
+          <path d="M4 21c1.8-4 14.2-4 16 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </span>
+    </button>
+  </header>
+
+  <!-- MAIN -->
+  <main class="studioPage">
+
+    <!-- HERO -->
+    <section class="studioHero">
+      <div class="studioHero__text">
+        <p class="studioHero__tag">Photoholic Studio</p>
+        <h1 class="studioHero__title">Temukan studio favoritmu ✨</h1>
+        <p class="studioHero__desc">
+          Pilih tema studio yang paling cocok dengan vibe foto kamu.
+          Dari yang classy sampai playful, semua siap bikin momenmu makin estetik.
+        </p>
+
+        <div class="studioHero__info">
+          <div class="infoChip">⏱ 1 sesi = 5 menit</div>
+          <div class="infoChip">🕒 Senin–Kamis: 11.00 – 22.00</div>
+          <div class="infoChip">🌙 Jumat–Minggu: 11.00 – 23.00</div>
+        </div>
+      </div>
+
+      <div class="studioHero__image">
+        <img src="assets/studio-hero.png" alt="Studio Preview">
+      </div>
+    </section>
+
+    <!-- FILTER -->
+    <section class="studioFilter">
+      <button class="filterBtn active">Semua</button>
+      <button class="filterBtn">Premium</button>
+      <button class="filterBtn">Favorit</button>
+      <button class="filterBtn">Budget Friendly</button>
+    </section>
+
+    <!-- STUDIO LIST -->
+    <section class="studioGrid">
+
+      <article class="studioCard">
+        <div class="studioCard__image">
+          <img src="assets/classy.png" alt="Studio Classy">
+          <span class="studioBadge premium">Premium</span>
+        </div>
+        <div class="studioCard__body">
+          <div class="studioCard__top">
+            <h3>Classy</h3>
+            <span class="studioPrice">Rp45.000</span>
+          </div>
+          <p class="studioDesc">
+            Vibe elegan dan clean, cocok untuk foto formal, couple, maupun bestie photos.
+          </p>
+          <div class="studioActions">
+            <a href="#" class="btn btn-outline">Lihat Detail</a>
+            <a href="bookings.html" class="btn btn-main">Booking</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="studioCard">
+        <div class="studioCard__image">
+          <img src="assets/oven.png" alt="Studio Oven">
+          <span class="studioBadge cute">Cute</span>
+        </div>
+        <div class="studioCard__body">
+          <div class="studioCard__top">
+            <h3>Oven</h3>
+            <span class="studioPrice">Rp35.000</span>
+          </div>
+          <p class="studioDesc">
+            Tema unik dan playful dengan suasana warm yang lucu untuk hasil foto estetik.
+          </p>
+          <div class="studioActions">
+            <a href="#" class="btn btn-outline">Lihat Detail</a>
+            <a href="bookings.html" class="btn btn-main">Booking</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="studioCard">
+        <div class="studioCard__image">
+          <img src="assets/lavatory.png" alt="Studio Lavatory">
+          <span class="studioBadge artsy">Artsy</span>
+        </div>
+        <div class="studioCard__body">
+          <div class="studioCard__top">
+            <h3>Lavatory</h3>
+            <span class="studioPrice">Rp35.000</span>
+          </div>
+          <p class="studioDesc">
+            Konsep nyentrik dan artsy, cocok untuk kamu yang suka hasil foto anti-mainstream.
+          </p>
+          <div class="studioActions">
+            <a href="#" class="btn btn-outline">Lihat Detail</a>
+            <a href="bookings.html" class="btn btn-main">Booking</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="studioCard">
+        <div class="studioCard__image">
+          <img src="assets/spotlight.png" alt="Studio Spotlight">
+          <span class="studioBadge bestseller">Best Seller</span>
+        </div>
+        <div class="studioCard__body">
+          <div class="studioCard__top">
+            <h3>Spotlight</h3>
+            <span class="studioPrice">Rp45.000</span>
+          </div>
+          <p class="studioDesc">
+            Pencahayaan dramatis dan bold, cocok untuk foto yang standout dan berkarakter.
+          </p>
+          <div class="studioActions">
+            <a href="#" class="btn btn-outline">Lihat Detail</a>
+            <a href="bookings.html" class="btn btn-main">Booking</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="studioCard">
+        <div class="studioCard__image">
+          <img src="assets/aquarium.png" alt="Studio Aquarium">
+          <span class="studioBadge dreamy">Dreamy</span>
+        </div>
+        <div class="studioCard__body">
+          <div class="studioCard__top">
+            <h3>Aquarium</h3>
+            <span class="studioPrice">Rp35.000</span>
+          </div>
+          <p class="studioDesc">
+            Nuansa fresh dan dreamy dengan kesan playful yang bikin hasil foto makin gemas.
+          </p>
+          <div class="studioActions">
+            <a href="#" class="btn btn-outline">Lihat Detail</a>
+            <a href="bookings.html" class="btn btn-main">Booking</a>
+          </div>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- INFO SECTION -->
+    <section class="bookingInfo">
+      <div class="bookingInfo__box">
+        <h2>Informasi Booking</h2>
+        <ul>
+          <li>1 sesi foto berlangsung selama <strong>5 menit</strong>.</li>
+          <li>Datang sesuai jam booking yang telah dipilih.</li>
+          <li>Pembayaran dilakukan melalui <strong>QRIS</strong>.</li>
+          <li>Setelah pembayaran berhasil, booking <strong>tidak bisa dibatalkan</strong>.</li>
+          <li>Invoice akan tersedia setelah pembayaran sukses.</li>
+        </ul>
+      </div>
+
+      <div class="bookingInfo__box">
+        <h2>Kenapa pilih Photoholic?</h2>
+        <ul>
+          <li>Konsep studio yang estetik dan kekinian.</li>
+          <li>Cocok untuk couple, bestie, solo, maupun family photo.</li>
+          <li>Proses booking mudah dan cepat.</li>
+          <li>Banyak pilihan tema sesuai mood kamu.</li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Invoice - Photoholic</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="invoice.css">
+</head>
+<body>
+
+  <main class="invoicePage">
+    <section class="invoiceCard" id="invoiceArea">
+
+      <!-- HEADER -->
+      <div class="invoiceHeader">
+        <div>
+          <h1 class="invoiceTitle">Invoice</h1>
+        </div>
+
+        <div class="invoiceMeta">
+          <p>16 Oktober 2024</p>
+          <p><strong>Invoice No. 12345</strong></p>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <!-- CUSTOMER + BOOKING -->
+      <div class="topInfo">
+        <div class="infoBlock">
+          <h3>Billed to :</h3>
+          <p>Berlian Ika Isabela</p>
+          <p>0812345678919</p>
+          <p>beerlikaaisbella@gmail.com</p>
+        </div>
+
+        <div class="infoBlock alignRight">
+          <h3>Booking Info:</h3>
+          <p>16 Oktober 2025</p>
+          <p>Classy (SA049)</p>
+          <p>15:00 WIB - 15:05 WIB</p>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <!-- DETAIL TAMBAHAN -->
+      <div class="detailSection">
+        <div class="detailGrid">
+          <div class="detailItem">
+            <span class="detailLabel">ID Pembayaran</span>
+            <span class="detailValue">PAY240301</span>
+          </div>
+          <div class="detailItem">
+            <span class="detailLabel">Metode Pembayaran</span>
+            <span class="detailValue">QRIS</span>
+          </div>
+          <div class="detailItem">
+            <span class="detailLabel">Status Pembayaran</span>
+            <span class="detailValue statusSuccess">Berhasil</span>
+          </div>
+          <div class="detailItem">
+            <span class="detailLabel">Durasi Sesi</span>
+            <span class="detailValue">5 Menit</span>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <!-- TABLE -->
+      <div class="tableWrap">
+        <table class="invoiceTable">
+          <thead>
+            <tr>
+              <th>Deskripsi</th>
+              <th>Harga</th>
+              <th>Sesi</th>
+              <th>Jumlah</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Studio 1 : Classy (SA049)</td>
+              <td>Rp45.000 / Sesi</td>
+              <td>1</td>
+              <td>Rp45.000</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- TOTAL -->
+      <div class="totalSection">
+        <div class="totalBox">
+          <div class="totalRow">
+            <span>Subtotal</span>
+            <span>Rp45.000</span>
+          </div>
+          <div class="totalRow">
+            <span>Pajak (0%)</span>
+            <span>Rp0</span>
+          </div>
+          <div class="totalRow totalFinal">
+            <span>Total</span>
+            <span>Rp45.000</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="invoiceFooter">
+        <div class="footerLeft">
+          <p><strong>Photoholic.Indonesia</strong></p>
+          <p>Pasar Tunjungan lt. 2 no. 84-86</p>
+          <p>0851 2400 0950</p>
+        </div>
+
+        <div class="footerRight">
+          <img src="assets/logo-photoholic.png" alt="Photoholic Logo">
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ACTION BUTTON -->
+    <div class="invoiceActions">
+      <button onclick="window.print()" class="printBtn">Cetak / Simpan PDF</button>
+      <a href="riwayat-pembayaran.html" class="backBtn">Kembali</a>
+    </div>
+  </main>
+
+</body>
+</html>

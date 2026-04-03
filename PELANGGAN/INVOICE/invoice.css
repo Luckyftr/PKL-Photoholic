@@ -1,0 +1,306 @@
+:root{
+  --accent-red: #ff4a5d;
+  --soft-red: #f8d9dc;
+  --line: #9e9e9e;
+  --text: #2f2f2f;
+  --muted: #666;
+  --success: #2f8f6b;
+  --bg: #f7f7f7;
+}
+
+*{
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body{
+  font-family: 'Commissioner', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.invoicePage{
+  min-height: 100vh;
+  padding: 40px 20px 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.invoiceCard{
+  width: 100%;
+  max-width: 900px;
+  background: #fff;
+  border: 2px solid #f4a7b0;
+  padding: 42px 42px 34px;
+  box-shadow: 0 14px 30px rgba(0,0,0,.06);
+}
+
+.invoiceHeader{
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.invoiceTitle{
+  font-size: 64px;
+  font-weight: 900;
+  color: #000;
+  line-height: 1;
+}
+
+.invoiceMeta{
+  text-align: right;
+  font-size: 13px;
+  color: #444;
+  line-height: 1.6;
+  padding-top: 8px;
+}
+
+.divider{
+  border: none;
+  border-top: 1.5px solid var(--line);
+  margin: 24px 0;
+}
+
+.topInfo{
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.infoBlock h3{
+  font-size: 14px;
+  margin-bottom: 10px;
+  font-weight: 800;
+}
+
+.infoBlock p{
+  font-size: 14px;
+  line-height: 1.8;
+  color: #333;
+}
+
+.alignRight{
+  text-align: right;
+  margin-left: auto;
+}
+
+.detailSection{
+  margin-top: 8px;
+}
+
+.detailGrid{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 16px 24px;
+}
+
+.detailItem{
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.detailLabel{
+  font-size: 13px;
+  color: #666;
+  font-weight: 700;
+}
+
+.detailValue{
+  font-size: 15px;
+  color: #222;
+  font-weight: 800;
+}
+
+.statusSuccess{
+  color: var(--success);
+}
+
+.tableWrap{
+  margin-top: 8px;
+}
+
+.invoiceTable{
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.invoiceTable thead th{
+  text-align: left;
+  font-size: 14px;
+  padding: 14px 10px;
+  border-bottom: 1.5px solid var(--line);
+  font-weight: 800;
+}
+
+.invoiceTable tbody td{
+  font-size: 14px;
+  padding: 16px 10px;
+  border-bottom: 1px solid #ddd;
+  color: #333;
+}
+
+.invoiceTable th:nth-child(2),
+.invoiceTable th:nth-child(3),
+.invoiceTable th:nth-child(4),
+.invoiceTable td:nth-child(2),
+.invoiceTable td:nth-child(3),
+.invoiceTable td:nth-child(4){
+  text-align: right;
+}
+
+.totalSection{
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+.totalBox{
+  width: 100%;
+  max-width: 320px;
+}
+
+.totalRow{
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #d7d7d7;
+  font-size: 14px;
+}
+
+.totalFinal{
+  font-weight: 900;
+  font-size: 16px;
+  border-bottom: none;
+  padding-top: 14px;
+}
+
+.invoiceFooter{
+  margin-top: 80px;
+  padding-top: 20px;
+  border-top: 1.5px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.footerLeft p{
+  font-size: 13px;
+  line-height: 1.8;
+  color: #333;
+}
+
+.footerRight img{
+  width: 170px;
+  height: auto;
+  object-fit: contain;
+}
+
+.invoiceActions{
+  margin-top: 24px;
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.printBtn,
+.backBtn{
+  border: none;
+  text-decoration: none;
+  background: var(--accent-red);
+  color: #fff;
+  padding: 14px 24px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: .2s ease;
+}
+
+.backBtn{
+  background: #3f6f75;
+}
+
+.printBtn:hover,
+.backBtn:hover{
+  transform: translateY(-2px);
+}
+
+/* PRINT */
+@media print{
+  body{
+    background: #fff;
+  }
+
+  .invoiceActions{
+    display: none;
+  }
+
+  .invoicePage{
+    padding: 0;
+  }
+
+  .invoiceCard{
+    max-width: 100%;
+    border: none;
+    box-shadow: none;
+    padding: 20px;
+  }
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px){
+  .invoiceCard{
+    padding: 28px 22px;
+  }
+
+  .invoiceTitle{
+    font-size: 46px;
+  }
+
+  .invoiceHeader{
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .invoiceMeta{
+    text-align: left;
+    padding-top: 0;
+  }
+
+  .topInfo{
+    flex-direction: column;
+  }
+
+  .alignRight{
+    text-align: left;
+    margin-left: 0;
+  }
+
+  .detailGrid{
+    grid-template-columns: 1fr;
+  }
+
+  .invoiceTable{
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .invoiceFooter{
+    margin-top: 50px;
+    align-items: flex-start;
+  }
+
+  .footerRight img{
+    width: 140px;
+  }
+}

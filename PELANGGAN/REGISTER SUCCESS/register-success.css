@@ -1,0 +1,162 @@
+:root{
+  --pink-bar: #f4b9bf;
+  --pink-card: #f3b3b8;
+  --shadow-blue: rgba(120,160,255,.55);
+  --teal-btn: #3f6f75;
+  --text: #2d2d2d;
+  --success: #2e8b78;
+}
+
+*{ box-sizing:border-box; margin:0; padding:0; }
+
+body{
+  font-family: 'Commissioner', sans-serif;
+  background:#fff;
+  color: var(--text);
+}
+
+/* TOPBAR */
+.topbar{
+  height:70px;
+  width:100%;
+  background:var(--pink-bar);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 40px;
+}
+
+.brand__logo{
+  height:46px;
+  width:auto;
+  object-fit:contain;
+}
+
+.help{
+  color:#ff5c6f;
+  font-weight:700;
+  text-decoration:none;
+  font-size:14px;
+}
+
+/* LAYOUT */
+.content{
+  display:grid;
+  grid-template-columns:1.1fr .9fr;
+  align-items:center;
+  width:min(1200px,100%);
+  margin:0 auto;
+  padding:40px 60px;
+  gap:30px;
+}
+
+/* LEFT */
+.left{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.logoGroup{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+.left__illus{
+  width:min(480px,95%);
+  height:auto;
+  margin-bottom:-90px;
+}
+
+.left__bigLogo{
+  width:min(420px,80%);
+  height:auto;
+}
+
+.tagline{
+  margin-top: 6px;
+  font-weight: 700;
+  color: #2f5f63;
+}
+
+/* RIGHT */
+.right{
+  display:flex;
+  justify-content:center;
+}
+
+/* CARD */
+.card{
+  width:min(440px,100%);
+  min-height: 420px;         
+  background:var(--pink-card);
+  border-radius:12px;
+  padding:34px 28px;
+  box-shadow:10px 10px 0 var(--shadow-blue);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+}
+
+.card__title{
+  color:#fff;
+  font-weight:900;
+  font-size:22px;
+  margin-bottom:22px;
+}
+
+.card__title--center{
+  text-align:center;
+}
+
+/* CHECK */
+.checkCircle{
+  width: 110px;
+  height: 110px;
+  border-radius: 999px;
+  background: var(--success);
+  display:grid;
+  place-items:center;
+  margin-bottom: 20px;
+}
+
+.checkCircle svg{
+  width: 58px;
+  height: 58px;
+}
+
+/* TEXT */
+.successText{
+  color: rgba(255,255,255,.95);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+
+.miniText{
+  font-size: 14px;
+  color: rgba(255,255,255,.9);
+  line-height: 1.4;
+}
+
+.miniText a{
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 900;
+  text-decoration: underline;
+}
+
+/* RESPONSIVE */
+@media (max-width:900px){
+  .content{
+    grid-template-columns:1fr;
+    padding:30px 20px;
+  }
+  .left{ order:2; }
+  .right{ order:1; }
+  .left__illus{ margin-bottom:-18px; }
+  .card{ min-height: 360px; }
+}

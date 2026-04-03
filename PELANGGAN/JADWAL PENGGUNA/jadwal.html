@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <title>Jadwal Saya - Photoholic</title>
+  <link rel="stylesheet" href="jadwal.css" />
+  <link rel="stylesheet" href="layout.css">
+</head>
+<body>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="topbar__left">
+      <img class="brand__logo" src="assets/logo-photoholic.png" alt="Photoholic">
+    </div>
+
+    <nav class="topnav" aria-label="Main navigation">
+      <a class="topnav__link" href="#">Beranda</a>
+      <a class="topnav__link" href="#">Studio</a>
+      <a class="topnav__link" href="#">Bookings</a>
+    </nav>
+
+    <button class="topbar__user" type="button" aria-label="User menu">
+      <span class="topbar__userCircle">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12Z" fill="none" stroke="currentColor" stroke-width="2"/>
+          <path d="M4 21c1.8-4 14.2-4 16 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </span>
+    </button>
+  </header>
+
+  <!-- PAGE -->
+  <main class="page">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="userCard">
+        <div class="userCard__avatar">
+          <img src="assets/image1.png" alt="avatar">
+        </div>
+        <div class="userCard__info">
+          <div class="userCard__name">Berlian Ika</div>
+          <a class="userCard__edit" href="profile.html">
+            <span class="icon-inline" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 20h9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M16.5 3.5l4 4L8 20H4v-4L16.5 3.5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            Ubah Profil
+          </a>
+        </div>
+      </div>
+
+      <div class="menu">
+        <div class="menu__groupTitle">
+          <span class="icon-inline" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Z" fill="none" stroke="currentColor" stroke-width="2"/>
+              <path d="M4.5 20c1.8-4 13.2-4 15 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          Akun Saya
+        </div>
+
+        <a class="menu__item" href="profile.html">Profil</a>
+        <a class="menu__item" href="#">Ubah Password</a>
+
+        <a class="menu__item active" href="jadwal.html">
+          <span class="icon-inline" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M7 3v3M17 3v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M4 7h16v14H4V7Z" fill="none" stroke="currentColor" stroke-width="2"/>
+              <path d="M4 11h16" fill="none" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </span>
+          Jadwal Saya
+        </a>
+
+        <a class="menu__item" href="#">
+          <span class="icon-inline" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M3 7h18v10H3V7Z" fill="none" stroke="currentColor" stroke-width="2"/>
+              <path d="M3 10h18" fill="none" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </span>
+          Riwayat Pembayaran
+        </a>
+
+        <button class="menu__item danger logoutBtn" type="button" id="logoutBtn">
+          <span class="icon-inline" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M10 17l5-5-5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M15 12H4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M20 4v16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          Log Out
+        </button>
+      </div>
+
+      <div class="sidebar__decor">
+        <img src="assets/logo-icon.png" alt="decor">
+      </div>
+    </aside>
+
+    <!-- CONTENT -->
+    <section class="panel">
+      <div class="panelCard">
+        <div class="panelCard__head">
+          <div>
+            <h1 class="panelCard__title">Jadwal Saya</h1>
+            <p class="panelCard__sub">
+              Lihat jadwal booking studio, status pembayaran, dan informasi sesi foto Anda
+            </p>
+          </div>
+
+          <div class="filterWrap">
+            <button class="filterBtn active">Semua</button>
+            <button class="filterBtn">Menunggu Pembayaran</button>
+            <button class="filterBtn">Akan Datang</button>
+            <button class="filterBtn">Selesai</button>
+            <button class="filterBtn">Gagal</button>
+          </div>
+        </div>
+
+        <div class="scheduleLayout">
+
+          <!-- LEFT: LIST BOOKING -->
+          <div class="bookingList">
+
+            <!-- CARD 1 -->
+            <div class="bookingCard">
+              <div class="bookingCard__top">
+                <div>
+                  <p class="bookingCard__code">Booking #PHO240301</p>
+                  <h3 class="bookingCard__theme">Classy Studio</h3>
+                </div>
+                <span class="statusBadge statusBadge--paid">Akan Datang</span>
+              </div>
+
+              <div class="bookingInfoGrid">
+                <div class="bookingInfoItem">
+                  <span class="bookingInfoLabel">Tanggal</span>
+                  <span class="bookingInfoValue">05 April 2026</span>
+                </div>
+                <div class="bookingInfoItem">
+                  <span class="bookingInfoLabel">Jam</span>
+                  <span class="bookingInfoValue">14.30 WIB</span>
+                </div>
+                <div class="bookingInfoItem">
+                  <span class="bookingInfoLabel">Durasi</span>
+                  <span class="bookingInfoValue">1 sesi / 5 menit</span>
+                </div>
+                <div class="bookingInfoItem">
+                  <span class="bookingInfoLabel">Harga</span>
+                  <span class="bookingInfoValue">Rp45.000</span>
+                </div>
+              </div>
+
+              <div class="bookingCard__bottom">
+                <p class="bookingNote">Sudah dibayar. Silakan datang sesuai jadwal booking Anda.</p>
+                <a href="#" class="bookingBtn">Lihat Booking</a>
+              </div>
+            </div>
+
+            <!-- CARD 2 -->
+            <div class="bookingCard">
+              <div class="bookingCard__top">
+                <div>
+                  <p class="bookingCard__code">Booking #PHO240302</p>
+                  <h3 class="bookingCard__theme">Aquarium Studio</h3>
+                </div>
+                <span class="statusBadge statusBadge--waiting">Menunggu Pembayaran</span>
+              </div>
+
+              <div class="bookingInfoGrid">
+                <div class="bookingInfoItem">
+                  <span class="bookingInfoLabel">Tanggal</span>
+                  <span class="bookingInfoValue">06 April 2026</span>
+                </div>
+                <div class="bookingInfoItem">
+                  <span class="bookingInfoLabel">Jam</span>
+                  <span class="bookingInfoValue">18.15 WIB</span>
+                </div>
+                <div class="bookingInfoItem">
+                  <span class="bookingInfoLabel">Durasi</span>
+                  <span class="bookingInfoValue">1 sesi / 5 menit</span>
+                </div>
+                <div class="bookingInfoItem">
+                  <span class="bookingInfoLabel">Harga</span>
+                  <span class="bookingInfoValue">Rp35.000</span>
+                </div>
+              </div>
+
+              <div class="bookingCard__bottom">
+                <p class="bookingNote">Silakan lanjutkan pembayaran melalui halaman Bookings untuk mendapatkan barcode.</p>
+                <a href="#" class="bookingBtn">Lihat Booking</a>
+              </div>
+            </div>
+
+            <!-- CARD 3 -->
+            <div class="bookingCard">
+              <div class="bookingCard__top">
+                <div>
+                  <p class="bookingCard__code">Booking #PHO240289</p>
+                  <h3 class="bookingCard__theme">Oven Studio</h3>
+                </div>
+                <span class="statusBadge statusBadge--done">Selesai</span>
+              </div>
+
+              <div class="bookingInfoGrid">
+                <div class="bookingInfoItem">
+                  <span class="bookingInfoLabel">Tanggal</span>
+                  <span class="bookingInfoValue">29 Maret 2026</span>
+                </div>
+                <div class="bookingInfoItem">
+                  <span class="bookingInfoLabel">Jam</span>
+                  <span class="bookingInfoValue">16.00 WIB</span>
+                </div>
+                <div class="bookingInfoItem">
+                  <span class="bookingInfoLabel">Durasi</span>
+                  <span class="bookingInfoValue">1 sesi / 5 menit</span>
+                </div>
+                <div class="bookingInfoItem">
+                  <span class="bookingInfoLabel">Harga</span>
+                  <span class="bookingInfoValue">Rp35.000</span>
+                </div>
+              </div>
+
+              <div class="bookingCard__bottom">
+                <p class="bookingNote">Sesi foto telah selesai. Terima kasih sudah booking di Photoholic.</p>
+                <a href="#" class="bookingBtn">Lihat Booking</a>
+              </div>
+            </div>
+
+            <!-- CARD 4 -->
+            <div class="bookingCard">
+              <div class="bookingCard__top">
+                <div>
+                  <p class="bookingCard__code">Booking #PHO240277</p>
+                  <h3 class="bookingCard__theme">Lavatory Studio</h3>
+                </div>
+                <span class="statusBadge statusBadge--failed">Gagal</span>
+              </div>
+
+              <div class="bookingInfoGrid">
+                <div class="bookingInfoItem">
+                  <span class="bookingInfoLabel">Tanggal</span>
+                  <span class="bookingInfoValue">27 Maret 2026</span>
+                </div>
+                <div class="bookingInfoItem">
+                  <span class="bookingInfoLabel">Jam</span>
+                  <span class="bookingInfoValue">13.45 WIB</span>
+                </div>
+                <div class="bookingInfoItem">
+                  <span class="bookingInfoLabel">Durasi</span>
+                  <span class="bookingInfoValue">1 sesi / 5 menit</span>
+                </div>
+                <div class="bookingInfoItem">
+                  <span class="bookingInfoLabel">Harga</span>
+                  <span class="bookingInfoValue">Rp35.000</span>
+                </div>
+              </div>
+
+              <div class="bookingCard__bottom">
+                <p class="bookingNote">Booking tidak berhasil karena pembayaran tidak diselesaikan.</p>
+                <a href="#" class="bookingBtn">Lihat Booking</a>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- RIGHT: INFO -->
+          <aside class="infoSide">
+            <div class="infoBox">
+              <h3 class="infoBox__title">Jam Operasional</h3>
+              <div class="infoRow">
+                <span>Senin - Kamis</span>
+                <strong>11.00 - 22.00</strong>
+              </div>
+              <div class="infoRow">
+                <span>Jumat - Minggu</span>
+                <strong>11.00 - 23.00</strong>
+              </div>
+            </div>
+
+            <div class="infoBox">
+              <h3 class="infoBox__title">Informasi Sesi</h3>
+              <div class="infoPill">1 sesi foto = 5 menit</div>
+              <p class="infoText">
+                Pastikan datang tepat waktu agar sesi foto Anda tidak terlewat.
+              </p>
+            </div>
+
+            <div class="infoBox">
+              <h3 class="infoBox__title">Tema Studio</h3>
+              <div class="themePriceList">
+                <div class="themePriceItem">
+                  <span>Classy</span>
+                  <strong>Rp45.000</strong>
+                </div>
+                <div class="themePriceItem">
+                  <span>Oven</span>
+                  <strong>Rp35.000</strong>
+                </div>
+                <div class="themePriceItem">
+                  <span>Lavatory</span>
+                  <strong>Rp35.000</strong>
+                </div>
+                <div class="themePriceItem">
+                  <span>Spotlight</span>
+                  <strong>Rp45.000</strong>
+                </div>
+                <div class="themePriceItem">
+                  <span>Aquarium</span>
+                  <strong>Rp35.000</strong>
+                </div>
+              </div>
+            </div>
+          </aside>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- LOGOUT POPUP -->
+  <div class="modal" id="logoutModal" aria-hidden="true">
+    <div class="modal__overlay" id="logoutOverlay"></div>
+
+    <div class="modal__box" role="dialog" aria-modal="true" aria-labelledby="logoutTitle">
+      <h2 class="modal__title" id="logoutTitle">Apakah anda yakin ingin<br>mengeluarkan akun?</h2>
+
+      <div class="modal__actions">
+        <button class="modal__btn modal__btn--yes" type="button" id="logoutYes" aria-label="Yes logout">
+          <span class="modal__circle modal__circle--yes">✓</span>
+        </button>
+
+        <button class="modal__btn modal__btn--no" type="button" id="logoutNo" aria-label="Cancel logout">
+          <span class="modal__circle modal__circle--no">✕</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const logoutBtn = document.getElementById("logoutBtn");
+    const modal = document.getElementById("logoutModal");
+    const overlay = document.getElementById("logoutOverlay");
+    const noBtn = document.getElementById("logoutNo");
+    const yesBtn = document.getElementById("logoutYes");
+
+    function openModal(){
+      modal.classList.add("is-open");
+      modal.setAttribute("aria-hidden", "false");
+      document.body.classList.add("no-scroll");
+    }
+
+    function closeModal(){
+      modal.classList.remove("is-open");
+      modal.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("no-scroll");
+    }
+
+    logoutBtn.addEventListener("click", openModal);
+    overlay.addEventListener("click", closeModal);
+    noBtn.addEventListener("click", closeModal);
+
+    yesBtn.addEventListener("click", () => {
+      window.location.href = "login.html";
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if(e.key === "Escape" && modal.classList.contains("is-open")){
+        closeModal();
+      }
+    });
+  </script>
+</body>
+</html>

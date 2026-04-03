@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <!-- Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <title>Login - Photoholic</title>
+  <link rel="stylesheet" href="login.css" />
+</head>
+<body>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="brand">
+      <img class="brand__logo" src="assets/logo-photoholic.png" alt="Photoholic" />
+    </div>
+    <a class="help" href="#">Need Help?</a>
+  </header>
+
+  <!-- CONTENT -->
+  <main class="content">
+
+    <!-- LEFT -->
+    <section class="left">
+      <div class="logoGroup">
+        <img class="left__illus" src="assets/logo-icon.png" alt="Illustration" />
+        <img class="left__bigLogo" src="assets/test-photoholic.png" alt="photoholic" />
+      </div>
+    </section>
+
+    <!-- RIGHT -->
+    <section class="right">
+      <div class="card">
+        <h2 class="card__title">Login to your account</h2>
+
+        <form class="form" action="#" method="post">
+
+          <div class="field">
+            <label for="user">Email/Phone Number</label>
+            <input id="user" type="text" placeholder="Input your e-mail or phone number" />
+          </div>
+
+          <div class="field">
+            <label for="pass">Password</label>
+            <div class="inputIcon">
+              <input id="pass" type="password" placeholder="Input your password" />
+
+              <button class="eyeBtn" type="button" aria-label="toggle password"
+                data-target="pass" data-state="hidden">
+
+                <!-- eye open -->
+                <svg class="icon-eye icon-eye-open" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                  <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
+                        fill="none" stroke="currentColor" stroke-width="2"/>
+                </svg>
+
+                <!-- eye off -->
+                <svg class="icon-eye icon-eye-off" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M3 3l18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M10.6 10.6a2.5 2.5 0 0 0 3.4 3.4" fill="none" stroke="currentColor" stroke-width="2"/>
+                  <path d="M6.5 6.5C4 8.5 2 12 2 12s3.5 7 10 7c2 0 3.8-.5 5.3-1.4"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                  <path d="M9.5 4.3A10.8 10.8 0 0 1 12 5c6.5 0 10 7 10 7a18 18 0 0 1-3.2 4.5"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                </svg>
+
+              </button>
+            </div>
+
+            <div class="rowRight">
+              <a class="forgot" href="forgot-password.html">Forgot password?</a>
+            </div>
+          </div>
+
+          <button class="btn" type="submit">Login</button>
+
+          <div class="divider"><span>or continue with</span></div>
+
+          <!-- tombol google: buka modal -->
+          <button id="googleBtn" class="google" type="button" aria-label="Continue with Google">
+            <img src="assets/icon-google.png" alt="Google" />
+          </button>
+
+          <p class="bottomText">
+            Dont have any account? <a href="register.html">Register</a>
+          </p>
+
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= MODAL GOOGLE (DEMO UI) ================= -->
+  <div id="googleModal" class="modal" aria-hidden="true">
+    <div class="modal__backdrop" data-close="true"></div>
+
+    <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <h3 id="modalTitle" class="modal__title">Choose an account</h3>
+      <p class="modal__subtitle">to continue to Kyuu</p>
+
+      <div class="modal__list">
+
+        <button class="modal__row" type="button">
+          <div class="modal__avatar">
+            <img class="brand__logo" src="assets/image.png" alt="Photoholic" />
+          </div>
+          <div class="modal__info">
+            <div class="modal__name">23081010056 BERLIAN IKA ISABELA</div>
+            <div class="modal__email">23081010056@student.upnjatim.ac.id</div>
+          </div>
+        </button>
+
+        <div class="modal__divider"></div>
+
+        <button class="modal__row" type="button">
+          <div class="modal__avatar modal__avatar--img">
+            <img class="brand__logo" src="assets/image1.png" alt="Photoholic" />
+          </div>
+          <div class="modal__info">
+            <div class="modal__name">Beerlnkaaisbella</div>
+            <div class="modal__email">Beerlnkaaisbella@gmail.com</div>
+          </div>
+        </button>
+
+        <div class="modal__divider"></div>
+
+          <button class="modal__row" type="button">
+          <img class="modal__iconImg" src="assets/icon.png" alt="Another account" />
+          <div class="modal__info">
+            <div class="modal__name">Use another account</div>
+          </div>
+        </button>
+
+
+      </div>
+
+      <div class="modal__actions">
+        <button id="modalCancel" class="modal__btn modal__btn--ghost" type="button">Cancel</button>
+        <button class="modal__btn modal__btn--primary" type="button">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // toggle password
+    document.querySelectorAll(".eyeBtn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const input = document.getElementById(btn.dataset.target);
+        const isHidden = input.type === "password";
+        input.type = isHidden ? "text" : "password";
+        btn.dataset.state = isHidden ? "shown" : "hidden";
+      });
+    });
+
+    // modal google (demo)
+    const modal = document.getElementById("googleModal");
+    const openBtn = document.getElementById("googleBtn");
+    const cancelBtn = document.getElementById("modalCancel");
+
+    function openModal(){
+      modal.classList.add("is-open");
+      modal.setAttribute("aria-hidden", "false");
+      document.body.classList.add("no-scroll");
+    }
+    function closeModal(){
+      modal.classList.remove("is-open");
+      modal.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("no-scroll");
+    }
+
+    openBtn.addEventListener("click", openModal);
+    cancelBtn.addEventListener("click", closeModal);
+
+    modal.addEventListener("click", (e) => {
+      if (e.target?.dataset?.close === "true") closeModal();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && modal.classList.contains("is-open")) closeModal();
+    });
+  </script>
+
+</body>
+</html>

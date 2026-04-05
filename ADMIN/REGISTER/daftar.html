@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-  <title>New Password - Photoholic</title>
-  <link rel="stylesheet" href="forget-password2.css" />
+  <title>Daftar - Photoholic</title>
+  <link rel="stylesheet" href="daftar.css" />
 </head>
 <body>
 
@@ -19,7 +19,7 @@
     <div class="brand">
       <img class="brand__logo" src="assets/logo-photoholic.png" alt="Photoholic" />
     </div>
-    <a class="help" href="#">Need Help?</a>
+    <a class="help" href="#">Butuh Bantuan?</a>
   </header>
 
   <!-- CONTENT -->
@@ -29,30 +29,43 @@
     <section class="left">
       <div class="logoGroup">
         <img class="left__illus" src="assets/logo-icon.png" alt="Illustration" />
-        <img class="left__bigLogo" src="assets/test-photoholic.png" alt="photoholic" />
+        <img class="left__bigLogo" src="assets/test-photoholic.png" alt="Photoholic" />
       </div>
     </section>
 
     <!-- RIGHT -->
     <section class="right">
-      <div class="card">
-        <h2 class="card__title">New Password</h2>
 
+      <!-- STEP 1: FORM REGISTER -->
+      <div class="card" id="registerCard">
+        <h2 class="card__title">Daftar Akun</h2>
         <p class="desc">
-          Create a new password. Ensure it differs from<br>
-          previous ones for security.
+          Buat akun baru untuk mulai booking studio favoritmu di Photoholic.
         </p>
 
-        <form class="form" action="#" method="post">
+        <form class="form" id="registerForm">
 
-          <!-- New password -->
           <div class="field">
-            <label for="newpass">Enter new password</label>
-            <div class="inputIcon">
-              <input id="newpass" type="password" placeholder="Enter your new password" />
+            <label for="name">Nama Lengkap</label>
+            <input id="name" type="text" placeholder="Masukkan nama lengkap" required />
+          </div>
 
-              <button class="eyeBtn" type="button" aria-label="toggle password"
-                data-target="newpass" data-state="hidden">
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" type="email" placeholder="Masukkan email" required />
+          </div>
+
+          <div class="field">
+            <label for="mobile">Nomor Telepon</label>
+            <input id="mobile" type="tel" placeholder="Masukkan nomor telepon" required />
+          </div>
+
+          <!-- PASSWORD -->
+          <div class="field">
+            <label for="pass">Password</label>
+            <div class="inputIcon">
+              <input id="pass" type="password" placeholder="Masukkan password" required />
+              <button class="eyeBtn" type="button" aria-label="toggle password" data-target="pass" data-state="hidden">
 
                 <!-- eye open -->
                 <svg class="icon-eye icon-eye-open" viewBox="0 0 24 24" aria-hidden="true">
@@ -62,28 +75,26 @@
                         fill="none" stroke="currentColor" stroke-width="2"/>
                 </svg>
 
-                <!-- eye off (LENGKAP) -->
+                <!-- eye off -->
                 <svg class="icon-eye icon-eye-off" viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M3 3l18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                  <path d="M10.6 10.6a2.5 2.5 0 0 0 3.4 3.4" fill="none" stroke="currentColor" stroke-width="2"/>
+                  <path d="M10.6 10.6a2.5 2.5 0 0 0 3.4 3.4"
+                        fill="none" stroke="currentColor" stroke-width="2"/>
                   <path d="M6.5 6.5C4 8.5 2 12 2 12s3.5 7 10 7c2 0 3.8-.5 5.3-1.4"
                         fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
                   <path d="M9.5 4.3A10.8 10.8 0 0 1 12 5c6.5 0 10 7 10 7a18 18 0 0 1-3.2 4.5"
                         fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
                 </svg>
-
               </button>
             </div>
           </div>
 
-          <!-- Confirm password -->
+          <!-- CONFIRM PASSWORD -->
           <div class="field">
-            <label for="confpass">Confirm password</label>
+            <label for="confirm">Konfirmasi Password</label>
             <div class="inputIcon">
-              <input id="confpass" type="password" placeholder="Reenter your new password" />
-
-              <button class="eyeBtn" type="button" aria-label="toggle password"
-                data-target="confpass" data-state="hidden">
+              <input id="confirm" type="password" placeholder="Konfirmasi password" required />
+              <button class="eyeBtn" type="button" aria-label="toggle password" data-target="confirm" data-state="hidden">
 
                 <!-- eye open -->
                 <svg class="icon-eye icon-eye-open" viewBox="0 0 24 24" aria-hidden="true">
@@ -93,37 +104,58 @@
                         fill="none" stroke="currentColor" stroke-width="2"/>
                 </svg>
 
-                <!-- eye off (LENGKAP) -->
+                <!-- eye off -->
                 <svg class="icon-eye icon-eye-off" viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M3 3l18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                  <path d="M10.6 10.6a2.5 2.5 0 0 0 3.4 3.4" fill="none" stroke="currentColor" stroke-width="2"/>
+                  <path d="M10.6 10.6a2.5 2.5 0 0 0 3.4 3.4"
+                        fill="none" stroke="currentColor" stroke-width="2"/>
                   <path d="M6.5 6.5C4 8.5 2 12 2 12s3.5 7 10 7c2 0 3.8-.5 5.3-1.4"
                         fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
                   <path d="M9.5 4.3A10.8 10.8 0 0 1 12 5c6.5 0 10 7 10 7a18 18 0 0 1-3.2 4.5"
                         fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
                 </svg>
-
               </button>
             </div>
           </div>
 
-          <button class="btn" type="submit">Submit</button>
+          <label class="terms">
+            <input type="checkbox" id="agree" required />
+            <span>Saya setuju dengan <a href="#">syarat & ketentuan</a></span>
+          </label>
+
+          <button class="btn" type="submit">Daftar</button>
+
+          <div class="divider"><span>atau lanjut dengan</span></div>
+
+          <button class="google" type="button" aria-label="Continue with Google">
+            <img src="assets/icon-google.png" alt="Google" />
+          </button>
         </form>
       </div>
-    </section>
 
+      <!-- STEP 2: SUCCESS -->
+      <div class="card card--success hidden" id="successCard">
+        <h2 class="card__title card__title--center">Pendaftaran Berhasil!</h2>
+
+        <div class="checkCircle" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M20 6L9 17l-5-5" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <p class="successText">
+          Akun kamu berhasil dibuat<br>
+          Kamu akan diarahkan ke halaman login dalam <span id="countdown">5</span> detik...
+        </p>
+
+        <p class="miniText">
+          Klik <a href="login.html">di sini</a> jika tidak berpindah otomatis
+        </p>
+      </div>
+
+    </section>
   </main>
 
-  <script>
-    document.querySelectorAll(".eyeBtn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const input = document.getElementById(btn.dataset.target);
-        const isHidden = input.type === "password";
-        input.type = isHidden ? "text" : "password";
-        btn.dataset.state = isHidden ? "shown" : "hidden";
-      });
-    });
-  </script>
-
+  <script src="daftar.js"></script>
 </body>
 </html>

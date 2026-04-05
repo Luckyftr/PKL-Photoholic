@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-  <title>Login - Photoholic</title>
-  <link rel="stylesheet" href="login.css" />
+  <title>Masuk - Photoholic</title>
+  <link rel="stylesheet" href="masuk.css" />
 </head>
 <body>
 
@@ -19,7 +19,7 @@
     <div class="brand">
       <img class="brand__logo" src="assets/logo-photoholic.png" alt="Photoholic" />
     </div>
-    <a class="help" href="#">Need Help?</a>
+    <a class="help" href="#">Butuh Bantuan?</a>
   </header>
 
   <!-- CONTENT -->
@@ -29,28 +29,29 @@
     <section class="left">
       <div class="logoGroup">
         <img class="left__illus" src="assets/logo-icon.png" alt="Illustration" />
-        <img class="left__bigLogo" src="assets/test-photoholic.png" alt="photoholic" />
+        <img class="left__bigLogo" src="assets/test-photoholic.png" alt="Photoholic" />
       </div>
     </section>
 
     <!-- RIGHT -->
     <section class="right">
       <div class="card">
-        <h2 class="card__title">Login to your account</h2>
+        <h2 class="card__title">Masuk ke akun kamu</h2>
+        <p class="card__desc">Silakan masuk untuk melanjutkan booking dan melihat riwayat reservasi kamu.</p>
 
-        <form class="form" action="#" method="post">
+        <form class="form" action="#" method="post" id="loginForm">
 
           <div class="field">
-            <label for="user">Email/Phone Number</label>
-            <input id="user" type="text" placeholder="Input your e-mail or phone number" />
+            <label for="user">Email / Nomor HP</label>
+            <input id="user" type="text" placeholder="Masukkan email atau nomor HP" required />
           </div>
 
           <div class="field">
             <label for="pass">Password</label>
             <div class="inputIcon">
-              <input id="pass" type="password" placeholder="Input your password" />
+              <input id="pass" type="password" placeholder="Masukkan password" required />
 
-              <button class="eyeBtn" type="button" aria-label="toggle password"
+              <button class="eyeBtn" type="button" aria-label="Tampilkan password"
                 data-target="pass" data-state="hidden">
 
                 <!-- eye open -->
@@ -75,21 +76,22 @@
             </div>
 
             <div class="rowRight">
-              <a class="forgot" href="forgot-password.html">Forgot password?</a>
+              <a class="forgot" href="forgot-password.html">Lupa kata sandi?</a>
             </div>
           </div>
 
-          <button class="btn" type="submit">Login</button>
+          <button class="btn" type="submit">Masuk</button>
 
-          <div class="divider"><span>or continue with</span></div>
+          <div class="divider"><span>atau lanjutkan dengan</span></div>
 
-          <!-- tombol google: buka modal -->
-          <button id="googleBtn" class="google" type="button" aria-label="Continue with Google">
+          <!-- tombol google -->
+          <button id="googleBtn" class="googleLogin" type="button" aria-label="Masuk dengan Google">
             <img src="assets/icon-google.png" alt="Google" />
+            <span>Masuk dengan Google</span>
           </button>
 
           <p class="bottomText">
-            Dont have any account? <a href="register.html">Register</a>
+            Belum punya akun? <a href="register.html">Daftar sekarang</a>
           </p>
 
         </form>
@@ -98,13 +100,13 @@
 
   </main>
 
-  <!-- ================= MODAL GOOGLE (DEMO UI) ================= -->
+  <!-- ================= MODAL GOOGLE ================= -->
   <div id="googleModal" class="modal" aria-hidden="true">
     <div class="modal__backdrop" data-close="true"></div>
 
     <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      <h3 id="modalTitle" class="modal__title">Choose an account</h3>
-      <p class="modal__subtitle">to continue to Kyuu</p>
+      <h3 id="modalTitle" class="modal__title">Pilih akun</h3>
+      <p class="modal__subtitle">untuk melanjutkan ke Photoholic</p>
 
       <div class="modal__list">
 
@@ -121,72 +123,34 @@
         <div class="modal__divider"></div>
 
         <button class="modal__row" type="button">
-          <div class="modal__avatar modal__avatar--img">
+          <div class="modal__avatar modal__avatar--soft">
             <span>hh</span>
           </div>
           <div class="modal__info">
-            <div class="modal__name">Halo hai</div>
+            <div class="modal__name">Halo Hai</div>
             <div class="modal__email">apahayolol@gmail.com</div>
           </div>
         </button>
 
         <div class="modal__divider"></div>
 
-          <button class="modal__row" type="button">
-          <img class="modal__iconImg" src="assets/icon.png" alt="Another account" />
+        <button class="modal__row" type="button">
+          <div class="modal__iconUser">+</div>
           <div class="modal__info">
-            <div class="modal__name">Use another account</div>
+            <div class="modal__name">Gunakan akun lain</div>
+            <div class="modal__email">Masuk dengan akun Google lainnya</div>
           </div>
         </button>
-
 
       </div>
 
       <div class="modal__actions">
-        <button id="modalCancel" class="modal__btn modal__btn--ghost" type="button">Cancel</button>
-        <button class="modal__btn modal__btn--primary" type="button">Continue</button>
+        <button id="modalCancel" class="modal__btn modal__btn--ghost" type="button">Batal</button>
+        <button class="modal__btn modal__btn--primary" type="button">Lanjutkan</button>
       </div>
     </div>
   </div>
 
-  <script>
-    // toggle password
-    document.querySelectorAll(".eyeBtn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const input = document.getElementById(btn.dataset.target);
-        const isHidden = input.type === "password";
-        input.type = isHidden ? "text" : "password";
-        btn.dataset.state = isHidden ? "shown" : "hidden";
-      });
-    });
-
-    // modal google (demo)
-    const modal = document.getElementById("googleModal");
-    const openBtn = document.getElementById("googleBtn");
-    const cancelBtn = document.getElementById("modalCancel");
-
-    function openModal(){
-      modal.classList.add("is-open");
-      modal.setAttribute("aria-hidden", "false");
-      document.body.classList.add("no-scroll");
-    }
-    function closeModal(){
-      modal.classList.remove("is-open");
-      modal.setAttribute("aria-hidden", "true");
-      document.body.classList.remove("no-scroll");
-    }
-
-    openBtn.addEventListener("click", openModal);
-    cancelBtn.addEventListener("click", closeModal);
-
-    modal.addEventListener("click", (e) => {
-      if (e.target?.dataset?.close === "true") closeModal();
-    });
-
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && modal.classList.contains("is-open")) closeModal();
-    });
-  </script>
-
+  <script src="masuk.js"></script>
 </body>
 </html>

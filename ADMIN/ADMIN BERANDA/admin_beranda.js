@@ -1,4 +1,22 @@
-// ====== CHART ======
+// =======================
+// TANGGAL HARI INI
+// =======================
+const todayDate = document.getElementById("todayDate");
+
+const now = new Date();
+const options = {
+  weekday: "long",
+  day: "numeric",
+  month: "long",
+  year: "numeric"
+};
+
+todayDate.textContent = now.toLocaleDateString("id-ID", options);
+
+
+// =======================
+// CHART
+// =======================
 const labels = [
   "11.00","12.00","13.00","14.00","15.00","16.00",
   "17.00","18.00","19.00","20.00","21.00","22.00","23.00"
@@ -6,7 +24,7 @@ const labels = [
 
 const ctx = document.getElementById("trafficChart");
 
-const chart = new Chart(ctx, {
+new Chart(ctx, {
   type: "line",
   data: {
     labels,
@@ -69,7 +87,10 @@ const chart = new Chart(ctx, {
   }
 });
 
-// ====== MODAL DETAIL ======
+
+// =======================
+// MODAL DETAIL
+// =======================
 const modal = document.getElementById("modal");
 const modalContent = document.getElementById("modalContent");
 
@@ -88,29 +109,76 @@ modal.addEventListener("click", (e) => {
   if (e.target.dataset.close === "true") closeModal();
 });
 
-// klik "Lihat Detail"
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && modal.classList.contains("is-open")) {
+    closeModal();
+  }
+});
+
+
+// =======================
+// DETAIL BOOKING
+// =======================
 document.getElementById("bookingTbody").addEventListener("click", (e) => {
   const btn = e.target.closest('[data-action="detail"]');
   if (!btn) return;
 
   const id = btn.dataset.id;
 
-  // dummy data detail
   const map = {
-    "1": { nama: "Kim Dokja", tanggal: "16 Okt 2025", sesi: "11:00 - 11:05", status: "Selesai", bayar: "Lunas", studio: "Studio 1" },
-    "2": { nama: "Yoo Joonghyuk", tanggal: "16 Okt 2025", sesi: "11:05 - 11:10", status: "Selesai", bayar: "Lunas", studio: "Studio 2" },
-    "3": { nama: "Han Sooyoung", tanggal: "16 Okt 2025", sesi: "11:10 - 11:15", status: "Selesai", bayar: "Lunas", studio: "Studio 3" }
+    "1": {
+      nama: "Kim Dokja",
+      tanggal: "16 Okt 2025",
+      sesi: "11:00 - 11:05",
+      status: "Selesai",
+      bayar: "Lunas",
+      studio: "Studio 1",
+      email: "kimdokja@gmail.com",
+      telepon: "081234567890"
+    },
+    "2": {
+      nama: "Yoo Joonghyuk",
+      tanggal: "16 Okt 2025",
+      sesi: "11:05 - 11:10",
+      status: "Sedang Berlangsung",
+      bayar: "Lunas",
+      studio: "Studio 2",
+      email: "yjh@gmail.com",
+      telepon: "081298765432"
+    },
+    "3": {
+      nama: "Han Sooyoung",
+      tanggal: "16 Okt 2025",
+      sesi: "11:10 - 11:15",
+      status: "Menunggu",
+      bayar: "Pending",
+      studio: "Studio 3",
+      email: "sooyoung@gmail.com",
+      telepon: "081377889900"
+    },
+    "4": {
+      nama: "Alya Putri",
+      tanggal: "16 Okt 2025",
+      sesi: "11:15 - 11:20",
+      status: "Menunggu",
+      bayar: "Lunas",
+      studio: "Studio 4",
+      email: "alyaputri@gmail.com",
+      telepon: "081355566677"
+    }
   };
 
   const d = map[id] || map["1"];
 
   openModal(`
-    <div><b>ID:</b> ${id}</div>
+    <div><b>ID Booking:</b> #PH-${id.padStart(3, "0")}</div>
     <div><b>Nama Pelanggan:</b> ${d.nama}</div>
+    <div><b>Email:</b> ${d.email}</div>
+    <div><b>No. Telepon:</b> ${d.telepon}</div>
     <div><b>Tanggal:</b> ${d.tanggal}</div>
     <div><b>Waktu Sesi:</b> ${d.sesi}</div>
     <div><b>Studio:</b> ${d.studio}</div>
-    <div><b>Status:</b> ${d.status}</div>
-    <div><b>Pembayaran:</b> ${d.bayar}</div>
+    <div><b>Status Booking:</b> ${d.status}</div>
+    <div><b>Status Pembayaran:</b> ${d.bayar}</div>
   `);
 });

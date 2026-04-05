@@ -16,7 +16,10 @@ const photoPreview = document.getElementById("photoPreview");
 const photoEmpty = document.getElementById("photoEmpty");
 
 const nameEl = document.getElementById("name");
-const descEl = document.getElementById("desc");
+const capacityEl = document.getElementById("capacity");
+const durationEl = document.getElementById("duration");
+const stripsEl = document.getElementById("strips");
+const paperEl = document.getElementById("paper");
 const priceEl = document.getElementById("price");
 
 const modal = document.getElementById("modal");
@@ -25,10 +28,61 @@ const modalText = document.getElementById("modalText");
 const modalActions = document.getElementById("modalActions");
 
 let studios = [
-  { id: "1", name: "Classy", desc: "Max 10 Orang • Paper Negatif Film", price: 45000, active: true, img: "assets/studio-classy.jpg" },
-  { id: "2", name: "Oven", desc: "Max 8 Orang • Photo Paper A4", price: 45000, active: true, img: "assets/studio-oven.jpg" },
-  { id: "3", name: "Lavatory", desc: "Max 6 Orang • Photo Paper A4", price: 45000, active: true, img: "assets/studio-lavatory.jpg" },
-  { id: "4", name: "Spot Light", desc: "Max 8 Orang • Photo Paper A4", price: 45000, active: false, img: "assets/studio-spotlight.jpg" },
+  {
+    id: "1",
+    name: "Classy",
+    capacity: 8,
+    duration: 5,
+    strips: 2,
+    paper: "Negative Film Transparan",
+    price: 45000,
+    active: true,
+    img: "assets/studio-classy.jpeg"
+  },
+  {
+    id: "2",
+    name: "Spotlight",
+    capacity: 8,
+    duration: 5,
+    strips: 2,
+    paper: "Standar Foto",
+    price: 45000,
+    active: true,
+    img: "assets/studio-spotlight.jpeg"
+  },
+  {
+    id: "3",
+    name: "Lavatory",
+    capacity: 8,
+    duration: 5,
+    strips: 2,
+    paper: "Standar Foto",
+    price: 35000,
+    active: true,
+    img: "assets/studio-lavatory.png"
+  },
+  {
+    id: "4",
+    name: "Oven",
+    capacity: 4,
+    duration: 5,
+    strips: 2,
+    paper: "Standar Foto",
+    price: 35000,
+    active: true,
+    img: "assets/studio-oven.png"
+  },
+  {
+    id: "5",
+    name: "Aquarium",
+    capacity: 4,
+    duration: 5,
+    strips: 2,
+    paper: "Standar Foto",
+    price: 35000,
+    active: true,
+    img: "assets/studio-aquarium.webp"
+  }
 ];
 
 let mode = "add"; // add | edit
@@ -53,21 +107,32 @@ function openModal({ title, text, actions }) {
   modal.classList.add("is-open");
   modal.setAttribute("aria-hidden", "false");
 }
+
 function closeModal(){
   modal.classList.remove("is-open");
   modal.setAttribute("aria-hidden","true");
 }
+
 modal.addEventListener("click",(e)=>{
   if (e.target.dataset.close === "true") closeModal();
 });
 
-/* ========== RENDER ========== */
+/* ========== UTIL ========== */
 function rupiah(n){
   return "Rp " + (Number(n)||0).toLocaleString("id-ID");
 }
 
+function buildDesc(st){
+  return `
+    Maks. ${st.capacity} orang • ${st.duration} menit/sesi<br>
+    ${st.strips} strip foto • Kertas ${st.paper}
+  `;
+}
+
+/* ========== RENDER ========== */
 function renderList(){
   listEl.innerHTML = "";
+
   studios.forEach(st => {
     const card = document.createElement("div");
     card.className = "studioCard";
@@ -93,8 +158,8 @@ function renderList(){
         <div class="studioTop">
           <div>
             <div class="studioName">${st.name}</div>
-            <div class="studioDesc">${st.desc}</div>
-            <div class="price">Harga: ${rupiah(st.price)}/Sesi</div>
+            <div class="studioDesc">${buildDesc(st)}</div>
+            <div class="price">Harga: ${rupiah(st.price)}/sesi</div>
           </div>
           <span class="${badgeClass}">${badgeText}</span>
         </div>
@@ -104,9 +169,11 @@ function renderList(){
             ${st.active ? "Nonaktifkan" : "Aktifkan"}
           </button>
           <button class="smallBtn" type="button" data-action="edit">Edit</button>
+          <button class="smallBtn smallBtn--danger" type="button" data-action="delete">Hapus</button>
         </div>
       </div>
     `;
+
     listEl.appendChild(card);
   });
 }
@@ -127,6 +194,7 @@ function setPhotoPreview(dataUrl){
     photoBtn.textContent = "Tambahkan Foto";
   }
 }
+
 photoBtn.addEventListener("click", ()=> photoInput.click());
 
 photoInput.addEventListener("change", (e)=>{
@@ -142,15 +210,19 @@ photoInput.addEventListener("change", (e)=>{
 });
 
 /* ========== OPEN FORM ========== */
+function resetForm(){
+  studioForm.reset();
+  pendingImageDataUrl = "";
+  setPhotoPreview("");
+}
+
 function openAdd(){
   mode = "add";
   editingId = null;
   formTitle.textContent = "Tambah Studio";
   submitBtn.textContent = "Tambah Studio";
   submitBtn.classList.add("is-teal");
-  studioForm.reset();
-  pendingImageDataUrl = "";
-  setPhotoPreview("");
+  resetForm();
   showFormPanel();
 }
 
@@ -165,10 +237,13 @@ function openEdit(id){
   submitBtn.classList.remove("is-teal");
 
   nameEl.value = st.name;
-  descEl.value = st.desc;
+  capacityEl.value = st.capacity;
+  durationEl.value = st.duration;
+  stripsEl.value = st.strips;
+  paperEl.value = st.paper;
   priceEl.value = st.price;
 
-  pendingImageDataUrl = ""; 
+  pendingImageDataUrl = "";
   setPhotoPreview(st.img || "");
   showFormPanel();
 }
@@ -180,6 +255,7 @@ function showFormPanel(){
     window.scrollTo({top:0, behavior:"smooth"});
   }
 }
+
 function closeFormPanel(){
   formPanel.classList.remove("is-open");
 }
@@ -194,34 +270,83 @@ listEl.addEventListener("click", (e)=>{
   if (!id) return;
 
   const action = btn.dataset.action;
+  const st = studios.find(s => s.id === id);
+  if (!st) return;
 
   if (action === "edit"){
     openEdit(id);
   }
 
   if (action === "toggle"){
-    const st = studios.find(s => s.id === id);
-    if (!st) return;
-
     if (st.active){
       openModal({
         title: "Nonaktifkan Studio?",
-        text: `Yakin ingin menonaktifkan "${st.name}"?`,
+        text: `Yakin ingin menonaktifkan studio "${st.name}"?`,
         actions: [
-          { label: "Nonaktifkan", className: "modalBtn--danger", onClick: ()=>{ st.active = false; renderList(); closeModal(); } },
-          { label: "Batal", className: "modalBtn--cancel", onClick: closeModal }
+          {
+            label: "Nonaktifkan",
+            className: "modalBtn--danger",
+            onClick: ()=>{
+              st.active = false;
+              renderList();
+              closeModal();
+            }
+          },
+          {
+            label: "Batal",
+            className: "modalBtn--cancel",
+            onClick: closeModal
+          }
         ]
       });
     } else {
       openModal({
         title: "Aktifkan Studio?",
-        text: `Yakin ingin mengaktifkan "${st.name}"?`,
+        text: `Yakin ingin mengaktifkan studio "${st.name}"?`,
         actions: [
-          { label: "Aktifkan", className: "modalBtn--ok", onClick: ()=>{ st.active = true; renderList(); closeModal(); } },
-          { label: "Batal", className: "modalBtn--cancel", onClick: closeModal }
+          {
+            label: "Aktifkan",
+            className: "modalBtn--ok",
+            onClick: ()=>{
+              st.active = true;
+              renderList();
+              closeModal();
+            }
+          },
+          {
+            label: "Batal",
+            className: "modalBtn--cancel",
+            onClick: closeModal
+          }
         ]
       });
     }
+  }
+
+  if (action === "delete"){
+    openModal({
+      title: "Hapus Studio?",
+      text: `Studio "${st.name}" akan dihapus dari daftar.`,
+      actions: [
+        {
+          label: "Hapus",
+          className: "modalBtn--danger",
+          onClick: ()=>{
+            studios = studios.filter(s => s.id !== id);
+            renderList();
+            closeModal();
+            resetForm();
+            mode = "add";
+            editingId = null;
+          }
+        },
+        {
+          label: "Batal",
+          className: "modalBtn--cancel",
+          onClick: closeModal
+        }
+      ]
+    });
   }
 });
 
@@ -231,16 +356,26 @@ studioForm.addEventListener("submit",(e)=>{
 
   const payload = {
     name: nameEl.value.trim(),
-    desc: descEl.value.trim(),
+    capacity: Number(capacityEl.value || 0),
+    duration: Number(durationEl.value || 0),
+    strips: Number(stripsEl.value || 0),
+    paper: paperEl.value,
     price: Number(priceEl.value || 0),
   };
 
-  if (!payload.name || !payload.desc) return;
+  if (
+    !payload.name ||
+    !payload.capacity ||
+    !payload.duration ||
+    !payload.strips ||
+    !payload.paper ||
+    !payload.price
+  ) return;
 
   if (mode === "add"){
     openModal({
       title: "Tambah Studio?",
-      text: `Tambahkan studio "${payload.name}"?`,
+      text: `Tambahkan studio "${payload.name}" ke daftar?`,
       actions: [
         {
           label:"Tambah",
@@ -248,21 +383,22 @@ studioForm.addEventListener("submit",(e)=>{
           onClick: ()=>{
             studios.unshift({
               id: String(Date.now()),
-              name: payload.name,
-              desc: payload.desc,
-              price: payload.price,
+              ...payload,
               active: true,
               img: pendingImageDataUrl || ""
             });
+
             renderList();
             closeModal();
-            studioForm.reset();
-            pendingImageDataUrl = "";
-            setPhotoPreview("");
+            resetForm();
             closeFormPanel();
           }
         },
-        { label:"Batal", className:"modalBtn--cancel", onClick: closeModal }
+        {
+          label:"Batal",
+          className:"modalBtn--cancel",
+          onClick: closeModal
+        }
       ]
     });
   }
@@ -273,30 +409,34 @@ studioForm.addEventListener("submit",(e)=>{
 
     openModal({
       title: "Simpan Perubahan?",
-      text: `Simpan perubahan untuk "${payload.name}"?`,
+      text: `Simpan perubahan untuk studio "${payload.name}"?`,
       actions: [
         {
           label:"Simpan",
           className:"modalBtn--ok",
           onClick: ()=>{
             st.name = payload.name;
-            st.desc = payload.desc;
+            st.capacity = payload.capacity;
+            st.duration = payload.duration;
+            st.strips = payload.strips;
+            st.paper = payload.paper;
             st.price = payload.price;
 
-            // kalau user upload foto baru, ganti
             if (pendingImageDataUrl) st.img = pendingImageDataUrl;
 
             renderList();
             closeModal();
             mode = "add";
             editingId = null;
-            studioForm.reset();
-            pendingImageDataUrl = "";
-            setPhotoPreview("");
+            resetForm();
             closeFormPanel();
           }
         },
-        { label:"Batal", className:"modalBtn--cancel", onClick: closeModal }
+        {
+          label:"Batal",
+          className:"modalBtn--cancel",
+          onClick: closeModal
+        }
       ]
     });
   }
@@ -305,7 +445,7 @@ studioForm.addEventListener("submit",(e)=>{
 /* ========== CANCEL / ADD BTN / BACK BTN ========== */
 cancelBtn.addEventListener("click", ()=>{
   openModal({
-    title: "Batalkan?",
+    title: "Batalkan Perubahan?",
     text: "Semua perubahan di form akan hilang.",
     actions: [
       {
@@ -315,13 +455,15 @@ cancelBtn.addEventListener("click", ()=>{
           closeModal();
           mode = "add";
           editingId = null;
-          studioForm.reset();
-          pendingImageDataUrl = "";
-          setPhotoPreview("");
+          resetForm();
           closeFormPanel();
         }
       },
-      { label:"Kembali", className:"modalBtn--cancel", onClick: closeModal }
+      {
+        label:"Kembali",
+        className:"modalBtn--cancel",
+        onClick: closeModal
+      }
     ]
   });
 });

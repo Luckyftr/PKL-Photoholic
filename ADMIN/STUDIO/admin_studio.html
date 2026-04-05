@@ -17,13 +17,14 @@
   <header class="topbar">
     <img class="brand__logo" src="assets/logo-photoholic.png" alt="Photoholic">
 
-    <nav class="topnav" aria-label="Main navigation">
+    <nav class="topnav" aria-label="Navigasi utama">
       <a class="topnav__link" href="beranda-admin.html">Beranda</a>
-      <a class="topnav__link" href="admin_pemesanan.html">Bookings</a>
+      <a class="topnav__link" href="admin_pemesanan.html">Pemesanan</a>
       <a class="topnav__link is-active" href="admin_studio.html">Studio</a>
+      <a class="topnav__link" href="admin_profil.html">Profil</a>
     </nav>
 
-    <button class="topbar__user" type="button" aria-label="User menu">
+    <button class="topbar__user" type="button" aria-label="Menu pengguna">
       <span class="topbar__userCircle">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12Z" fill="none" stroke="currentColor" stroke-width="2"/>
@@ -40,8 +41,10 @@
       <!-- LIST -->
       <section class="panel panel--list">
         <div class="panelHead">
-          <h1 class="panelTitle">Studio</h1>
-          <span class="hint">Kelola studio & harga sesi.</span>
+          <div>
+            <h1 class="panelTitle">Daftar Studio</h1>
+            <p class="hint">Kelola studio, kapasitas, kertas, strip foto, dan harga sesi.</p>
+          </div>
         </div>
 
         <div class="list" id="studioList">
@@ -53,14 +56,16 @@
       <section class="panel panel--form" id="formPanel">
         <div class="formHead">
           <button class="backBtn" id="backBtn" type="button" aria-label="Kembali">
-            <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg viewBox="0 0 24 24">
+              <path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
           </button>
           <h2 class="formTitle" id="formTitle">Tambah Studio</h2>
         </div>
 
         <div class="photoArea">
           <div class="photoBox" id="photoBox">
-            <img id="photoPreview" src="" alt="Preview" />
+            <img id="photoPreview" src="" alt="Preview Studio" />
             <div class="photoEmpty" id="photoEmpty">
               <div class="photoEmpty__icon">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -69,7 +74,7 @@
                   <path d="M9 13a3 3 0 1 0 6 0 3 3 0 0 0-6 0Z" fill="none" stroke="currentColor" stroke-width="2"/>
                 </svg>
               </div>
-              <div class="photoEmpty__text">No image</div>
+              <div class="photoEmpty__text">Belum ada foto</div>
             </div>
           </div>
 
@@ -84,8 +89,27 @@
           </div>
 
           <div class="field">
-            <label for="desc">Deskripsi</label>
-            <input id="desc" type="text" placeholder="Contoh: Max 10 Orang, Paper Negatif Film" required>
+            <label for="capacity">Maksimal Orang / Sesi</label>
+            <input id="capacity" type="number" min="1" placeholder="Contoh: 8" required>
+          </div>
+
+          <div class="field">
+            <label for="duration">Durasi Sesi (menit)</label>
+            <input id="duration" type="number" min="1" placeholder="Contoh: 5" required>
+          </div>
+
+          <div class="field">
+            <label for="strips">Jumlah Strip Foto</label>
+            <input id="strips" type="number" min="1" placeholder="Contoh: 2" required>
+          </div>
+
+          <div class="field">
+            <label for="paper">Jenis Kertas</label>
+            <select id="paper" required>
+              <option value="">Pilih jenis kertas</option>
+              <option value="Negative Film Transparan">Negative Film Transparan</option>
+              <option value="Standar Foto">Standar Foto</option>
+            </select>
           </div>
 
           <div class="field">
@@ -113,8 +137,8 @@
   <div class="modal" id="modal" aria-hidden="true">
     <div class="modal__overlay" data-close="true"></div>
     <div class="modal__card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      <h3 class="modal__title" id="modalTitle">Title</h3>
-      <p class="modal__text" id="modalText">Text</p>
+      <h3 class="modal__title" id="modalTitle">Judul</h3>
+      <p class="modal__text" id="modalText">Isi</p>
       <div class="modal__actions" id="modalActions"></div>
     </div>
   </div>

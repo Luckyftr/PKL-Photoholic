@@ -1,12 +1,11 @@
 :root{
   --pink-bar: #f4b9bf;
-  --pink-card: #f3b3b8;
   --panel-bg: rgba(244, 185, 191, 0.22);
-  --shadow-blue: rgba(120,160,255,.55);
-  --teal-btn: #3f6f75;
+  --shadow-blue: rgba(120,160,255,.35);
   --text: #2d2d2d;
   --accent-red: #ff4a5d;
   --active-green: #2f8f6b;
+  --soft-border: rgba(0,0,0,.08);
 }
 
 *{ box-sizing:border-box; margin:0; padding:0; }
@@ -17,121 +16,6 @@ body{
   color: var(--text);
 }
 
-/* ================= TOPBAR ADMIN ================= */
-.topbar{
-  height:80px;
-  width:100%;
-  background:var(--pink-bar);
-  display:flex;
-  align-items:center;
-  padding:0 34px;
-  gap:26px;
-}
-
-.brand__logo{
-  height:52px;             
-  display:block;
-}
-
-.topnav{
-  margin-left:auto;
-  display:flex;
-  gap:40px;             
-  align-items:center;
-}
-
-.topnav__link{
-  color: var(--accent-red);
-  text-decoration:none;
-  font-weight:800;
-  font-size:18px;          
-  letter-spacing:.2px;
-  padding:10px 6px;
-  line-height:1;
-}
-
-/* active state */
-.topnav__link.is-active{
-  font-weight:900;
-  position:relative;
-}
-
-.topnav__link.is-active::after{
-  content:"";
-  position:absolute;
-  left:6px;
-  right:6px;
-  bottom:4px;
-  height:3px;
-  border-radius:999px;
-  background: rgba(255,74,93,.75);
-}
-
-/* icon user kanan */
-.topbar__user{
-  margin-left:18px;
-  border:none;
-  background:transparent;
-  padding:0;
-  line-height:0;
-  cursor:pointer;
-  flex:0 0 auto;
-}
-
-.topbar__userCircle{
-  width:54px;                 
-  height:54px;               
-  border-radius:50%;
-  border:3px solid var(--accent-red);
-  display:grid;
-  place-items:center;
-  color: var(--accent-red);
-}
-
-.topbar__userCircle svg{
-  width:28px;                  
-  height:28px;
-  display:block;
-}
-
-/* ================= RESPONSIVE TOPBAR ================= */
-@media (max-width: 900px){
-  .topbar{
-    height:auto;
-    padding:14px 18px;
-    gap:14px;
-    flex-wrap:wrap;
-  }
-
-  .brand__logo{ height:46px; }
-
-  .topnav{
-    width:100%;
-    margin-left:0;
-    gap:18px;
-    justify-content:flex-start;
-    flex-wrap:wrap;
-  }
-
-  .topnav__link{
-    font-size:16px;
-    padding:8px 6px;
-  }
-
-  .topbar__user{
-    margin-left:auto;
-  }
-
-  .topbar__userCircle{
-    width:48px;
-    height:48px;
-  }
-
-  .topbar__userCircle svg{
-    width:24px;
-    height:24px;
-  }
-}
 /* ================= TOPBAR ================= */
 .topbar{
   height:70px;
@@ -143,12 +27,15 @@ body{
   gap:22px;
 }
 
-.brand__logo{ height:46px; }
+.brand__logo{ 
+  height:46px; 
+  display:block;
+}
 
 .topnav{
   margin-left:auto;
   display:flex;
-  gap:34px;
+  gap:30px;
   align-items:center;
 }
 
@@ -157,20 +44,31 @@ body{
   text-decoration:none;
   font-weight:700;
   font-size:14px;
+  position:relative;
 }
 
 .topnav__link.is-active{
-  text-decoration: none;
-  opacity: .95;
+  opacity:.95;
+}
+
+.topnav__link.is-active::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:-8px;
+  height:3px;
+  border-radius:999px;
+  background: var(--accent-red);
 }
 
 .topbar__user{
-  margin-left: 14px;
-  border: none;
-  background: transparent;
-  padding: 0;
-  line-height: 0;
-  cursor: pointer;
+  margin-left:14px;
+  border:none;
+  background:transparent;
+  padding:0;
+  line-height:0;
+  cursor:pointer;
 }
 
 .topbar__userCircle{
@@ -180,7 +78,7 @@ body{
   border:3px solid var(--accent-red);
   display:grid;
   place-items:center;
-  color: var(--accent-red);
+  color:var(--accent-red);
 }
 
 .topbar__userCircle svg{
@@ -207,7 +105,7 @@ body{
 .panel{
   background: var(--panel-bg);
   border-radius:14px;
-  padding:18px 18px 18px;
+  padding:18px;
 }
 
 /* ================= LIST PANEL ================= */
@@ -372,7 +270,6 @@ body{
   font-size:12px;
 }
 
-/* active selected */
 .card.is-active{
   outline: 2px solid rgba(47,143,107,.55);
 }
@@ -414,7 +311,7 @@ body{
   background:#fff;
   border-radius:14px;
   padding:12px 14px;
-  border:1px solid rgba(0,0,0,.08);
+  border:1px solid var(--soft-border);
   box-shadow: 0 6px 0 rgba(120,160,255,.06);
 }
 
@@ -463,6 +360,12 @@ body{
   background: rgba(47,143,107,.14);
   border-color: rgba(47,143,107,.35);
   color: var(--active-green);
+}
+
+.pill--pending{
+  background: rgba(255,74,93,.10);
+  border-color: rgba(255,74,93,.25);
+  color: var(--accent-red);
 }
 
 .detailBtn{
@@ -662,6 +565,33 @@ body{
   }
   .panel--detail.is-open{
     display:block;
+  }
+}
+
+@media (max-width: 900px){
+  .topbar{
+    height:auto;
+    padding:14px 18px;
+    gap:14px;
+    flex-wrap:wrap;
+  }
+
+  .brand__logo{ height:42px; }
+
+  .topnav{
+    width:100%;
+    margin-left:0;
+    gap:18px;
+    justify-content:flex-start;
+    flex-wrap:wrap;
+  }
+
+  .topnav__link{
+    font-size:14px;
+  }
+
+  .topbar__user{
+    margin-left:auto;
   }
 }
 

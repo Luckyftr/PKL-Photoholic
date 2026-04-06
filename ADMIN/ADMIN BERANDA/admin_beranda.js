@@ -1,6 +1,4 @@
-// =======================
 // TANGGAL HARI INI
-// =======================
 const todayDate = document.getElementById("todayDate");
 
 const now = new Date();
@@ -13,10 +11,7 @@ const options = {
 
 todayDate.textContent = now.toLocaleDateString("id-ID", options);
 
-
-// =======================
 // CHART
-// =======================
 const labels = [
   "11.00","12.00","13.00","14.00","15.00","16.00",
   "17.00","18.00","19.00","20.00","21.00","22.00","23.00"
@@ -87,10 +82,7 @@ new Chart(ctx, {
   }
 });
 
-
-// =======================
 // MODAL DETAIL
-// =======================
 const modal = document.getElementById("modal");
 const modalContent = document.getElementById("modalContent");
 
@@ -116,9 +108,7 @@ document.addEventListener("keydown", (e) => {
 });
 
 
-// =======================
 // DETAIL BOOKING
-// =======================
 document.getElementById("bookingTbody").addEventListener("click", (e) => {
   const btn = e.target.closest('[data-action="detail"]');
   if (!btn) return;

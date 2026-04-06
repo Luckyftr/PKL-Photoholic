@@ -20,12 +20,13 @@
     <img class="brand__logo" src="assets/logo-photoholic.png" alt="Photoholic">
 
     <nav class="topnav" aria-label="Main navigation">
-      <a class="topnav__link is-active" href="#">Beranda</a>
-      <a class="topnav__link" href="#">Pemesanan</a>
-      <a class="topnav__link" href="#">Studio</a>
+      <a class="topnav__link" href="beranda.html">Beranda</a>
+      <a class="topnav__link" href="pemesanan.html">Pemesanan</a>
+      <a class="topnav__link" href="studio.html">Studio</a>
+      <a class="topnav__link" href="blog.html">Kelola Blog</a>
     </nav>
 
-    <button class="topbar__user" type="button" aria-label="User menu">
+    <button class="topbar__user is-active" type="button" aria-label="User menu">
       <span class="topbar__userCircle">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12Z" fill="none" stroke="currentColor" stroke-width="2"/>
@@ -38,87 +39,105 @@
   <!-- PAGE -->
   <main class="page">
 
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-      <div class="userCard">
-        <div class="userCard__avatar">
-          <img src="assets/logo-photoholic.png" alt="avatar">
+      <!-- SIDEBAR -->
+      <aside class="sidebarCard">
+        <div class="userCard">
+          <div class="userCard__avatar">
+            <img src="assets/logo-photoholic.png" alt="Avatar admin">
+          </div>
+          <div class="userCard__info">
+            <div class="userCard__name">Minphotoholic</div>
+            <div class="userCard__role">Administrator</div>
+            <a class="userCard__edit" href="profile.html">
+              <span class="icon-inline" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M12 20h9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M16.5 3.5l4 4L8 20H4v-4L16.5 3.5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              Lihat / Ubah Profil
+            </a>
+          </div>
         </div>
-        <div class="userCard__info">
-          <div class="userCard__name">Minphotoholic</div>
-          <a class="userCard__edit" href="#">
-            <span class="icon-inline" aria-hidden="true">
-              <svg viewBox="0 0 24 24">
-                <path d="M12 20h9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M16.5 3.5l4 4L8 20H4v-4L16.5 3.5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-              </svg>
-            </span>
-            Ubah Profil
-          </a>
-        </div>
-      </div>
 
-      <div class="menu">
-        <div class="menu__groupTitle">
-          <span class="icon-inline" aria-hidden="true">
+        <div class="menuBlock">
+          <div class="menuBlock__title">
             <svg viewBox="0 0 24 24">
               <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Z" fill="none" stroke="currentColor" stroke-width="2"/>
               <path d="M4.5 20c1.8-4 13.2-4 15 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
             </svg>
-          </span>
-          Akun Saya
+            Akun Saya
+          </div>
+
+          <div class="menuList">
+            <a class="menuItem" href="profile.html">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Z" fill="none" stroke="currentColor" stroke-width="2"/>
+                <path d="M4.5 20c1.8-4 13.2-4 15 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              Profil
+            </a>
+
+            <a class="menuItem" href="atur_jadwal.html">
+              <svg viewBox="0 0 24 24">
+                <path d="M7 3v3M17 3v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M4 7h16v13H4V7Z" fill="none" stroke="currentColor" stroke-width="2"/>
+                <path d="M4 11h16" fill="none" stroke="currentColor" stroke-width="2"/>
+                <path d="M8 15h2M12 15h2M16 15h0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              Atur Jadwal
+            </a>
+
+            <a class="menuItem" href="ubah-password.html">
+              <svg viewBox="0 0 24 24">
+                <path d="M7 11V8a5 5 0 0 1 10 0v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M6 11h12v10H6V11Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M12 15v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              Ubah Kata Sandi
+            </a>
+
+            <a class="menuItem" href="status-pemesanan.html">
+              <svg viewBox="0 0 24 24">
+                <path d="M3 7h18v10H3V7Z" fill="none" stroke="currentColor" stroke-width="2"/>
+                <path d="M3 10h18" fill="none" stroke="currentColor" stroke-width="2"/>
+              </svg>
+              Status Pemesanan
+            </a>
+
+            <a class="menuItem is-active" href="riwayat-transaksi.html">
+              <svg viewBox="0 0 24 24">
+                <path d="M7 3h10v18l-2-1-3 1-3-1-2 1V3Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M9 7h6M9 11h6M9 15h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              Riwayat Transaksi
+            </a>
+
+            <a class="menuItem" href="kelola-pengguna.html">
+              <svg viewBox="0 0 24 24">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2" fill="none" stroke="currentColor" stroke-width="2"/>
+                <circle cx="9.5" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="2"/>
+                <path d="M20 8v6M17 11h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              Kelola Pengguna
+            </a>
+
+            <button class="menuItem menuItem--danger" type="button" id="logoutBtn">
+              <svg viewBox="0 0 24 24">
+                <path d="M10 17l5-5-5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M15 12H4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M20 4v16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              Keluar
+            </button>
+          </div>
         </div>
 
-        <a class="menu__item" href="profile.html">Profil</a>
-        <a class="menu__item" href="ubah-password.html">Ubah Password</a>
+        <div class="sidebarDecor">
+          <img src="assets/logo-icon.png" alt="Dekorasi logo">
+        </div>
+      </aside>
 
-        <a class="menu__item" href="atur_jadwal.html">
-          <span class="icon-inline" aria-hidden="true">
-            <svg viewBox="0 0 24 24">
-              <path d="M7 3v3M17 3v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <path d="M4 7h16v14H4V7Z" fill="none" stroke="currentColor" stroke-width="2"/>
-              <path d="M4 11h16" fill="none" stroke="currentColor" stroke-width="2"/>
-            </svg>
-          </span>
-          Atur Jadwal
-        </a>
-
-        <a class="menu__item" href="#">
-          <span class="icon-inline" aria-hidden="true">
-            <svg viewBox="0 0 24 24">
-              <path d="M3 7h18v10H3V7Z" fill="none" stroke="currentColor" stroke-width="2"/>
-              <path d="M3 10h18" fill="none" stroke="currentColor" stroke-width="2"/>
-            </svg>
-          </span>
-          Status Pemesanan
-        </a>
-
-        <a class="menu__item active" href="riwayat_transaksi.html">
-          <span class="icon-inline" aria-hidden="true">
-            <svg viewBox="0 0 24 24">
-              <path d="M7 3h10v18l-2-1-3 1-3-1-2 1V3Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-              <path d="M9 7h6M9 11h6M9 15h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-          </span>
-          Riwayat Transaksi
-        </a>
-
-        <a class="menu__item danger" href="#" id="logoutBtn">
-          <span class="icon-inline" aria-hidden="true">
-            <svg viewBox="0 0 24 24">
-              <path d="M10 17l5-5-5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M15 12H4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <path d="M20 4v16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-          </span>
-          Log Out
-        </a>
-      </div>
-
-      <div class="sidebar__decor">
-        <img src="assets/logo-icon.png" alt="decor">
-      </div>
-    </aside>
 
     <!-- PANEL -->
     <section class="panel">

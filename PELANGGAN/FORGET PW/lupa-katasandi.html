@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <title>Lupa Kata sandi - Photoholic</title>
+  <link rel="stylesheet" href="lupa-katasandi.css" />
+</head>
+<body>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="brand">
+      <img class="brand__logo" src="assets/logo-photoholic.png" alt="Photoholic" />
+    </div>
+    <a class="help" href="#">Butuh Bantuan?</a>
+  </header>
+
+  <!-- CONTENT -->
+  <main class="content">
+
+    <!-- LEFT -->
+    <section class="left">
+      <div class="logoGroup">
+        <img class="left__illus" src="assets/logo-icon.png" alt="Illustration" />
+        <img class="left__bigLogo" src="assets/test-photoholic.png" alt="Photoholic" />
+      </div>
+    </section>
+
+    <!-- RIGHT -->
+    <section class="right">
+      <div class="card">
+
+        <!-- STEP 1 -->
+        <div class="step active" id="step1">
+          <h2 class="card__title">Lupa Kata sandi?</h2>
+          <p class="desc">
+        Jangan khawatir! Hal ini wajar terjadi. Silakan masukkan alamat email atau nomor telepon Anda untuk verifikasi.          </p>
+
+          <form class="form" id="forgotForm">
+            <div class="field">
+              <label for="userInput">Email / Nomor telepon</label>
+              <input
+                id="userInput"
+                type="text"
+                placeholder="Masukan Email / Nomor telepon anda"
+                required
+              />
+            </div>
+
+            <button class="btn" type="submit">Kirim</button>
+          </form>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="step" id="step2">
+          <h2 class="card__title">Verifikasi Kode</h2>
+          <p class="desc">
+        Silakan masukkan kode verifikasi 4 digit yang telah dikirimkan ke email/nomor telepon Anda.          </p>
+
+          <div class="otpGroup">
+            <input type="text" maxlength="1" class="otp-input" />
+            <input type="text" maxlength="1" class="otp-input" />
+            <input type="text" maxlength="1" class="otp-input" />
+            <input type="text" maxlength="1" class="otp-input" />
+          </div>
+
+          <p class="otpInfo">Tidak menerima kode? <a href="#">Kirim ulang</a></p>
+
+          <div class="stepActions">
+            <button class="btn btn--secondary" type="button" onclick="goToStep(1)">Kembali</button>
+            <button class="btn" type="button" id="verifyBtn">Verifikasi</button>
+          </div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="step" id="step3">
+          <h2 class="card__title">Kata Sandi Baru</h2>
+          <p class="desc">
+        Buat kata sandi baru. Pastikan kata sandi tersebut berbeda dari kata sandi sebelumnya demi keamanan.          </p>
+
+          <form class="form" id="passwordForm">
+
+            <!-- New password -->
+            <div class="field">
+              <label for="newpass">Masukkan kata sandi baru</label>
+              <div class="inputIcon">
+                <input id="newpass" type="password" placeholder="Masukkan kata sandi baru anda" required />
+
+                <button class="eyeBtn" type="button" aria-label="toggle password"
+                  data-target="newpass" data-state="hidden">
+
+                  <svg class="icon-eye icon-eye-open" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"
+                          fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                    <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
+                          fill="none" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+
+                  <svg class="icon-eye icon-eye-off" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M3 3l18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M10.6 10.6a2.5 2.5 0 0 0 3.4 3.4" fill="none" stroke="currentColor" stroke-width="2"/>
+                    <path d="M6.5 6.5C4 8.5 2 12 2 12s3.5 7 10 7c2 0 3.8-.5 5.3-1.4"
+                          fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                    <path d="M9.5 4.3A10.8 10.8 0 0 1 12 5c6.5 0 10 7 10 7a18 18 0 0 1-3.2 4.5"
+                          fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- konfirmasi kata sandi -->
+            <div class="field">
+              <label for="confpass">Konfirmasi kata sandi</label>
+              <div class="inputIcon">
+                <input id="confpass" type="password" placeholder="Masukkan kembali kata sandi baru anda" required />
+
+                <button class="eyeBtn" type="button" aria-label="toggle password"
+                  data-target="confpass" data-state="hidden">
+
+                  <svg class="icon-eye icon-eye-open" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"
+                          fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                    <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
+                          fill="none" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+
+                  <svg class="icon-eye icon-eye-off" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M3 3l18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M10.6 10.6a2.5 2.5 0 0 0 3.4 3.4" fill="none" stroke="currentColor" stroke-width="2"/>
+                    <path d="M6.5 6.5C4 8.5 2 12 2 12s3.5 7 10 7c2 0 3.8-.5 5.3-1.4"
+                          fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                    <path d="M9.5 4.3A10.8 10.8 0 0 1 12 5c6.5 0 10 7 10 7a18 18 0 0 1-3.2 4.5"
+                          fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="stepActions">
+              <button class="btn btn--secondary" type="button" onclick="goToStep(2)">Kembali</button>
+              <button class="btn" type="submit">Kirim</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- STEP 4 -->
+        <div class="step step--success" id="step4">
+          <h2 class="card__title card__title--center">Kata sandi berhasil diubah!</h2>
+
+          <div class="checkCircle" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M20 6L9 17l-5-5" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+
+          <p class="successText">
+            Anda akan dialihkan ke<br>
+            halaman masuk masuk <span id="countdown">5</span> detik...
+          </p>
+
+          <p class="miniText">
+            Klik <a href="login.html">disini</a> jika Anda tidak dialihkan secara otomatis
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <script src="lupa-katasandi.js"></script>
+</body>
+</html>

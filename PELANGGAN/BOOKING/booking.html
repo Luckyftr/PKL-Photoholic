@@ -9,22 +9,20 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-  <title>Bookings - Photoholic</title>
+  <title>Pemesanan - Photoholic</title>
   <link rel="stylesheet" href="booking.css" />
 </head>
 <body>
 
   <!-- TOPBAR -->
   <header class="topbar">
-    <div class="topbar__left">
-      <img class="brand__logo" src="assets/logo-photoholic.png" alt="Photoholic">
-    </div>
+    <img class="brand__logo" src="assets/logo-photoholic.png" alt="Photoholic">
 
-    <nav class="topnav">
-      <a class="topnav__link" href="beranda.html">Home</a>
-      <a class="topnav__link" href="#">Studio</a>
-      <a class="topnav__link active" href="bookings.html">Bookings</a>
-      <a class="topnav__link" href="profile.html">Profil</a>
+   <nav class="topnav" aria-label="Main navigation">
+      <a class="topnav__link" href="beranda.html">Beranda</a>
+      <a class="topnav__link" href="studio.html">Studio</a>
+      <a class="topnav__link" href="blog.html">Blog</a>
+      <a class="topnav__link is-active" href="booking.html">Pemesanan</a>
     </nav>
 
     <button class="topbar__user" type="button" aria-label="User menu">
@@ -41,8 +39,8 @@
 
     <!-- HEADER -->
     <section class="bookingHead">
-      <h1>Bookings</h1>
-      <p>Pilih slot studio favoritmu dan selesaikan booking dengan cepat ✨</p>
+      <h1>Pemesanan</h1>
+      <p>Pilih slot studio favoritmu dan selesaikan Pemesanan dengan cepat ✨</p>
     </section>
 
     <!-- STEPS -->
@@ -65,7 +63,7 @@
         </div>
 
         <div class="studioPreview">
-          <img src="assets/studio-classy.jpg" alt="Studio Classy">
+          <img src="assets/studio-classy.jpeg" alt="Studio Classy">
           <div class="studioPreview__info">
             <span class="studioBadge">Tersedia</span>
             <h3 id="selectedStudioTitle">Studio Classy</h3>
@@ -87,7 +85,7 @@
           </div>
 
           <div class="inputGroup">
-            <label for="tanggal">Tanggal Booking</label>
+            <label for="tanggal">Tanggal Pemesanan</label>
             <input type="date" id="tanggal">
           </div>
         </div>
@@ -119,7 +117,7 @@
       <div class="bookingStep" id="step2">
         <div class="sectionTitle">
           <h2>Detail Pemesanan</h2>
-          <p>Lengkapi data booking kamu</p>
+          <p>Lengkapi data Pemesanan kamu</p>
         </div>
 
         <form class="detailForm" id="bookingForm">
@@ -150,7 +148,7 @@
         </form>
 
         <div class="summaryBox">
-          <h3>Ringkasan Booking</h3>
+          <h3>Ringkasan Pemesanan</h3>
           <div class="summaryRow"><span>Studio</span><span id="sumStudio">Studio Classy</span></div>
           <div class="summaryRow"><span>Tanggal</span><span id="sumTanggal">-</span></div>
           <div class="summaryRow"><span>Jam</span><span id="sumJam">-</span></div>
@@ -168,12 +166,12 @@
       <div class="bookingStep" id="step3">
         <div class="sectionTitle">
           <h2>Pembayaran QRIS</h2>
-          <p>Scan QRIS berikut untuk menyelesaikan booking</p>
+          <p>Scan QRIS berikut untuk menyelesaikan Pemesanan</p>
         </div>
 
         <div class="paymentWrap">
           <div class="paymentBox">
-            <img src="assets/qris.png" alt="QRIS Pembayaran" class="qrisImg">
+            <img src="assets/qris_photoholic.jpeg" alt="QRIS Pembayaran" class="qrisImg">
             <div class="paymentInfo">
               <p><strong>ID Pembayaran:</strong> PAY240301</p>
               <p><strong>Studio:</strong> <span id="payStudio">Studio Classy</span></p>
@@ -183,7 +181,7 @@
           </div>
 
           <div class="paymentNote">
-            <p>⚠ Setelah pembayaran berhasil, booking tidak dapat dibatalkan.</p>
+            <p>⚠ Setelah pembayaran berhasil, Pemesanan tidak dapat dibatalkan.</p>
             <p>Status akan otomatis berubah menjadi <strong>Berhasil</strong> atau <strong>Gagal</strong>.</p>
           </div>
         </div>
@@ -202,7 +200,7 @@
         <div class="statusWrap" id="statusWrap">
           <div class="statusIcon success" id="statusIcon">✓</div>
           <h2 id="statusTitle">Pembayaran Berhasil</h2>
-          <p id="statusText">Booking kamu berhasil dibuat dan sudah masuk ke jadwal saya.</p>
+          <p id="statusText">Pemesanan kamu berhasil dibuat dan sudah masuk ke jadwal saya.</p>
 
           <div class="statusSummary">
             <div class="summaryRow"><span>Studio</span><span id="statusStudio">Studio Classy</span></div>
@@ -220,8 +218,8 @@
       <!-- STEP 5 -->
       <div class="bookingStep" id="step5">
         <div class="sectionTitle">
-          <h2>Invoice Booking</h2>
-          <p>Berikut nota booking kamu</p>
+          <h2>Invoice Pemesanan</h2>
+          <p>Berikut nota Pemesanan kamu</p>
         </div>
 
         <div class="miniInvoice">
@@ -244,7 +242,7 @@
             </div>
 
             <div class="right">
-              <h4>Booking Info:</h4>
+              <h4>Informasi Pemesanan:</h4>
               <p id="invTanggal">-</p>
               <p id="invStudio">-</p>
               <p id="invJam">-</p>
@@ -416,7 +414,7 @@
       document.getElementById("statusIcon").textContent = "✓";
       document.getElementById("statusIcon").className = "statusIcon success";
       document.getElementById("statusTitle").textContent = "Pembayaran Berhasil";
-      document.getElementById("statusText").textContent = "Booking kamu berhasil dibuat dan sudah masuk ke jadwal saya.";
+      document.getElementById("statusText").textContent = "Pemesanan kamu berhasil dibuat dan sudah masuk ke jadwal saya.";
       showStep(4);
     });
 

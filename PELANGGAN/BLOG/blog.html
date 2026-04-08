@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <title>Blog Photoholic</title>
+  <link rel="stylesheet" href="blog.css">
+</head>
+<body>
+
+  <!-- ===================== TOPBAR ===================== -->
+  <header class="topbar">
+    <img class="brand__logo" src="assets/logo-photoholic.png" alt="Photoholic">
+
+    <nav class="topnav" aria-label="Main navigation">
+      <a class="topnav__link" href="beranda.html">Beranda</a>
+      <a class="topnav__link" href="studio.html">Studio</a>
+      <a class="topnav__link is-active" href="blog-user.html">Blog</a>
+      <a class="topnav__link" href="booking.html">Pemesanan</a>
+    </nav>
+
+    <a href="profile-user.html" class="topbar__user" aria-label="Profil Pengguna">
+      <span class="topbar__userCircle">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12Z" fill="none" stroke="currentColor" stroke-width="2"/>
+          <path d="M4 21c1.8-4 14.2-4 16 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </span>
+    </a>
+  </header>
+
+  <!-- ===================== HERO BLOG ===================== -->
+  <section class="blogHero">
+    <div class="blogHero__text">
+      <p class="heroBadge">Blog Photoholic</p>
+      <h1>Inspirasi Foto, Tips Pose, dan Cerita Seru di Sini ✨</h1>
+      <p>
+        Temukan ide foto aesthetic, tips outfit, referensi pose, sampai rekomendasi studio favoritmu.
+      </p>
+
+      <div class="heroActions">
+        <a href="#artikelTerbaru" class="heroBtn heroBtn--primary">Lihat Artikel</a>
+        <a href="booking.html" class="heroBtn heroBtn--ghost">Booking Sekarang</a>
+      </div>
+    </div>
+
+    <div class="blogHero__image">
+      <img src="assets/blog-hero.png" alt="Blog Photoholic">
+    </div>
+  </section>
+
+  <!-- ===================== SEARCH + KATEGORI ===================== -->
+  <section class="blogToolbar">
+    <div class="searchBox">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/>
+        <path d="M20 20l-3.5-3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <input type="text" id="searchInput" placeholder="Cari artikel, tips pose, outfit, studio..." />
+    </div>
+
+    <div class="categoryChips" id="categoryChips">
+      <button class="chip active" data-category="semua">Semua</button>
+      <button class="chip" data-category="tips">Tips Foto</button>
+      <button class="chip" data-category="pose">Pose</button>
+      <button class="chip" data-category="outfit">Outfit</button>
+      <button class="chip" data-category="studio">Studio</button>
+      <button class="chip" data-category="event">Event</button>
+    </div>
+  </section>
+
+  <!-- ===================== FEATURED ===================== -->
+  <section class="featuredSection">
+    <div class="sectionHead">
+      <div>
+        <p class="sectionMini">Pilihan Utama</p>
+        <h2>Artikel Unggulan</h2>
+      </div>
+    </div>
+
+    <div class="featuredCard articleCard" data-category="tips">
+      <div class="featuredCard__image">
+        <img src="assets/blog-featured.jpg" alt="Artikel unggulan">
+      </div>
+
+      <div class="featuredCard__content">
+        <span class="articleTag">Tips Foto</span>
+        <h3>7 Tips Foto di Photobooth Biar Hasilnya Aesthetic dan Nggak Kaku</h3>
+        <p>
+          Masih bingung mau pose gimana? Tenang, di artikel ini ada tips simpel biar hasil fotomu lebih natural, estetik, dan Instagramable.
+        </p>
+
+        <div class="articleMeta">
+          <span>12 April 2026</span>
+          <span>•</span>
+          <span>5 menit baca</span>
+        </div>
+
+        <a href="detail-blog.html" class="readBtn">Baca Selengkapnya</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== MAIN CONTENT ===================== -->
+  <main class="blogLayout" id="artikelTerbaru">
+
+    <!-- LEFT CONTENT -->
+    <section class="blogContent">
+      <div class="sectionHead">
+        <div>
+          <p class="sectionMini">Update Terbaru</p>
+          <h2>Artikel Terbaru</h2>
+        </div>
+      </div>
+
+      <div class="articleGrid" id="articleGrid">
+
+        <!-- CARD 1 -->
+        <article class="articleCard" data-category="pose" data-title="pose couple lucu">
+          <div class="articleThumb">
+            <img src="assets/blog1.jpg" alt="Pose Couple">
+          </div>
+          <div class="articleBody">
+            <span class="articleTag">Pose</span>
+            <h3>10 Ide Pose Couple yang Gemas Buat Hasil Foto Makin Manis</h3>
+            <p>
+              Bingung mau gaya apa pas foto berdua? Ini dia inspirasi pose couple yang simpel tapi hasilnya tetap lucu dan estetik.
+            </p>
+            <div class="articleMeta">
+              <span>10 April 2026</span>
+              <span>•</span>
+              <span>4 menit baca</span>
+            </div>
+            <a href="detail-blog.html" class="readBtn readBtn--small">Baca Artikel</a>
+          </div>
+        </article>
+
+        <!-- CARD 2 -->
+        <article class="articleCard" data-category="outfit" data-title="outfit warna pastel studio">
+          <div class="articleThumb">
+            <img src="assets/blog2.jpg" alt="Outfit Pastel">
+          </div>
+          <div class="articleBody">
+            <span class="articleTag">Outfit</span>
+            <h3>Rekomendasi Outfit Warna Pastel yang Cocok Buat Foto Studio</h3>
+            <p>
+              Kalau kamu suka hasil foto yang soft dan clean, warna pastel bisa jadi pilihan terbaik buat outfit photoshoot kamu.
+            </p>
+            <div class="articleMeta">
+              <span>08 April 2026</span>
+              <span>•</span>
+              <span>3 menit baca</span>
+            </div>
+            <a href="detail-blog.html" class="readBtn readBtn--small">Baca Artikel</a>
+          </div>
+        </article>
+
+        <!-- CARD 3 -->
+        <article class="articleCard" data-category="studio" data-title="studio classy photoholic">
+          <div class="articleThumb">
+            <img src="assets/blog3.jpg" alt="Studio Classy">
+          </div>
+          <div class="articleBody">
+            <span class="articleTag">Studio</span>
+            <h3>Kenalan Sama Studio Classy, Spot Favorit Buat Foto Elegan</h3>
+            <p>
+              Buat kamu yang suka konsep clean, classy, dan mewah, studio ini bisa jadi salah satu spot favorit di Photoholic.
+            </p>
+            <div class="articleMeta">
+              <span>06 April 2026</span>
+              <span>•</span>
+              <span>4 menit baca</span>
+            </div>
+            <a href="detail-blog.html" class="readBtn readBtn--small">Baca Artikel</a>
+          </div>
+        </article>
+
+        <!-- CARD 4 -->
+        <article class="articleCard" data-category="tips" data-title="foto ramai rame bestie">
+          <div class="articleThumb">
+            <img src="assets/blog4.jpg" alt="Foto Bestie">
+          </div>
+          <div class="articleBody">
+            <span class="articleTag">Tips Foto</span>
+            <h3>Tips Foto Rame-Rame Bareng Bestie Biar Nggak Berantakan</h3>
+            <p>
+              Foto bareng rame-rame itu seru, tapi sering bingung penataannya. Ini dia trik biar hasilnya tetap rapi dan kece.
+            </p>
+            <div class="articleMeta">
+              <span>05 April 2026</span>
+              <span>•</span>
+              <span>5 menit baca</span>
+            </div>
+            <a href="detail-blog.html" class="readBtn readBtn--small">Baca Artikel</a>
+          </div>
+        </article>
+
+        <!-- CARD 5 -->
+        <article class="articleCard" data-category="event" data-title="foto ulang tahun photobooth">
+          <div class="articleThumb">
+            <img src="assets/blog5.jpg" alt="Birthday Shoot">
+          </div>
+          <div class="articleBody">
+            <span class="articleTag">Event</span>
+            <h3>Ide Foto Ulang Tahun Simpel Tapi Tetap Lucu dan Berkesan</h3>
+            <p>
+              Nggak harus ribet buat bikin foto ulang tahun yang memorable. Yuk lihat inspirasi konsepnya di sini.
+            </p>
+            <div class="articleMeta">
+              <span>03 April 2026</span>
+              <span>•</span>
+              <span>4 menit baca</span>
+            </div>
+            <a href="detail-blog.html" class="readBtn readBtn--small">Baca Artikel</a>
+          </div>
+        </article>
+
+        <!-- CARD 6 -->
+        <article class="articleCard" data-category="pose" data-title="pose sendiri solo aesthetic">
+          <div class="articleThumb">
+            <img src="assets/blog6.jpg" alt="Pose Solo">
+          </div>
+          <div class="articleBody">
+            <span class="articleTag">Pose</span>
+            <h3>Pose Sendiri Anti Mati Gaya Buat Hasil Foto Solo yang Kece</h3>
+            <p>
+              Mau foto sendiri tapi bingung harus ngapain? Tenang, ada banyak pose simpel yang tetap bikin hasil fotomu keren.
+            </p>
+            <div class="articleMeta">
+              <span>01 April 2026</span>
+              <span>•</span>
+              <span>3 menit baca</span>
+            </div>
+            <a href="detail-blog.html" class="readBtn readBtn--small">Baca Artikel</a>
+          </div>
+        </article>
+
+      </div>
+
+      <!-- EMPTY STATE -->
+      <div class="emptyState" id="emptyState" hidden>
+        <img src="assets/logo-icon.png" alt="Kosong">
+        <h3>Artikel tidak ditemukan</h3>
+        <p>Coba gunakan kata kunci lain atau pilih kategori yang berbeda yaa.</p>
+      </div>
+    </section>
+
+    <!-- RIGHT SIDEBAR -->
+    <aside class="blogSidebar">
+
+      <div class="sideCard">
+        <div class="sideCard__head">
+          <h3>Artikel Populer</h3>
+        </div>
+
+        <div class="popularList">
+          <a href="detail-blog.html" class="popularItem">
+            <span class="popularItem__number">01</span>
+            <div>
+              <h4>Tips Pose 4 Orang Biar Hasilnya Nggak Kaku</h4>
+              <p>Pose • 4 menit baca</p>
+            </div>
+          </a>
+
+          <a href="detail-blog.html" class="popularItem">
+            <span class="popularItem__number">02</span>
+            <div>
+              <h4>Warna Outfit yang Cocok Buat Tema Ice Cream</h4>
+              <p>Outfit • 3 menit baca</p>
+            </div>
+          </a>
+
+          <a href="detail-blog.html" class="popularItem">
+            <span class="popularItem__number">03</span>
+            <div>
+              <h4>Studio Glow in The Dark Paling Cocok Buat Siapa?</h4>
+              <p>Studio • 5 menit baca</p>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <div class="sideCard">
+        <div class="sideCard__head">
+          <h3>Tips Cepat</h3>
+        </div>
+
+        <ul class="quickTips">
+          <li>Gunakan outfit senada biar hasil foto lebih harmonis.</li>
+          <li>Datang 10–15 menit lebih awal sebelum sesi dimulai.</li>
+          <li>Simpan referensi pose sebelum masuk studio.</li>
+          <li>Pilih studio sesuai mood dan tema foto kamu.</li>
+        </ul>
+      </div>
+
+      <div class="promoCard">
+        <p class="promoBadge">Photoholic Reminder</p>
+        <h3>Sudah siap foto seru hari ini? 📸</h3>
+        <p>Booking studio favoritmu sekarang sebelum jam dan tema yang kamu mau penuh.</p>
+        <a href="booking.html" class="promoBtn">Booking Sekarang</a>
+      </div>
+
+    </aside>
+  </main>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="footer">
+    <div class="footer__left">
+      <img src="assets/logo-photoholic.png" alt="Photoholic">
+      <p>Photoholic — tempat seru buat abadikan momenmu.</p>
+    </div>
+
+    <div class="footer__right">
+      <a href="beranda.html">Beranda</a>
+      <a href="studio.html">Studio</a>
+      <a href="blog-user.html">Blog</a>
+      <a href="booking.html">Pemesanan</a>
+    </div>
+  </footer>
+
+  <script src="blog.js"></script>
+</body>
+</html>

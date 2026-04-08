@@ -16,15 +16,13 @@
 
   <!-- TOPBAR -->
   <header class="topbar">
-    <div class="topbar__left">
-      <img class="brand__logo" src="assets/logo-photoholic.png" alt="Photoholic">
-    </div>
+    <img class="brand__logo" src="assets/logo-photoholic.png" alt="Photoholic">
 
     <nav class="topnav" aria-label="Main navigation">
-      <a class="topnav__link active" href="#">Home</a>
-      <a class="topnav__link" href="#">Studio</a>
-      <a class="topnav__link" href="#">Blog</a>
-      <a class="topnav__link" href="#">Bookings</a>
+      <a class="topnav__link is-active" href="beranda.html">Beranda</a>
+      <a class="topnav__link" href="studio.html">Studio</a>
+      <a class="topnav__link" href="blog.html">Blog</a>
+      <a class="topnav__link" href="booking.html">Pemesanan</a>
     </nav>
 
     <button class="topbar__user" type="button" aria-label="User menu">
@@ -51,7 +49,11 @@
     </section>
 
     <!-- BANNER -->
-    <section class="bannerCard">
+<section class="bannerSlider" id="bannerSlider">
+  <div class="bannerTrack" id="bannerTrack">
+
+    <!-- SLIDE 1 -->
+    <div class="bannerCard active">
       <div class="bannerText">
         <p class="bannerBadge">Cheers!!!</p>
         <h2>Happy Weekend!</h2>
@@ -61,7 +63,52 @@
       <div class="bannerImage">
         <img src="assets/banner-weekend.png" alt="Happy Weekend">
       </div>
-    </section>
+    </div>
+
+    <!-- SLIDE 2 -->
+    <div class="bannerCard">
+      <div class="bannerText">
+        <p class="bannerBadge">Photoholic Promo</p>
+        <h2>Diskon Spesial Hari Ini</h2>
+        <p>Nikmati promo booking studio pilihan dengan harga lebih hemat 🎉</p>
+      </div>
+
+      <div class="bannerImage">
+        <img src="assets/banner-promo.png" alt="Promo Photoholic">
+      </div>
+    </div>
+
+    <!-- SLIDE 3 -->
+    <div class="bannerCard">
+      <div class="bannerText">
+        <p class="bannerBadge">New Update</p>
+        <h2>Studio Baru Telah Hadir</h2>
+        <p>Cobain spot foto terbaru dengan konsep yang lebih aesthetic 📸</p>
+      </div>
+
+      <div class="bannerImage">
+        <img src="assets/banner-studio.png" alt="Studio Baru">
+      </div>
+    </div>
+
+  </div>
+
+  <!-- tombol panah -->
+  <button class="bannerNav bannerNav--prev" id="prevBanner" aria-label="Sebelumnya">
+    &#10094;
+  </button>
+
+  <button class="bannerNav bannerNav--next" id="nextBanner" aria-label="Berikutnya">
+    &#10095;
+  </button>
+
+  <!-- dots -->
+  <div class="bannerDots" id="bannerDots">
+    <button class="bannerDot active" data-slide="0"></button>
+    <button class="bannerDot" data-slide="1"></button>
+    <button class="bannerDot" data-slide="2"></button>
+  </div>
+</section>
 
     <!-- FILTER -->
     <section class="filterBar">
@@ -81,7 +128,7 @@
       <!-- CARD 1 -->
       <article class="studioCard">
         <div class="studioCard__img">
-          <img src="assets/studio-classy.jpg" alt="Studio Classy">
+          <img src="assets/studio-classy.jpeg" alt="Studio Classy">
         </div>
 
         <div class="studioCard__content">
@@ -107,7 +154,7 @@
       <!-- CARD 2 -->
       <article class="studioCard">
         <div class="studioCard__img">
-          <img src="assets/studio-classy.jpg" alt="Studio Spotlight">
+          <img src="assets/studio-spotlight.jpeg" alt="Studio Spotlight">
         </div>
 
         <div class="studioCard__content">
@@ -133,7 +180,7 @@
       <!-- CARD 3 -->
       <article class="studioCard">
         <div class="studioCard__img">
-          <img src="assets/studio-classy.jpg" alt="Studio Oven">
+          <img src="assets/studio-oven.png" alt="Studio Oven">
         </div>
 
         <div class="studioCard__content">
@@ -159,7 +206,7 @@
       <!-- CARD 4 -->
       <article class="studioCard">
         <div class="studioCard__img">
-          <img src="assets/studio-classy.jpg" alt="Studio Lavatory">
+          <img src="assets/studio-lavatory.png" alt="Studio Lavatory">
         </div>
 
         <div class="studioCard__content">
@@ -185,7 +232,7 @@
       <!-- CARD 5 -->
       <article class="studioCard">
         <div class="studioCard__img">
-          <img src="assets/studio-classy.jpg" alt="Studio Aquarium">
+          <img src="assets/studio-aquarium.webp" alt="Studio Aquarium">
         </div>
 
         <div class="studioCard__content">
@@ -211,7 +258,7 @@
       <!-- CARD 6 -->
       <article class="studioCard">
         <div class="studioCard__img">
-          <img src="assets/studio-classy.jpg" alt="Studio Classy">
+          <img src="assets/studio-classy.jpeg" alt="Studio Classy">
         </div>
 
         <div class="studioCard__content">

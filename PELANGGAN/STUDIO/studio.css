@@ -51,9 +51,9 @@ body{
   font-size:14px;
 }
 
-.topnav__link.is-active{
-  text-decoration:underline;
-  text-underline-offset:4px;
+.topnav__link.is-active {
+  border-bottom: 3px solid var(--accent-red);
+  padding-bottom: 5px;
 }
 
 .topbar__user{

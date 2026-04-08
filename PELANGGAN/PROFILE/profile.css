@@ -26,7 +26,12 @@ body{
   display:flex;
   align-items:center;
   padding:0 34px;
-  gap: 22px;
+  gap:22px;
+}
+
+.brand__logo{
+  height:46px;
+  display:block;
 }
 
 .topnav{
@@ -36,22 +41,37 @@ body{
   align-items:center;
 }
 
-.brand__logo{ height:46px; }
-
 .topnav__link{
-  color: var(--accent-red);
+  color:var(--accent-red);
   text-decoration:none;
   font-weight:700;
   font-size:14px;
+  position:relative;
+  padding:6px 0;
+}
+
+.topnav__link:hover{
+  opacity:.9;
+}
+
+.topnav__link.is-active::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:-4px;
+  height:3px;
+  border-radius:999px;
+  background:var(--accent-red);
 }
 
 .topbar__user{
-  margin-left: 14px;
-  border: none;
-  background: transparent;
-  padding: 0;
-  line-height: 0;
-  cursor: pointer;
+  margin-left:14px;
+  border:none;
+  background:transparent;
+  padding:0;
+  line-height:0;
+  cursor:pointer;
 }
 
 .topbar__userCircle{
@@ -61,13 +81,20 @@ body{
   border:3px solid var(--accent-red);
   display:grid;
   place-items:center;
-  color: var(--accent-red);
+  color:var(--accent-red);
+  background:#fff3f4;
 }
 
 .topbar__userCircle svg{
   width:22px;
   height:22px;
   display:block;
+}
+
+.topbar__user.is-active .topbar__userCircle{
+  border-color:var(--active-green);
+  color:var(--active-green);
+  background:#ffffff;
 }
 
 /* PAGE GRID */

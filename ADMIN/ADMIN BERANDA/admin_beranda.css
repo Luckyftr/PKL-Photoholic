@@ -53,6 +53,11 @@ body{
   text-decoration:none;
 }
 
+.topnav__link.is-active {
+  border-bottom: 3px solid var(--accent-red);
+  padding-bottom: 5px;
+}
+
 .topbar__user{
   margin-left:14px;
   border:none;

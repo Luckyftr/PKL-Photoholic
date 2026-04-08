@@ -1,0 +1,351 @@
+:root{
+  --pink-bar: #f4b9bf;
+  --pink-card: #f3b3b8;
+  --shadow-blue: rgba(120,160,255,.55);
+  --teal-btn: #3f6f75;
+  --text: #2d2d2d;
+  --success: #2e8b78;
+  --danger: #ff5c6f;
+}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  font-family:'Commissioner', sans-serif;
+  background:#fff;
+  color:var(--text);
+}
+
+/* TOPBAR */
+.topbar{
+  height:70px;
+  width:100%;
+  background:var(--pink-bar);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 40px;
+}
+
+.brand__logo{
+  height:46px;
+  width:auto;
+  object-fit:contain;
+}
+
+.help{
+  color:#ff5c6f;
+  font-weight:700;
+  text-decoration:none;
+  font-size:14px;
+}
+
+/* LAYOUT */
+.content{
+  display:grid;
+  grid-template-columns:1.1fr .9fr;
+  align-items:center;
+  width:min(1200px,100%);
+  margin:0 auto;
+  padding:40px 60px;
+  gap:30px;
+}
+
+/* LEFT */
+.left{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.logoGroup{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+.left__illus{
+  width:min(480px,95%);
+  height:auto;
+  margin-bottom:-90px;
+}
+
+.left__bigLogo{
+  width:min(420px,80%);
+  height:auto;
+}
+
+/* RIGHT */
+.right{
+  display:flex;
+  justify-content:center;
+}
+
+/* CARD */
+.card{
+  width:min(550px,100%);
+  background:var(--pink-card);
+  border-radius:12px;
+  padding:30px 26px 26px;
+  box-shadow:10px 10px 0 var(--shadow-blue);
+  min-height:460px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+}
+
+/* STEP */
+.step{
+  display:none;
+  width:100%;
+}
+
+.step.active{
+  display:block;
+}
+
+.card__title{
+  color:#fff;
+  font-weight:900;
+  font-size:30px;
+  margin-bottom:10px;
+  text-shadow:0 2px 0 rgba(0,0,0,.15);
+}
+
+.card__title--center{
+  text-align:center;
+}
+
+.desc{
+  color:rgba(255,255,255,.9);
+  font-size:14px;
+  line-height:1.45;
+  margin-bottom:18px;
+}
+
+/* FORM */
+.form{
+  display:grid;
+  gap:14px;
+}
+
+.field{
+  display:grid;
+  gap:6px;
+}
+
+.field label{
+  color:#fff;
+  font-size:12px;
+  font-weight:700;
+}
+
+.field input{
+  width:100%;
+  height:42px;
+  padding:0 14px;
+  border-radius:10px;
+  border:1px solid rgba(0,0,0,.12);
+  outline:none;
+  background:#fff;
+  font-size:13px;
+}
+
+/* OTP STEP */
+.otpGroup{
+  display:flex;
+  justify-content:center;
+  gap:14px;
+  margin:20px 0 14px;
+}
+
+.otp-input{
+  width:58px;
+  height:58px;
+  border-radius:14px;
+  border:1px solid rgba(0,0,0,.12);
+  background:#fff;
+  text-align:center;
+  font-size:24px;
+  font-weight:800;
+  color:#444;
+  outline:none;
+}
+
+.otp-input:focus{
+  border-color:#ff5c6f;
+  box-shadow:0 0 0 3px rgba(255,92,111,.12);
+}
+
+.otpInfo{
+  text-align:center;
+  font-size:13px;
+  color:rgba(255,255,255,.95);
+  margin-bottom:18px;
+}
+
+.otpInfo a{
+  color:#fff;
+  font-weight:800;
+  text-decoration:underline;
+}
+
+/* STEP ACTIONS */
+.stepActions{
+  display:flex;
+  gap:12px;
+  margin-top:8px;
+}
+
+.stepActions .btn{
+  flex:1;
+}
+
+/* PASSWORD ICON */
+.inputIcon{
+  position:relative;
+  width:100%;
+}
+
+.inputIcon input{
+  padding-right:50px;
+}
+
+.eyeBtn{
+  position:absolute;
+  right:10px;
+  top:50%;
+  transform:translateY(-50%);
+  width:34px;
+  height:34px;
+  display:grid;
+  place-items:center;
+  padding:0;
+  border:none;
+  background:transparent;
+  cursor:pointer;
+  color:rgba(0,0,0,.55);
+}
+
+.eyeBtn:hover{
+  color:rgba(0,0,0,.8);
+}
+
+.icon-eye{
+  width:18px;
+  height:18px;
+  display:none;
+}
+
+.eyeBtn[data-state="hidden"] .icon-eye-open{ display:block; }
+.eyeBtn[data-state="shown"] .icon-eye-off{ display:block; }
+
+/* BUTTON */
+.btn{
+  margin-top:6px;
+  width:100%;
+  height:42px;
+  border:none;
+  border-radius:8px;
+  background:var(--teal-btn);
+  color:#fff;
+  font-weight:800;
+  cursor:pointer;
+  font-size:14px;
+  transition:.2s ease;
+}
+
+.btn:hover{
+  transform:translateY(-1px);
+  opacity:.96;
+}
+
+.btn--secondary{
+  background:#fff;
+  color:var(--danger);
+  border:1.5px solid var(--danger);
+}
+
+/* SUCCESS */
+.step--success{
+  text-align:center;
+}
+
+.checkCircle{
+  width:110px;
+  height:110px;
+  border-radius:999px;
+  background:var(--success);
+  display:grid;
+  place-items:center;
+  margin:12px auto 20px;
+}
+
+.checkCircle svg{
+  width:58px;
+  height:58px;
+}
+
+.successText{
+  color:rgba(255,255,255,.95);
+  font-size:16px;
+  font-weight:600;
+  line-height:1.5;
+  margin-bottom:14px;
+}
+
+.miniText{
+  font-size:14px;
+  color:rgba(255,255,255,.9);
+  line-height:1.4;
+}
+
+.miniText a{
+  color:#fff;
+  font-weight:900;
+  text-decoration:underline;
+}
+
+/* RESPONSIVE */
+@media (max-width:900px){
+  .content{
+    grid-template-columns:1fr;
+    padding:30px 20px;
+  }
+
+  .left{
+    order:2;
+  }
+
+  .right{
+    order:1;
+  }
+
+  .left__illus{
+    margin-bottom:-18px;
+  }
+
+  .card{
+    min-height:auto;
+    padding:28px 20px 24px;
+  }
+
+  .otpGroup{
+    gap:10px;
+  }
+
+  .otp-input{
+    width:50px;
+    height:50px;
+    font-size:22px;
+  }
+
+  .stepActions{
+    flex-direction:column;
+  }
+}

@@ -14,15 +14,17 @@ return new class extends Migration
         Schema::create('bookings', function (Blueprint $table) {
             $table->id();
             $table->string('booking_code')->unique();
-            $table->foreignId('user_id')->constrained();
-            $table->foreignId('studio_id')->constrained();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('studio_id')->constrained()->cascadeOnDelete();
             $table->date('booking_date');
             $table->time('start_time');
             $table->time('end_time');
-            $table->string('payment_method');
+            $table->enum('payment_method', ['cash', 'qris', 'voucher']);
             $table->text('notes')->nullable();
-            $table->enum('status', ['pending', 'confirmed', 'completed', 'canceled']);
+            $table->enum('status', ['pending', 'confirmed', 'completed', 'canceled'])
+                  ->default('pending');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

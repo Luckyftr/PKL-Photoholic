@@ -6,39 +6,89 @@ use App\Http\Controllers\Controller;
 use App\Models\Blog;
 use App\Models\ActivityLog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
-class BlogController extends Controller {
-    public function index() {
+class BlogController extends Controller
+{
+    public function index()
+    {
         $blogs = Blog::latest()->get();
         return view('admin.blog.index', compact('blogs'));
     }
 
-    public function store(Request $request) {
-        $request->validate([
-            'title' => 'required',
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'title' => 'required|string|max:255',
+            'category' => 'required|in:promo,event,pengumuman,update_studio',
+            'publish_date' => 'nullable|date',
+            'short_caption' => 'required|string|max:255',
             'content' => 'required',
-            'photo' => 'image|max:2048'
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'status' => 'required|in:draft,published',
         ]);
 
-        $path = $request->file('photo') ? $request->file('photo')->store('blogs', 'public') : null;
+        // upload foto
+        if ($request->hasFile('photo')) {
+            $data['photo'] = $request->file('photo')->store('blogs', 'public');
+        }
 
-        // Poin 6: Handling checkbox sync instagram
-        $syncInsta = $request->has('sync_insta') ? true : false;
+        // checkbox IG
+        $data['sync_insta'] = $request->has('sync_insta');
 
-        Blog::create($request->all() + [
-            'photo' => $path,
-            'sync_insta' => $syncInsta,
-            'publish_date' => now()
-        ]);
+        // publish_date otomatis kalau kosong & status publish
+        if ($data['status'] === 'published' && empty($data['publish_date'])) {
+            $data['publish_date'] = now();
+        }
 
-        ActivityLog::record('Buat Blog', 'Menulis konten blog baru: ' . $request->title);
+        $blog = Blog::create($data);
 
-        return back()->with('success', 'Konten blog berhasil dipublish!');
+        ActivityLog::record('Buat Blog', 'Menulis konten blog: ' . $blog->title);
+
+        return back()->with('success', 'Konten blog berhasil disimpan!');
     }
 
-    public function destroy(Blog $blog) {
+    public function update(Request $request, Blog $blog)
+    {
+        $data = $request->validate([
+            'title' => 'required|string|max:255',
+            'category' => 'required|in:promo,event,pengumuman,update_studio',
+            'publish_date' => 'nullable|date',
+            'short_caption' => 'required|string|max:255',
+            'content' => 'required',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'status' => 'required|in:draft,published',
+        ]);
+
+        // update foto
+        if ($request->hasFile('photo')) {
+            if ($blog->photo) {
+                Storage::disk('public')->delete($blog->photo);
+            }
+            $data['photo'] = $request->file('photo')->store('blogs', 'public');
+        }
+
+        // checkbox IG
+        $data['sync_insta'] = $request->has('sync_insta');
+
+        // auto set publish_date kalau publish
+        if ($data['status'] === 'published' && empty($data['publish_date'])) {
+            $data['publish_date'] = now();
+        }
+
+        $blog->update($data);
+
+        ActivityLog::record('Update Blog', 'Mengubah konten blog: ' . $blog->title);
+
+        return back()->with('success', 'Konten blog berhasil diperbarui!');
+    }
+
+    public function destroy(Blog $blog)
+    {
         $blog->delete();
+
         ActivityLog::record('Hapus Blog', 'Menghapus konten blog: ' . $blog->title);
-        return back();
+
+        return back()->with('success', 'Konten blog berhasil dihapus!');
     }
 }

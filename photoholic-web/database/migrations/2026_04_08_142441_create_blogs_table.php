@@ -15,13 +15,19 @@ return new class extends Migration
             $table->id();
             $table->string('photo')->nullable();
             $table->string('title');
-            $table->string('category');
+            $table->enum('category', [
+                'promo',
+                'event',
+                'pengumuman',
+                'update_studio'
+            ]);
             $table->date('publish_date');
             $table->string('short_caption');
             $table->text('content');
             $table->boolean('sync_insta')->default(false);
-            $table->string('status');
+            $table->enum('status', ['draft', 'published'])->default('draft');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

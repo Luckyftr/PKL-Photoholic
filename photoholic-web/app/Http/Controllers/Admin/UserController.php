@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
-use App\Models\ActivityLog; // ⬅️ jangan lupa ini
+use App\Models\ActivityLog; 
 
 class UserController extends Controller
 {
@@ -27,7 +27,7 @@ class UserController extends Controller
 
         $user->update($data);
 
-        // ✅ Tambahan activity log
+        // Tambahan activity log
         ActivityLog::record(
             'Update User',
             'Mengubah data pengguna: ' . $user->name
@@ -40,7 +40,7 @@ class UserController extends Controller
     {
         $user->delete();
 
-        // (opsional tapi disarankan 🔥)
+        // (opsional tapi disarankan)
         ActivityLog::record(
             'Delete User',
             'Menghapus pengguna: ' . $user->name

@@ -13,15 +13,17 @@ return new class extends Migration
     {
         Schema::create('studios', function (Blueprint $table) {
             $table->id();
+            $table->string('studio_code')->unique();
             $table->string('photo')->nullable();
             $table->string('name');
             $table->integer('max_people_per_session');
             $table->integer('session_duration');
             $table->integer('photo_strips');
-            $table->string('paper_type');
+            $table->enum('paper_type', ['negative_film', 'photo_paper'])->default('photo_paper');
             $table->decimal('price', 12, 2);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

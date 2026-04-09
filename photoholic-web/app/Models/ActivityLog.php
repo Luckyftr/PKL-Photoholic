@@ -6,18 +6,23 @@ use Illuminate\Database\Eloquent\Model;
 
 class ActivityLog extends Model
 {
-    protected $fillable = ['user_id', 'activity', 'description'];
+    protected $fillable = [
+        'user_id',
+        'activity',
+        'description',
+    ];
 
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 
-    // Helper function agar cara manggilnya gampang
-    public static function record($activity, $description = null) {
+    public static function record($activity, $description = null)
+    {
         self::create([
             'user_id' => auth()->id(),
             'activity' => $activity,
-            'description' => $description
+            'description' => $description,
         ]);
     }
 }

@@ -13,7 +13,7 @@ class StudioController extends Controller
     public function index()
     {
         $studios = Studio::latest()->get();
-        return view('admin.studio.index', compact('studios'));
+        return view('admin.studios.index', compact('studios'));
     }
 
     public function store(Request $request)

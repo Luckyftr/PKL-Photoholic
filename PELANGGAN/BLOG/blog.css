@@ -299,6 +299,7 @@ body{
 ========================= */
 .featuredCard{
   display:grid;
+  align-items: flex-start; /* 🔥 ini kuncinya */
   grid-template-columns:1fr 1fr;
   gap:0;
   background:#fff;

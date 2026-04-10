@@ -28,6 +28,11 @@ body{
   gap:22px;
 }
 
+.brand__logo{
+  height:46px;
+  display:block;
+}
+
 .topnav{
   margin-left:auto;
   display:flex;
@@ -35,13 +40,28 @@ body{
   align-items:center;
 }
 
-.brand__logo{ height:46px; }
-
 .topnav__link{
-  color: var(--accent-red);
+  color:var(--accent-red);
   text-decoration:none;
   font-weight:700;
   font-size:14px;
+  position:relative;
+  padding:6px 0;
+}
+
+.topnav__link:hover{
+  opacity:.9;
+}
+
+.topnav__link.is-active::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:-4px;
+  height:3px;
+  border-radius:999px;
+  background:var(--accent-red);
 }
 
 .topbar__user{
@@ -61,12 +81,19 @@ body{
   display:grid;
   place-items:center;
   color:var(--accent-red);
+  background:#fff3f4;
 }
 
 .topbar__userCircle svg{
   width:22px;
   height:22px;
   display:block;
+}
+
+.topbar__user.is-active .topbar__userCircle{
+  border-color:var(--active-green);
+  color:var(--active-green);
+  background:#ffffff;
 }
 
 /* PAGE GRID */
@@ -81,62 +108,70 @@ body{
 }
 
 /* SIDEBAR */
-.sidebar{
-  padding-top:8px;
+.sidebarCard{
+  background:var(--panel-bg);
+  border-radius:16px;
+  padding:18px;
   position:relative;
-  min-height:600px;
-}
-
-.sidebar__decor{
-  position:absolute;
-  bottom:20px;
-  left:50%;
-  transform:translateX(-50%);
-}
-
-.sidebar__decor img{
-  width:220px;
-  height:auto;
-  opacity:.95;
+  min-height:720px;
 }
 
 .userCard{
   display:flex;
   gap:14px;
   align-items:center;
+  margin-bottom:22px;
 }
 
 .userCard__avatar{
-  width:76px;
-  height:76px;
+  width:72px;
+  height:72px;
   border-radius:50%;
-  background:var(--pink-bar);
+  background:#fff;
   display:grid;
   place-items:center;
   overflow:hidden;
+  border:2px solid rgba(255,74,93,.16);
 }
 
 .userCard__avatar img{
-  width:72px;
-  height:72px;
-  object-fit:contain;
+  width:100%;
+  height:100%;
+  object-fit:cover;
 }
 
 .userCard__name{
-  font-weight:800;
-  color:var(--accent-red);
   font-size:18px;
-  margin-bottom:6px;
+  font-weight:1000;
+  color:var(--accent-red);
+}
+
+.userCard__role{
+  margin-top:4px;
+  font-size:12px;
+  font-weight:700;
+  color:rgba(0,0,0,.55);
 }
 
 .userCard__edit{
   display:inline-flex;
-  gap:8px;
   align-items:center;
+  gap:8px;
+  margin-top:8px;
   color:var(--accent-red);
   text-decoration:none;
-  font-weight:700;
   font-size:13px;
+  font-weight:800;
+}
+
+.userCard__edit:hover{
+  opacity:.85;
+}
+
+.icon-inline{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
 }
 
 .icon-inline svg{

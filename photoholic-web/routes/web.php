@@ -23,4 +23,5 @@ Route::prefix('admin')->group(function () {
     
     // Route tambahan untuk toggle status studio
     Route::post('studios/{studio}/toggle', [StudioController::class, 'toggleStatus'])->name('studios.toggle');
+    Route::post('users/{user}/toggle', [UserController::class, 'toggleStatus'])->name('users.toggle');
 });

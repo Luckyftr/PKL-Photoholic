@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Studio;
 use App\Models\ActivityLog;
+use App\Models\User; 
 use App\Mail\InvoiceMail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
@@ -13,6 +14,12 @@ use Carbon\Carbon;
 
 class BookingController extends Controller
 {
+    public function index()
+    {
+        $bookings = Booking::with(['user', 'studio'])->latest()->get();
+        return view('admin.bookings.index', compact('bookings'));
+    }
+
     public function store(Request $request)
     {
         // Validasi
@@ -224,7 +231,9 @@ class BookingController extends Controller
         }
 
         $studios = Studio::where('is_active', true)->get();
+        $users = User::all(); 
 
-        return view('admin.booking.create', compact('slots', 'unavailable', 'studios', 'date', 'studio_id'));
+        // <-- TAMBAHAN 3: Menyisipkan 'users' ke dalam compact() agar bisa dibaca oleh file Blade
+        return view('admin.bookings.create', compact('slots', 'unavailable', 'studios', 'date', 'studio_id', 'users'));
     }
 }

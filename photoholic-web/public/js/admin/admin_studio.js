@@ -27,6 +27,11 @@ const modalTitle = document.getElementById("modalTitle");
 const modalText = document.getElementById("modalText");
 const modalActions = document.getElementById("modalActions");
 
+document.querySelector('.layout').classList.add('form-active');
+formPanel.classList.add('is-active');
+document.querySelector('.layout').classList.remove('form-active');
+formPanel.classList.remove('is-active');
+
 let studios = [
   {
     id: "1",

@@ -5,33 +5,19 @@
 @section('styles')
     <link rel="stylesheet" href="{{ asset('css/admin/admin_studio.css') }}" />
     <style>
-        /* Sedikit tambahan style untuk card list agar rapi */
-        .studioCard {
-            border: 1px solid #e2e8f0;
-            background: #fff;
-            padding: 16px;
-            margin-bottom: 16px;
-            border-radius: 12px;
-            display: flex;
-            gap: 16px;
-            align-items: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-        }
-        .studioCard__img img {
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
-            border-radius: 8px;
-            border: 1px solid #eee;
-        }
-        .studioCard__info { flex: 1; }
-        .studioCard__info h3 { margin: 0 0 4px 0; font-size: 1.1rem; color: #1e293b; }
-        .studioCard__info p { margin: 0 0 8px 0; font-size: 0.875rem; color: #64748b; line-height: 1.5; }
-        .studioCard__info h4 { margin: 0; color: #0f172a; font-size: 1rem; }
-        .studioCard__actions { display: flex; flex-direction: column; gap: 8px; }
+        .form-delete, .form-toggle { display: inline-block; width: 100%; margin: 0; padding: 0; }
+        .form-delete .smallBtn, .form-toggle .smallBtn { width: 100%; }
         
-        /* Utility class untuk memunculkan panel form */
-        .panel--form.is-active { display: block; }
+        @media (max-width: 1100px) {
+            .panel--form { display: none; }
+            .panel--form.is-active { display: block; }
+        }
+
+        /* Styling untuk pesan error dan sukses */
+        .alert { padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-weight: 600; font-size: 14px; }
+        .alert-error { background: #fee2e2; color: #ef4444; border: 1px solid #f87171; }
+        .alert-success { background: #dcfce3; color: #16a34a; border: 1px solid #86efac; }
+        .alert ul { margin: 4px 0 0 20px; padding: 0; }
     </style>
 @endsection
 
@@ -46,51 +32,63 @@
             </div>
         </div>
 
+        @if(session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
+
         <div class="list" id="studioList">
             @forelse($studios as $studio)
                 <div class="studioCard">
-                    <div class="studioCard__img">
+                    <div class="thumb">
                         <img src="{{ $studio->photo ? asset('storage/' . $studio->photo) : asset('img/admin/test-photoholic.png') }}" alt="{{ $studio->name }}">
                     </div>
-                    
-                    <div class="studioCard__info">
-                        <h3>{{ $studio->name }}</h3>
-                        <p>
-                            Kapasitas: {{ $studio->max_people_per_session }} Orang • 
-                            Durasi: {{ $studio->session_duration }} Menit <br>
-                            
-                            Kertas: 
-                            {{ $studio->paper_type == 'negative_film' ? 'Negative Film Transparan' : 'Standar Foto' }}
-                            • Strip: {{ $studio->photo_strips }}
-                        </p>
-                        <h4>Rp {{ number_format($studio->price, 0, ',', '.') }}</h4>
-                    </div>
-                    
-                    <div class="studioCard__actions">
-                        <button class="btn btn--primary editBtn" type="button" 
-                            data-id="{{ $studio->id }}"
-                            data-name="{{ $studio->name }}"
-                            data-capacity="{{ $studio->max_people_per_session }}"
-                            data-duration="{{ $studio->session_duration }}"
-                            data-strips="{{ $studio->photo_strips }}"
-                            data-paper="{{ $studio->paper_type }}"
-                            data-price="{{ (int) $studio->price }}"
-                            data-photo="{{ $studio->photo ? asset('storage/' . $studio->photo) : '' }}">
-                            Edit
-                        </button>
-                        
-                        <form action="{{ route('studios.destroy', $studio->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus {{ $studio->name }}?');">
-                            @csrf
-                            @method('DELETE')
-                            <button class="btn btn--ghost" type="submit" style="color: #ef4444; width: 100%;">
-                                Hapus
+
+                    <div>
+                        <div class="studioTop">
+                            <div>
+                                <div class="studioName">{{ $studio->name }}</div>
+                                <div class="studioDesc">
+                                    Maks. {{ $studio->max_people_per_session }} orang • {{ $studio->session_duration }} menit/sesi<br>
+                                    {{ $studio->photo_strips }} strip foto • Kertas {{ $studio->paper_type == 'negative_film' ? 'Negative Film Transparan' : 'Standar Foto' }}
+                                </div>
+                                <div class="price">Harga: Rp {{ number_format($studio->price, 0, ',', '.') }}/sesi</div>
+                            </div>
+                            <span class="badge {{ $studio->is_active ? 'badge--on' : 'badge--off' }}">
+                                {{ $studio->is_active ? 'Aktif' : 'Nonaktif' }}
+                            </span>
+                        </div>
+
+                        <div class="studioActions">
+                            <form class="form-toggle" action="{{ url('admin/studios/' . $studio->id . '/toggle') }}" method="POST">
+                                @csrf
+                                <button class="smallBtn smallBtn--toggle" type="submit" style="{{ !$studio->is_active ? 'color: #2563eb; border-color: #93c5fd;' : '' }}">
+                                    {{ $studio->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
+                                </button>
+                            </form>
+
+                            <button class="smallBtn editBtn" type="button" 
+                                data-id="{{ $studio->id }}"
+                                data-name="{{ $studio->name }}"
+                                data-capacity="{{ $studio->max_people_per_session }}"
+                                data-duration="{{ $studio->session_duration }}"
+                                data-strips="{{ $studio->photo_strips }}"
+                                data-paper="{{ $studio->paper_type }}"
+                                data-price="{{ (int) $studio->price }}"
+                                data-active="{{ $studio->is_active }}"
+                                data-photo="{{ $studio->photo ? asset('storage/' . $studio->photo) : '' }}">
+                                Edit
                             </button>
-                        </form>
+                            
+                            <form class="form-delete" action="{{ route('studios.destroy', $studio->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus studio {{ $studio->name }}?');">
+                                @csrf
+                                @method('DELETE')
+                                <button class="smallBtn smallBtn--danger" type="submit">Hapus</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             @empty
-                <div style="text-align: center; padding: 40px 20px; color: #94a3b8;">
-                    <svg style="width: 48px; height: 48px; margin-bottom: 10px; opacity: 0.5; margin-left: auto; margin-right: auto;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                <div style="text-align: center; padding: 40px 20px; color: #94a3b8; grid-column: span 2;">
                     <p>Belum ada studio yang ditambahkan.</p>
                 </div>
             @endforelse
@@ -107,14 +105,25 @@
             <h2 class="formTitle" id="formTitle">Tambah Studio</h2>
         </div>
 
+        @if ($errors->any())
+            <div class="alert alert-error">
+                Ada kesalahan input:
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <form class="studioForm" id="studioForm" action="{{ route('studios.store') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
             @csrf
-            
             <input type="hidden" name="_method" id="formMethod" value="POST">
+            <input type="hidden" name="is_active" id="isActive" value="1">
 
             <div class="photoArea">
                 <div class="photoBox" id="photoBox">
-                    <img id="photoPreview" src="" alt="Preview Studio" style="display: none; width: 100%; height: 100%; object-fit: cover; border-radius: inherit;" />
+                    <img id="photoPreview" src="" alt="Preview Studio" style="display: none; width: 100%; height: 100%; object-fit: cover;" />
                     <div class="photoEmpty" id="photoEmpty">
                         <div class="photoEmpty__icon">
                             <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -123,7 +132,7 @@
                             <path d="M9 13a3 3 0 1 0 6 0 3 3 0 0 0-6 0Z" fill="none" stroke="currentColor" stroke-width="2"/>
                             </svg>
                         </div>
-                        <div class="photoEmpty__text" id="photoText">Belum ada foto</div>
+                        <div class="photoEmpty__text">Belum ada foto</div>
                     </div>
                 </div>
 
@@ -156,7 +165,7 @@
                 <select id="paper" name="paper_type" required>
                     <option value="">Pilih jenis kertas</option>
                     <option value="negative_film">Negative Film Transparan</option>
-                    <option value="standar_foto">Standar Foto</option>
+                    <option value="photo_paper">Standar Foto</option>
                 </select>
             </div>
 
@@ -178,12 +187,9 @@
 </div>
 
 <button class="fab" id="addBtn" type="button" aria-label="Tambah studio">+</button>
-
 @endsection
 
 @section('scripts')
-    <script src="{{ asset('js/admin/admin_studio.js') }}"></script>
-
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const formPanel = document.getElementById('formPanel');
@@ -191,61 +197,60 @@
             const formMethod = document.getElementById('formMethod');
             const formTitle = document.getElementById('formTitle');
             const submitBtn = document.getElementById('submitBtn');
+            const isActiveInput = document.getElementById('isActive');
             const photoPreview = document.getElementById('photoPreview');
             const photoEmpty = document.getElementById('photoEmpty');
+            const photoBtn = document.getElementById('photoBtn');
+            const photoInput = document.getElementById('photoInput');
             
-            // Simpan route POST default dari Blade
             const storeUrl = "{{ route('studios.store') }}";
-            // Base URL untuk Edit (akan disambung dengan ID)
-            const updateUrlBase = "{{ url('studios') }}"; 
+            // Pastikan URL base ini sesuai, bisa pakai url('admin/studios') kalau ada prefix admin
+            const updateUrlBase = "{{ url('admin/studios') }}"; 
 
-            // ==========================================
-            // 1. LOGIC TOMBOL TAMBAH (+)
-            // ==========================================
+            // Tombol (+)
             document.getElementById('addBtn').addEventListener('click', function() {
                 form.reset(); 
-                
-                // Set form ke mode Create
                 form.action = storeUrl;
                 formMethod.value = 'POST';
+                isActiveInput.value = '1'; // Default tambah selalu aktif
                 formTitle.textContent = 'Tambah Studio';
                 submitBtn.textContent = 'Tambah Studio';
                 
-                // Reset Preview Foto
                 photoPreview.src = '';
                 photoPreview.style.display = 'none';
-                photoEmpty.style.display = 'flex';
+                photoEmpty.style.display = 'grid';
+                photoBtn.textContent = 'Pilih Foto';
 
                 formPanel.classList.add('is-active');
             });
 
-            // ==========================================
-            // 2. LOGIC TOMBOL EDIT (DI SETIAP CARD)
-            // ==========================================
+            // Tombol Edit
             const editButtons = document.querySelectorAll('.editBtn');
             editButtons.forEach(btn => {
                 btn.addEventListener('click', function() {
-                    // Isi data form sesuai data-attributes
                     document.getElementById('name').value = this.dataset.name;
                     document.getElementById('capacity').value = this.dataset.capacity;
                     document.getElementById('duration').value = this.dataset.duration;
                     document.getElementById('strips').value = this.dataset.strips;
-                    document.getElementById('paper').value = this.dataset.paper;
+                    document.getElementById('paper').value = this.dataset.paper; 
                     document.getElementById('price').value = this.dataset.price;
+                    
+                    // Ambil status aktif
+                    isActiveInput.value = this.dataset.active == "1" ? "1" : "0";
 
-                    // Tampilkan foto di preview jika ada
                     const photoUrl = this.dataset.photo;
                     if (photoUrl) {
                         photoPreview.src = photoUrl;
                         photoPreview.style.display = 'block';
                         photoEmpty.style.display = 'none';
+                        photoBtn.textContent = 'Ubah Foto';
                     } else {
                         photoPreview.src = '';
                         photoPreview.style.display = 'none';
-                        photoEmpty.style.display = 'flex';
+                        photoEmpty.style.display = 'grid';
+                        photoBtn.textContent = 'Pilih Foto';
                     }
 
-                    // Set form ke mode Update
                     form.action = updateUrlBase + '/' + this.dataset.id;
                     formMethod.value = 'PUT';
                     formTitle.textContent = 'Edit Studio';
@@ -255,14 +260,12 @@
                 });
             });
 
-            // ==========================================
-            // 3. LOGIC PREVIEW GAMBAR LOKAL
-            // ==========================================
-            document.getElementById('photoBtn').addEventListener('click', function() {
-                document.getElementById('photoInput').click();
+            // Preview Foto
+            photoBtn.addEventListener('click', function() {
+                photoInput.click();
             });
 
-            document.getElementById('photoInput').addEventListener('change', function(event) {
+            photoInput.addEventListener('change', function(event) {
                 const file = event.target.files[0];
                 if (file) {
                     const reader = new FileReader();
@@ -270,16 +273,19 @@
                         photoPreview.src = e.target.result;
                         photoPreview.style.display = 'block';
                         photoEmpty.style.display = 'none';
+                        photoBtn.textContent = 'Ubah Foto';
                     }
                     reader.readAsDataURL(file);
                 }
             });
 
-            // ==========================================
-            // 4. TOMBOL BATAL & BACK
-            // ==========================================
+            // Batal & Kembali
             document.getElementById('cancelBtn').addEventListener('click', function() {
                 form.reset();
+                formTitle.textContent = 'Tambah Studio';
+                submitBtn.textContent = 'Tambah Studio';
+                form.action = storeUrl;
+                formMethod.value = 'POST';
                 formPanel.classList.remove('is-active');
             });
             document.getElementById('backBtn').addEventListener('click', function() {

@@ -262,6 +262,14 @@ body{
 }
 
 /* ================= FORM ================= */
+.layout.form-active {
+  grid-template-columns: 1fr;
+}
+
+.layout.form-active .panel--list {
+  display: none;
+}
+
 .formHead{
   display:flex;
   align-items:center;

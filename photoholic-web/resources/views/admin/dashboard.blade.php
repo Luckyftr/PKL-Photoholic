@@ -59,7 +59,7 @@
           <div class="quickCard__desc">Lihat dan atur data pengguna</div>
         </a>
 
-        <a href="{{ route('studios.index') }}" class="quickCard">
+        <a href="{{ route('bookings.create') }}" class="quickCard">
           <div class="quickCard__icon">🗓️</div>
           <div class="quickCard__title">Atur Jadwal</div>
           <div class="quickCard__desc">Kelola sesi dan jam pemesanan</div>

@@ -13,7 +13,7 @@
     
     @yield('styles') 
 </head>
-<body>
+<body class="@yield('body_class')">
 
     <header class="topbar">
         <a href="{{ route('admin.dashboard') }}">
@@ -29,7 +29,8 @@
         </nav>
 
         <div class="topbar__right" style="display: flex; align-items: center; gap: 15px;">
-            <button class="topbar__user" type="button" onclick="location.href='{{ route('users.edit', 1) }}'"> <span class="topbar__userCircle">
+            <button class="topbar__user" type="button" onclick="location.href='{{ route('users.edit', 1) }}'"> 
+                <span class="topbar__userCircle">
                     <svg viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12Z" fill="none" stroke="currentColor" stroke-width="2"/>
                         <path d="M4 21c1.8-4 14.2-4 16 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -39,9 +40,9 @@
         </div>
     </header>
 
-    <main class="wrap">
+    <main class="@yield('main_class', 'wrap')">
         @if(session('success'))
-            <div style="background: #d4edda; color: #155724; padding: 10px; margin-bottom: 20px; border-radius: 5px;">
+            <div style="background: #dcfce3; color: #16a34a; border: 1px solid #86efac; padding: 12px 16px; margin-bottom: 20px; border-radius: 8px; font-weight: 600;">
                 {{ session('success') }}
             </div>
         @endif

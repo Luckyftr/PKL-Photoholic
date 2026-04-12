@@ -26,7 +26,7 @@
       </div>
 
       <div class="statCard statCard--active">
-        <div class="statCard__label">Jumlah Pelanggan</div>
+        <div class="statCard__label">Jumlah Pengunjung</div>
         <div class="statCard__value">{{ $totalUsers }} Orang</div>
       </div>
 
@@ -71,7 +71,7 @@
           <div class="quickCard__desc">Cek pemesanan masuk & status</div>
         </a>
 
-        <a href="{{ route('bookings.index') }}" class="quickCard">
+        <a href="{{ route('bookings.history') }}" class="quickCard">
           <div class="quickCard__icon">💳</div>
           <div class="quickCard__title">Riwayat Transaksi</div>
           <div class="quickCard__desc">Pantau pembayaran pelanggan</div>
@@ -194,7 +194,7 @@
                 
                 <td>
                     <button class="linkBtn" type="button" 
-                        data-action="Rincian" 
+                        data-action="detail" 
                         data-id="{{ $booking->id }}"
                         data-nama="{{ $booking->user->name ?? 'Pelanggan' }}"
                         data-email="{{ $booking->user->email ?? '-' }}"
@@ -234,6 +234,5 @@
 
 @section('scripts')
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-    
     <script src="{{ asset('js/admin/admin_beranda.js') }}"></script>
 @endsection

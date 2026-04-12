@@ -14,7 +14,8 @@ Route::get('/', function () {
 // Grup Route Admin
 Route::prefix('admin')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
-    
+    Route::get('/bookings/history', [BookingController::class, 'history'])->name('bookings.history');
+
     // Resource Route untuk CRUD otomatis
     Route::resource('users', UserController::class);
     Route::resource('studios', StudioController::class);

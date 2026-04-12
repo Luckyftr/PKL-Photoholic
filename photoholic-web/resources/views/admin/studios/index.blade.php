@@ -2,21 +2,35 @@
 
 @section('title', 'Kelola Studio')
 
+@section('body_class', 'page-studio')
+@section('main_class', 'page')
+
 @section('styles')
     <link rel="stylesheet" href="{{ asset('css/admin/admin_studio.css') }}" />
     <style>
+        /* PERLINDUNGAN EKSTRA: Memaksa form melebar dan berdampingan (kiri 1 bagian, kanan 400px) */
+        /* YANG SALAH SEBELUMNYA */
+        .layout{
+        display:grid;
+        grid-template-columns: 560px 1fr;
+        gap:22px;
+        align-items:start;
+        }
+        .panel--form {
+            width: 100%; /* Memaksa form melebar sesuai batas kolom kanan */
+        }
+        
         .form-delete, .form-toggle { display: inline-block; width: 100%; margin: 0; padding: 0; }
         .form-delete .smallBtn, .form-toggle .smallBtn { width: 100%; }
         
         @media (max-width: 1100px) {
+            .layout { grid-template-columns: 1fr; }
             .panel--form { display: none; }
             .panel--form.is-active { display: block; }
         }
 
-        /* Styling untuk pesan error dan sukses */
         .alert { padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-weight: 600; font-size: 14px; }
         .alert-error { background: #fee2e2; color: #ef4444; border: 1px solid #f87171; }
-        .alert-success { background: #dcfce3; color: #16a34a; border: 1px solid #86efac; }
         .alert ul { margin: 4px 0 0 20px; padding: 0; }
     </style>
 @endsection
@@ -31,10 +45,6 @@
                 <p class="hint">Kelola studio, kapasitas, kertas, strip foto, dan harga sesi.</p>
             </div>
         </div>
-
-        @if(session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
-        @endif
 
         <div class="list" id="studioList">
             @forelse($studios as $studio)
@@ -61,7 +71,10 @@
                         <div class="studioActions">
                             <form class="form-toggle" action="{{ url('admin/studios/' . $studio->id . '/toggle') }}" method="POST">
                                 @csrf
-                                <button class="smallBtn smallBtn--toggle" type="submit" style="{{ !$studio->is_active ? 'color: #2563eb; border-color: #93c5fd;' : '' }}">
+                                <button class="smallBtn smallBtn--toggle toggle-btn" type="button" 
+                                    data-name="{{ $studio->name }}" 
+                                    data-active="{{ $studio->is_active }}"
+                                    style="{{ !$studio->is_active ? 'color: #2563eb; border-color: #93c5fd;' : '' }}">
                                     {{ $studio->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
                                 </button>
                             </form>
@@ -79,10 +92,10 @@
                                 Edit
                             </button>
                             
-                            <form class="form-delete" action="{{ route('studios.destroy', $studio->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus studio {{ $studio->name }}?');">
+                            <form class="form-delete" action="{{ route('studios.destroy', $studio->id) }}" method="POST">
                                 @csrf
                                 @method('DELETE')
-                                <button class="smallBtn smallBtn--danger" type="submit">Hapus</button>
+                                <button class="smallBtn smallBtn--danger delete-btn" type="button" data-name="{{ $studio->name }}">Hapus</button>
                             </form>
                         </div>
                     </div>
@@ -137,7 +150,7 @@
                 </div>
 
                 <input class="fileInput" id="photoInput" name="photo" type="file" accept="image/*" hidden>
-                <button class="photoBtn" id="photoBtn" type="button">Pilih Foto</button>
+                <button class="photoBtn" id="photoBtn" type="button">Tambahkan Foto</button>
             </div>
 
             <div class="field">
@@ -186,6 +199,17 @@
 
 </div>
 
+<div class="modal" id="modal" aria-hidden="true">
+    <div class="modal__overlay" data-close="true"></div>
+    <div class="modal__card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <h3 class="modal__title" id="modalTitle">Judul</h3>
+      <p class="modal__text" id="modalText">Isi</p>
+      <div class="modal__actions" id="modalActions"></div>
+    </div>
+  </div>
+
+</div>
+
 <button class="fab" id="addBtn" type="button" aria-label="Tambah studio">+</button>
 @endsection
 
@@ -204,15 +228,116 @@
             const photoInput = document.getElementById('photoInput');
             
             const storeUrl = "{{ route('studios.store') }}";
-            // Pastikan URL base ini sesuai, bisa pakai url('admin/studios') kalau ada prefix admin
             const updateUrlBase = "{{ url('admin/studios') }}"; 
 
-            // Tombol (+)
+            /* ========== LOGIKA MODAL POPUP ========== */
+            const modal = document.getElementById("modal");
+            const modalTitle = document.getElementById("modalTitle");
+            const modalText = document.getElementById("modalText");
+            const modalActions = document.getElementById("modalActions");
+
+            function openModal({ title, text, actions }) {
+                modalTitle.textContent = title;
+                modalText.textContent = text;
+                modalActions.innerHTML = "";
+
+                actions.forEach(a => {
+                    const b = document.createElement("button");
+                    b.type = "button";
+                    b.className = `modalBtn ${a.className || ""}`.trim();
+                    b.textContent = a.label;
+                    b.addEventListener("click", a.onClick);
+                    modalActions.appendChild(b);
+                });
+
+                modal.classList.add("is-open");
+                modal.setAttribute("aria-hidden", "false");
+            }
+
+            function closeModal(){
+                modal.classList.remove("is-open");
+                modal.setAttribute("aria-hidden","true");
+            }
+
+            modal.addEventListener("click",(e)=>{
+                if (e.target.dataset.close === "true") closeModal();
+            });
+            /* ======================================== */
+
+            // 1. Intercept Submit Form Utama (Tambah / Edit)
+            form.addEventListener('submit', function(e) {
+                e.preventDefault(); // Cegah form terkirim otomatis
+
+                const mode = formMethod.value === 'POST' ? 'add' : 'edit';
+                const studioName = document.getElementById('name').value || 'Studio Baru';
+
+                if (mode === 'add') {
+                    openModal({
+                        title: "Tambah Studio?",
+                        text: `Tambahkan studio "${studioName}" ke daftar?`,
+                        actions: [
+                            { label: "Tambah", className: "modalBtn--ok", onClick: () => form.submit() },
+                            { label: "Batal", className: "modalBtn--cancel", onClick: closeModal }
+                        ]
+                    });
+                } else {
+                    openModal({
+                        title: "Simpan Perubahan?",
+                        text: `Simpan perubahan untuk studio "${studioName}"?`,
+                        actions: [
+                            { label: "Simpan", className: "modalBtn--ok", onClick: () => form.submit() },
+                            { label: "Batal", className: "modalBtn--cancel", onClick: closeModal }
+                        ]
+                    });
+                }
+            });
+
+            // 2. Intercept Tombol Aktif/Nonaktif
+            document.querySelectorAll('.toggle-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const formToSubmit = this.closest('form');
+                    const name = this.dataset.name;
+                    const isActive = this.dataset.active == "1";
+                    
+                    const actionText = isActive ? "menonaktifkan" : "mengaktifkan";
+                    const btnLabel = isActive ? "Nonaktifkan" : "Aktifkan";
+                    const btnClass = isActive ? "modalBtn--danger" : "modalBtn--ok";
+
+                    openModal({
+                        title: `${btnLabel} Studio?`,
+                        text: `Yakin ingin ${actionText} studio "${name}"?`,
+                        actions: [
+                            { label: btnLabel, className: btnClass, onClick: () => formToSubmit.submit() },
+                            { label: "Batal", className: "modalBtn--cancel", onClick: closeModal }
+                        ]
+                    });
+                });
+            });
+
+            // 3. Intercept Tombol Hapus
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const formToSubmit = this.closest('form');
+                    const name = this.dataset.name;
+
+                    openModal({
+                        title: "Hapus Studio?",
+                        text: `Studio "${name}" akan dihapus secara permanen.`,
+                        actions: [
+                            { label: "Hapus", className: "modalBtn--danger", onClick: () => formToSubmit.submit() },
+                            { label: "Batal", className: "modalBtn--cancel", onClick: closeModal }
+                        ]
+                    });
+                });
+            });
+
+            // ================== LOGIKA FORM (TETAP SAMA) ==================
+
             document.getElementById('addBtn').addEventListener('click', function() {
                 form.reset(); 
                 form.action = storeUrl;
                 formMethod.value = 'POST';
-                isActiveInput.value = '1'; // Default tambah selalu aktif
+                isActiveInput.value = '1'; 
                 formTitle.textContent = 'Tambah Studio';
                 submitBtn.textContent = 'Tambah Studio';
                 
@@ -222,9 +347,9 @@
                 photoBtn.textContent = 'Pilih Foto';
 
                 formPanel.classList.add('is-active');
+                window.scrollTo({top:0, behavior:"smooth"});
             });
 
-            // Tombol Edit
             const editButtons = document.querySelectorAll('.editBtn');
             editButtons.forEach(btn => {
                 btn.addEventListener('click', function() {
@@ -235,7 +360,6 @@
                     document.getElementById('paper').value = this.dataset.paper; 
                     document.getElementById('price').value = this.dataset.price;
                     
-                    // Ambil status aktif
                     isActiveInput.value = this.dataset.active == "1" ? "1" : "0";
 
                     const photoUrl = this.dataset.photo;
@@ -257,13 +381,11 @@
                     submitBtn.textContent = 'Simpan Perubahan';
 
                     formPanel.classList.add('is-active');
+                    window.scrollTo({top:0, behavior:"smooth"});
                 });
             });
 
-            // Preview Foto
-            photoBtn.addEventListener('click', function() {
-                photoInput.click();
-            });
+            photoBtn.addEventListener('click', function() { photoInput.click(); });
 
             photoInput.addEventListener('change', function(event) {
                 const file = event.target.files[0];
@@ -279,15 +401,21 @@
                 }
             });
 
-            // Batal & Kembali
             document.getElementById('cancelBtn').addEventListener('click', function() {
-                form.reset();
-                formTitle.textContent = 'Tambah Studio';
-                submitBtn.textContent = 'Tambah Studio';
-                form.action = storeUrl;
-                formMethod.value = 'POST';
-                formPanel.classList.remove('is-active');
+                openModal({
+                    title: "Batalkan Perubahan?",
+                    text: "Semua perubahan di form akan hilang.",
+                    actions: [
+                        { label: "Batalkan", className: "modalBtn--danger", onClick: () => {
+                            closeModal();
+                            form.reset();
+                            formPanel.classList.remove('is-active');
+                        }},
+                        { label: "Kembali", className: "modalBtn--cancel", onClick: closeModal }
+                    ]
+                });
             });
+            
             document.getElementById('backBtn').addEventListener('click', function() {
                 formPanel.classList.remove('is-active');
             });

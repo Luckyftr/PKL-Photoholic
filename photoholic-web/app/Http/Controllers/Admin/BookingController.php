@@ -7,8 +7,8 @@ use App\Models\Booking;
 use App\Models\Studio;
 use App\Models\ActivityLog;
 use App\Models\User; 
-use App\Mail\InvoiceMail;
-use Illuminate\Support\Facades\Mail;
+//use App\Mail\InvoiceMail;
+//use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -22,9 +22,8 @@ class BookingController extends Controller
 
     public function store(Request $request)
     {
-        // Validasi
+        // 1. Validasi: user_id dihapus karena otomatis pakai ID Admin
         $request->validate([
-            'user_id' => 'required|exists:users,id',
             'studio_id' => 'required|exists:studios,id',
             'booking_date' => 'required|date',
             'start_time' => 'required',
@@ -32,7 +31,6 @@ class BookingController extends Controller
             'payment_method' => 'required|in:cash,qris,voucher',
         ]);
 
-        // Cek studio aktif
         $studio = Studio::where('id', $request->studio_id)
             ->where('is_active', true)
             ->first();
@@ -59,46 +57,38 @@ class BookingController extends Controller
             return back()->with('error', 'Jadwal sudah dibooking, silakan pilih waktu lain!');
         }
 
-        // Hitung jumlah sesi
         $start = Carbon::parse($request->start_time);
         $end = Carbon::parse($request->end_time);
         $durasiMenit = $start->diffInMinutes($end);
         $jumlahSesi = $durasiMenit / 5;
 
-        // Tentukan status berdasarkan payment
         $status = 'pending';
-
-        if ($request->payment_method == 'cash') {
+        if ($request->payment_method == 'cash' || $request->payment_method == 'voucher') {
             $status = 'confirmed';
         }
 
-        if ($request->payment_method == 'voucher') {
-            $status = 'confirmed';
-        }
-
-        // Simpan booking
+        // 2. Simpan: Paksa user_id menjadi ID Admin yang sedang login
         $booking = Booking::create([
             'booking_code' => 'INV-' . strtoupper(uniqid()),
-            'user_id' => $request->user_id,
+            'user_id' => auth()->id(), // OTOMATIS ADMIN
             'studio_id' => $request->studio_id,
             'booking_date' => $request->booking_date,
             'start_time' => $request->start_time,
             'end_time' => $request->end_time,
             'payment_method' => $request->payment_method,
             'status' => $status,
-            'notes' => ($request->notes ?? '') . " (Total Sesi: $jumlahSesi)",
+            'notes' => ($request->notes ?? '') . " (Sesi Admin Offline)",
         ]);
 
-        // Kirim email invoice
-        Mail::to($booking->user->email)->send(new InvoiceMail($booking));
+        // Email dimatikan sesuai instruksi
+        // Mail::to($booking->user->email)->send(new InvoiceMail($booking));
 
-        // Activity log
         ActivityLog::record(
-            'Tambah Booking',
-            'Admin menambahkan booking offline untuk ' . $booking->user->name
+            'Tambah Booking Manual',
+            'Admin membuat jadwal offline untuk Studio ' . $studio->name
         );
 
-        return back()->with('success', 'Booking berhasil diproses!');
+        return back()->with('success', 'Jadwal berhasil dipesan!');
     }
 
     public function update(Request $request, Booking $booking)
@@ -223,7 +213,6 @@ class BookingController extends Controller
         $date = $request->booking_date ?? now()->toDateString();
 
         $slots = $this->generateTimeSlots();
-
         $unavailable = [];
 
         if ($studio_id) {
@@ -231,9 +220,23 @@ class BookingController extends Controller
         }
 
         $studios = Studio::where('is_active', true)->get();
-        $users = User::all(); 
 
-        // <-- TAMBAHAN 3: Menyisipkan 'users' ke dalam compact() agar bisa dibaca oleh file Blade
-        return view('admin.bookings.create', compact('slots', 'unavailable', 'studios', 'date', 'studio_id', 'users'));
+        // 3. Ambil data riwayat pesanan yang dibuat oleh Admin ini
+        $recentBookings = Booking::with('studio')
+            ->where('user_id', auth()->id())
+            ->latest()
+            ->take(5)
+            ->get();
+
+        // users tidak dikirim lagi karena tidak butuh dropdown pelanggan
+        return view('admin.bookings.create', compact('slots', 'unavailable', 'studios', 'date', 'studio_id', 'recentBookings'));
+    }
+
+    public function history()
+    {
+        $bookings = Booking::with(['user', 'studio'])->latest()->get();
+        
+        // Melempar data ke file blade yang baru saja kita buat
+        return view('admin.bookings.history', compact('bookings'));
     }
 }

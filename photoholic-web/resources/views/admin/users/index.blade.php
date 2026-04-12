@@ -5,6 +5,17 @@
 @section('styles')
     <link rel="stylesheet" href="{{ asset('css/admin/kelola_pengguna.css') }}" />
     <style>
+        .page {
+          width: 100% !important;
+          max-width: 100% !important; 
+          margin-left: -210px !important; 
+          padding:3px 50px 34px;
+          display: grid;
+          grid-template-columns: 360px minmax(1080px, 2fr) !important; 
+          gap: 34px;
+          align-items: start;
+        }
+
         /* Styling untuk alert pesan sukses/error dari Laravel */
         .alert { padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-weight: 600; font-size: 14px; }
         .alert-success { background: #dcfce3; color: #16a34a; border: 1px solid #86efac; }
@@ -70,14 +81,14 @@
                     </svg>
                     Ubah Kata Sandi
                 </a>
-                <a class="menuItem" href="#">
+                <a class="menuItem" href="{{ route('bookings.index') }}">
                     <svg viewBox="0 0 24 24">
                         <path d="M3 7h18v10H3V7Z" fill="none" stroke="currentColor" stroke-width="2"/>
                         <path d="M3 10h18" fill="none" stroke="currentColor" stroke-width="2"/>
                     </svg>
                     Status Pemesanan
                 </a>
-                <a class="menuItem" href="#">
+                <a class="menuItem" href="{{ route('bookings.history') }}">
                     <svg viewBox="0 0 24 24">
                         <path d="M7 3h10v18l-2-1-3 1-3-1-2 1V3Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
                         <path d="M9 7h6M9 11h6M9 15h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>

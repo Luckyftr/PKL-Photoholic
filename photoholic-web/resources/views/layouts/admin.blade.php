@@ -29,7 +29,7 @@
         </nav>
 
         <div class="topbar__right" style="display: flex; align-items: center; gap: 15px;">
-            <button class="topbar__user" type="button" onclick="location.href='{{ route('users.edit', 1) }}'"> 
+            <button class="topbar__user" type="button" onclick="location.href='{{ route('admin.profile') }}'">
                 <span class="topbar__userCircle">
                     <svg viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12Z" fill="none" stroke="currentColor" stroke-width="2"/>

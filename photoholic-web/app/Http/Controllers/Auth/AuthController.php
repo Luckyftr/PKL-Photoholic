@@ -41,7 +41,7 @@ class AuthController extends Controller
                 return redirect()->route('admin.dashboard');
             }
             
-            return redirect('/'); // Ganti dengan rute dashboard customer nanti
+            return redirect('/pelanggan/dashboard'); // Ganti dengan rute dashboard customer nanti
         }
 
         // Jika gagal

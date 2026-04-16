@@ -1,0 +1,109 @@
+:root {
+    --pink-bar: #f4b9bf;
+    --text: #2d2d2d;
+    --accent-red: #ff4a5d;
+  }
+  
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    font-family: 'Commissioner', sans-serif;
+    background: #fff;
+    color: var(--text);
+    /* 3 baris di bawah ini penting supaya footer selalu ada di paling bawah */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  main {
+    flex: 1; /* Mendorong footer ke bawah */
+  }
+  
+  /* ================= TOPBAR (NAVBAR) ================= */
+  .topbar {
+    height: 70px;
+    width: 100%;
+    background: var(--pink-bar);
+    display: flex;
+    align-items: center;
+    padding: 0 34px;
+    gap: 22px;
+  }
+  
+  .brand__logo {
+    height: 46px;
+  }
+  
+  .topnav {
+    margin-left: auto;
+    display: flex;
+    gap: 34px;
+    align-items: center;
+  }
+  
+  .topnav__link {
+    color: var(--accent-red);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 14px;
+  }
+  
+  .topnav__link:hover {
+    opacity: .8;
+  }
+  
+  .topnav__link.is-active {
+    border-bottom: 3px solid var(--accent-red);
+    padding-bottom: 5px;
+  }
+  
+  .topbar__user {
+    margin-left: 14px;
+    border: none;
+    background: transparent;
+    padding: 0;
+    line-height: 0;
+    cursor: pointer;
+  }
+  
+  .topbar__userCircle {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 3px solid var(--accent-red);
+    display: grid;
+    place-items: center;
+    color: var(--accent-red);
+  }
+  
+  .topbar__userCircle svg {
+    width: 22px;
+    height: 22px;
+    display: block;
+  }
+  
+  /* ================= FOOTER ================= */
+  /* Aku tambahkan ulang karena di kodemu yang baru ini hilang */
+  .footer {
+    background: var(--pink-bar);
+    padding: 14px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    color: var(--accent-red);
+    font-size: 13px;
+    font-weight: 700;
+  }
+  
+  /* ================= RESPONSIVE LAYOUT ================= */
+  @media (max-width: 768px) {
+    .topbar { padding: 0 16px; gap: 12px; }
+    .topnav { gap: 16px; flex-wrap: wrap; justify-content: flex-end; }
+  }

@@ -35,7 +35,7 @@
             <div class="userCard__info">
                 <div class="userCard__name">{{ auth()->user()->name ?? 'Administrator' }}</div>
                 <div class="userCard__role">Administrator</div>
-                <a class="userCard__edit" href="#">
+                <a class="userCard__edit" href="{{ route('admin.profile') }}">
                     <span class="icon-inline" aria-hidden="true">
                         <svg viewBox="0 0 24 24">
                             <path d="M12 20h9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -57,7 +57,7 @@
             </div>
 
             <div class="menuList">
-                <a class="menuItem" href="#">
+                <a class="menuItem" href="{{ route('admin.profile') }}">
                     <svg viewBox="0 0 24 24">
                         <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Z" fill="none" stroke="currentColor" stroke-width="2"/>
                         <path d="M4.5 20c1.8-4 13.2-4 15 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -103,7 +103,7 @@
                     </svg>
                     Kelola Pengguna
                 </a>
-                <form action="#" method="POST" style="display: contents;">
+                <form action="{{ route('logout') }}" method="POST" style="display: contents;">
                     @csrf
                     <button class="menuItem menuItem--danger" type="submit" id="logoutBtn" style="width: 100%;">
                         <svg viewBox="0 0 24 24">
@@ -247,10 +247,6 @@
         <h3 class="modal__title" id="modalTitle">Title</h3>
         <p class="modal__text" id="modalText">Text</p>
 
-        <div id="addWarning" style="display: none; background: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-size: 13px;">
-            ⚠️ Fitur Tambah Pengguna belum aktif karena fungsi <code>store()</code> belum dibuat di UserController. Jika dipaksa simpan, akan error.
-        </div>
-
         <form class="modal__form" id="modalForm" action="" method="POST">
             @csrf
             <input type="hidden" name="_method" id="formMethod" value="POST">
@@ -346,7 +342,6 @@
         const modalForm = document.getElementById("modalForm");
         const formMethod = document.getElementById('formMethod');
         const pwGroup = document.getElementById('passwordFieldGroup');
-        const addWarning = document.getElementById('addWarning');
         const saveModalBtn = document.getElementById('saveModalBtn');
         
         const baseUrl = "{{ url('admin/users') }}";
@@ -371,7 +366,6 @@
             modalText.textContent = 'Isi data pengguna baru di bawah ini.';
             
             pwGroup.style.display = 'block';
-            addWarning.style.display = 'block';
             saveModalBtn.textContent = "Simpan";
             
             openModal();
@@ -394,7 +388,6 @@
                 formMethod.value = 'PUT';
                 
                 pwGroup.style.display = 'none';
-                addWarning.style.display = 'none';
                 saveModalBtn.textContent = "Simpan";
                 
                 openModal();

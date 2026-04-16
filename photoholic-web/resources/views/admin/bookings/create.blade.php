@@ -149,7 +149,7 @@
             <div class="userCard__info">
                 <div class="userCard__name">{{ auth()->user()->name ?? 'Minphotoholic' }}</div>
                 <div class="userCard__role">Administrator</div>
-                <a class="userCard__edit" href="#">
+                <a class="userCard__edit" href="{{ route('admin.profile') }}">
                     <span class="icon-inline" aria-hidden="true">
                         <svg viewBox="0 0 24 24">
                             <path d="M12 20h9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -171,7 +171,7 @@
             </div>
 
             <div class="menuList">
-                <a class="menuItem" href="#">
+                <a class="menuItem" href="{{ route('admin.profile') }}">
                     <svg viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4.5 20c1.8-4 13.2-4 15 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
                     Profil
                 </a>
@@ -191,7 +191,7 @@
                     Status Pemesanan
                 </a>
 
-                <a class="menuItem" href="{{ route('bookings.history') }}">
+                <a class="menuItem" href="">
                     <svg viewBox="0 0 24 24"><path d="M7 3h10v18l-2-1-3 1-3-1-2 1V3Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 7h6M9 11h6M9 15h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
                     Riwayat Transaksi
                 </a>
@@ -201,9 +201,9 @@
                     Kelola Pengguna
                 </a>
 
-                <form action="#" method="POST" style="width: 100%; margin: 0;">
+                <form action="{{ route('logout') }}" method="POST" style="width: 100%; margin: 0;">
                     @csrf
-                    <button class="menuItem menuItem--danger" type="button" id="logoutBtn" style="width: 100%; text-align: left; font-family: inherit; border: none; background: transparent; cursor: pointer;">
+                    <button class="menuItem menuItem--danger" type="submit" id="logoutBtn" style="width: 100%; text-align: left; font-family: inherit; border: none; background: transparent; cursor: pointer;">
                         <svg viewBox="0 0 24 24"><path d="M10 17l5-5-5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 12H4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M20 4v16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
                         Keluar
                     </button>

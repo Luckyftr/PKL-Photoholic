@@ -168,6 +168,13 @@
 
             <tbody id="bookingTbody">
               @forelse($latestBookings as $index => $booking)
+              @php
+                  // TAMBAHAN: Hitung jumlah sesi di dashboard
+                  $start = \Carbon\Carbon::parse($booking->start_time);
+                  $end = \Carbon\Carbon::parse($booking->end_time);
+                  $durasiMenit = $start->diffInMinutes($end);
+                  $jumlahSesi = $durasiMenit > 0 ? ($durasiMenit / 5) : 1; 
+              @endphp
               <tr>
                 <td>{{ $index + 1 }}</td>
                 <td>{{ $booking->user->name ?? 'User Dihapus' }}</td>
@@ -193,19 +200,22 @@
                 </td>
                 
                 <td>
-                    <button class="linkBtn" type="button" 
-                        data-action="detail" 
-                        data-id="{{ $booking->id }}"
-                        data-nama="{{ $booking->user->name ?? 'Pelanggan' }}"
-                        data-email="{{ $booking->user->email ?? '-' }}"
-                        data-telepon="{{ $booking->user->phone ?? '-' }}"
-                        data-tanggal="{{ $booking->booking_date->format('d M Y') }}"
-                        data-sesi="{{ \Carbon\Carbon::parse($booking->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($booking->end_time)->format('H:i') }}"
-                        data-studio="{{ $booking->studio->name ?? '-' }}"
-                        data-status="{{ ucfirst($booking->status) }}"
-                        data-bayar="{{ $booking->status == 'pending' ? 'Pending' : 'Lunas' }}"
-                    >Lihat Rincian</button>
-                </td>
+                  <button class="linkBtn" type="button" 
+                      data-action="detail" 
+                      data-id="{{ $booking->id }}"
+                      data-nama="{{ $booking->user->name ?? 'Pelanggan' }}"
+                      data-email="{{ $booking->user->email ?? '-' }}"
+                      data-telepon="{{ $booking->user->phone ?? '-' }}"
+                      data-tanggal="{{ $booking->booking_date->format('d M Y') }}"
+                      data-sesi="{{ \Carbon\Carbon::parse($booking->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($booking->end_time)->format('H:i') }}"
+                      data-studio="{{ $booking->studio->name ?? '-' }}"
+                      data-status="{{ ucfirst($booking->status) }}"
+                      data-bayar="{{ $booking->status == 'pending' ? 'Pending' : 'Lunas' }}"
+                      
+                      data-price="{{ $booking->studio->price ?? 0 }}"
+                      data-sessions="{{ $jumlahSesi }}"
+                  >Lihat Rincian</button>
+              </td>
               </tr>
               @empty
               <tr>

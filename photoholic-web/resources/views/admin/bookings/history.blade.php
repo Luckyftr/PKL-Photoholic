@@ -222,21 +222,19 @@
             <div class="trxList" id="trxList">
                 @forelse($bookings as $b)
                     @php
-                        // Menghitung Sesi dan Harga
+                        $statusText = ($b->status === 'confirmed' || $b->status === 'lunas') ? 'Lunas' : 'Pending';
+                        $invoiceId = $b->booking_code ?? 'INV-' . str_pad($b->id, 5, '0', STR_PAD_LEFT);
                         $start = \Carbon\Carbon::parse($b->start_time);
                         $end = \Carbon\Carbon::parse($b->end_time);
                         $durasiMenit = $start->diffInMinutes($end);
-                        $sessions = max(1, $durasiMenit / 5); 
-                        $pricePerSession = $b->studio->price ?? 45000;
-                        $totalPrice = $pricePerSession * $sessions;
-                        $statusText = ($b->status === 'confirmed' || $b->status === 'lunas') ? 'Lunas' : 'Pending';
-                        $invoiceId = $b->booking_code ?? 'INV-' . str_pad($b->id, 5, '0', STR_PAD_LEFT);
+                        $jumlahSesi = $durasiMenit > 0 ? ($durasiMenit / 5) : 1; 
+                        $totalHarga = ($b->studio->price ?? 0) * $jumlahSesi;
                     @endphp
 
                     <article class="trxItem"
                         data-id="{{ $invoiceId }}"
                         data-date="{{ \Carbon\Carbon::parse($b->booking_date)->translatedFormat('d F Y') }}"
-                        data-time="{{ $start->format('H:i') }} WIB - {{ $end->format('H:i') }} WIB"
+                        data-time="{{ \Carbon\Carbon::parse($b->start_time)->format('H:i') }} WIB - {{ \Carbon\Carbon::parse($b->end_time)->format('H:i') }} WIB"
                         data-studio="{{ $b->studio->name ?? 'Studio Terhapus' }}"
                         data-studio_code="{{ 'S'.str_pad($b->studio_id ?? 0, 3, '0', STR_PAD_LEFT) }}"
                         data-to_name="{{ $b->user->name ?? 'Admin Photoholic' }}"
@@ -244,13 +242,14 @@
                         data-to_email="{{ $b->user->email ?? 'admin@photoholic.com' }}"
                         data-method="{{ strtoupper($b->payment_method ?? 'QRIS') }}"
                         data-status="{{ $statusText }}"
-                        data-price="{{ $pricePerSession }}"
-                        data-sessions="{{ $sessions }}"
+                        
+                        data-price="{{ $b->studio->price ?? 0 }}"
+                        data-sessions="{{ $jumlahSesi }}"
                         data-tax="0"
                     >
                         <div class="trxLeft">
                             <div class="pillDate">{{ \Carbon\Carbon::parse($b->booking_date)->translatedFormat('d M Y') }}</div>
-                            <div class="trxTitle">{{ $b->studio->name ?? '-' }} • {{ $start->format('H:i') }} - {{ $end->format('H:i') }}</div>
+                            <div class="trxTitle">{{ $b->studio->name ?? '-' }} • {{ \Carbon\Carbon::parse($b->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($b->end_time)->format('H:i') }}</div>
                             <div class="trxMeta">
                                 <span>ID: <b>{{ $invoiceId }}</b></span>
                                 <span class="dot">•</span>
@@ -262,17 +261,13 @@
                         </div>
 
                         <div class="trxRight">
-                            <div class="trxTotal">Total: Rp{{ number_format($totalPrice, 0, ',', '.') }}</div>
+                            <div class="trxTotal">Total: Rp{{ number_format($totalHarga, 0, ',', '.') }}</div>
                             <div class="trxActions">
                                 <button class="miniBtn" type="button" data-action="detail">Detail</button>
                                 <button class="miniBtn" type="button" data-action="invoice">Invoice</button>
                             </div>
                         </div>
                     </article>
-                @empty
-                    <div style="text-align: center; padding: 40px; color: #94a3b8; font-weight: 600;">Belum ada riwayat transaksi.</div>
-                @endforelse
-            </div>
         </div>
     </section>
 </main>

@@ -475,7 +475,6 @@
   // EKSEKUSI PEMBAYARAN KE DATABASE (AJAX)
   document.getElementById("simulateSuccess").addEventListener("click", async () => {
     const payload = {
-        _token: '{{ csrf_token() }}',
         studio_id: studioSelect.value,
         booking_date: tanggalInput.value,
         start_time: selectedSlots[0],
@@ -490,22 +489,29 @@
     try {
         const res = await fetch('{{ route("pelanggan.booking.store") }}', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json', 
+                'Accept': 'application/json',
+                // Masukkan CSRF token ke dalam headers
+                'X-CSRF-TOKEN': '{{ csrf_token() }}' 
+            },
             body: JSON.stringify(payload)
         });
+        
         const result = await res.json();
 
-        if(result.success) {
+        if(res.ok && result.success) {
             document.getElementById("payId").textContent = result.booking_code;
             document.getElementById("invNo").textContent = "Invoice No. " + result.booking_code;
             
             document.getElementById("statusIcon").textContent = "✓";
             document.getElementById("statusIcon").className = "statusIcon success";
-            document.getElementById("statusTitle").textContent = "Pemesanan Terkirim";
-            document.getElementById("statusText").textContent = "Pemesanan kamu berhasil dibuat dan sedang menunggu konfirmasi admin.";
+            document.getElementById("statusTitle").textContent = "Pemesanan Berhasil";
+            document.getElementById("statusText").textContent = "Pemesanan kamu berhasil dan jadwal telah dikonfirmasi.";
             showStep(4);
         } else {
-            alert("Gagal: " + (result.message || "Terjadi kesalahan di server."));
+            // Akan memunculkan pesan gagal (termasuk kalau tiba-tiba jadwal bentrok)
+            alert("Gagal: " + (result.message || "Terjadi kesalahan saat menyimpan data."));
         }
     } catch(e) {
         console.error(e);

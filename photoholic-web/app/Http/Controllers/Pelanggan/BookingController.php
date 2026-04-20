@@ -51,7 +51,7 @@ class BookingController extends Controller
     // 3. Menyimpan pesanan dari Frontend ke Database (AJAX)
     public function store(Request $request)
     {
-        // Validasi data yang dikirim dari Javascript
+        // 1. Validasi data yang dikirim dari Javascript
         $request->validate([
             'studio_id' => 'required|exists:studios,id',
             'booking_date' => 'required|date',
@@ -59,9 +59,30 @@ class BookingController extends Controller
             'end_time' => 'required',
         ]);
 
+        // 2. Cek bentrok jadwal (Penting untuk pelanggan!)
+        $isBooked = Booking::where('studio_id', $request->studio_id)
+            ->where('booking_date', $request->booking_date)
+            ->whereIn('status', ['pending', 'confirmed'])
+            ->where(function ($query) use ($request) {
+                $query->whereBetween('start_time', [$request->start_time, $request->end_time])
+                    ->orWhereBetween('end_time', [$request->start_time, $request->end_time])
+                    ->orWhere(function ($q) use ($request) {
+                        $q->where('start_time', '<=', $request->start_time)
+                            ->where('end_time', '>=', $request->end_time);
+                    });
+            })
+            ->exists();
+
+        if ($isBooked) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Maaf, jadwal ini baru saja di-booking orang lain.'
+            ], 422); // 422 Unprocessable Entity
+        }
+
         $bookingCode = 'INV-' . strtoupper(uniqid());
 
-        // Simpan ke database
+        // 3. Simpan ke database
         $booking = Booking::create([
             'booking_code' => $bookingCode,
             'user_id' => Auth::id(), // Diambil dari ID pelanggan yang sedang login
@@ -70,13 +91,14 @@ class BookingController extends Controller
             'start_time' => $request->start_time,
             'end_time' => $request->end_time,
             'payment_method' => 'qris',
-            'status' => 'pending', // Menunggu admin mengonfirmasi pembayaran
+            // Kita gunakan 'confirmed' agar langsung masuk daftar sukses dan dibaca oleh sistem admin
+            'status' => 'confirmed', 
             'notes' => $request->notes,
         ]);
 
         ActivityLog::record('Pemesanan Baru', 'Pelanggan ' . Auth::user()->name . ' membuat pesanan ' . $bookingCode);
 
-        // Kembalikan nomor invoice agar bisa dicetak di frontend
+        // 4. Kembalikan nomor invoice agar bisa dicetak di frontend
         return response()->json([
             'success' => true, 
             'booking_code' => $bookingCode

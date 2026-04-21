@@ -22,7 +22,6 @@ class BookingController extends Controller
 
     public function store(Request $request)
     {
-        // 1. Validasi: user_id dihapus karena otomatis pakai ID Admin
         $request->validate([
             'studio_id' => 'required|exists:studios,id',
             'booking_date' => 'required|date',
@@ -57,31 +56,42 @@ class BookingController extends Controller
             return back()->with('error', 'Jadwal sudah dibooking, silakan pilih waktu lain!');
         }
 
-        $start = Carbon::parse($request->start_time);
-        $end = Carbon::parse($request->end_time);
-        $durasiMenit = $start->diffInMinutes($end);
-        $jumlahSesi = $durasiMenit / 5;
+        // ==========================================
+        // PERBAIKAN PERHITUNGAN HARGA (ANTI BADAI)
+        // ==========================================
+        // 1. Gabungkan tanggal dan jam agar Carbon menghitung durasi dengan sangat akurat
+        $waktuMulai = Carbon::parse($request->booking_date . ' ' . $request->start_time);
+        $waktuSelesai = Carbon::parse($request->booking_date . ' ' . $request->end_time);
+        
+        // 2. Ambil selisih murni dalam menit
+        $durasiMenit = $waktuMulai->diffInMinutes($waktuSelesai);
+        
+        // 3. Hitung jumlah sesi (dibagi 5). 
+        // Menggunakan intval() untuk memastikan jadi angka bulat, 
+        // dan max(1, ...) untuk memastikan minimal selalu ada 1 sesi.
+        $jumlahSesi = max(1, intval($durasiMenit / 5));
+
+        // 4. Kalikan dengan harga studio
+        $totalHarga = $jumlahSesi * $studio->price; 
+        // ==========================================
 
         $status = 'pending';
         if ($request->payment_method == 'cash' || $request->payment_method == 'voucher') {
             $status = 'confirmed';
         }
 
-        // 2. Simpan: Paksa user_id menjadi ID Admin yang sedang login
         $booking = Booking::create([
             'booking_code' => 'INV-' . strtoupper(uniqid()),
-            'user_id' => auth()->id(), // OTOMATIS ADMIN
+            'user_id' => auth()->id(), 
             'studio_id' => $request->studio_id,
             'booking_date' => $request->booking_date,
             'start_time' => $request->start_time,
             'end_time' => $request->end_time,
             'payment_method' => $request->payment_method,
             'status' => $status,
+            'total_price' => $totalHarga, // Data dimasukkan ke database
             'notes' => ($request->notes ?? '') . " (Sesi Admin Offline)",
         ]);
-
-        // Email dimatikan sesuai instruksi
-        // Mail::to($booking->user->email)->send(new InvoiceMail($booking));
 
         ActivityLog::record(
             'Tambah Booking Manual',
@@ -105,7 +115,6 @@ class BookingController extends Controller
             'payment_method' => 'required|in:cash,qris,voucher',
         ]);
 
-        // cek bentrok (exclude dirinya sendiri)
         $isBooked = Booking::where('studio_id', $request->studio_id)
             ->where('booking_date', $request->booking_date)
             ->where('id', '!=', $booking->id)
@@ -124,9 +133,19 @@ class BookingController extends Controller
             return back()->with('error', 'Jadwal bentrok!');
         }
 
-        // status ulang berdasarkan payment
-        $status = 'pending';
+        $studio = Studio::findOrFail($request->studio_id);
 
+        // ==========================================
+        // PERBAIKAN PERHITUNGAN HARGA SAAT UPDATE
+        // ==========================================
+        $waktuMulai = Carbon::parse($request->booking_date . ' ' . $request->start_time);
+        $waktuSelesai = Carbon::parse($request->booking_date . ' ' . $request->end_time);
+        $durasiMenit = $waktuMulai->diffInMinutes($waktuSelesai);
+        $jumlahSesi = max(1, intval($durasiMenit / 5));
+        $totalHarga = $jumlahSesi * $studio->price;
+        // ==========================================
+
+        $status = 'pending';
         if ($request->payment_method == 'cash' || $request->payment_method == 'voucher') {
             $status = 'confirmed';
         }
@@ -139,6 +158,7 @@ class BookingController extends Controller
             'payment_method' => $request->payment_method,
             'status' => $status,
             'notes' => $request->notes,
+            'total_price' => $totalHarga, 
         ]);
 
         ActivityLog::record('Update Booking', 'Mengubah booking: ' . $booking->booking_code);
@@ -221,22 +241,18 @@ class BookingController extends Controller
 
         $studios = Studio::where('is_active', true)->get();
 
-        // 3. Ambil data riwayat pesanan yang dibuat oleh Admin ini
         $recentBookings = Booking::with('studio')
             ->where('user_id', auth()->id())
             ->latest()
             ->take(5)
             ->get();
 
-        // users tidak dikirim lagi karena tidak butuh dropdown pelanggan
         return view('admin.bookings.create', compact('slots', 'unavailable', 'studios', 'date', 'studio_id', 'recentBookings'));
     }
 
     public function history()
     {
         $bookings = Booking::with(['user', 'studio'])->latest()->get();
-        
-        // Melempar data ke file blade yang baru saja kita buat
         return view('admin.bookings.history', compact('bookings'));
     }
 }

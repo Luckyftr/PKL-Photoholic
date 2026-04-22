@@ -9,6 +9,7 @@ use App\Models\ActivityLog;
 use App\Models\User; 
 //use App\Mail\InvoiceMail;
 //use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -28,6 +29,7 @@ class BookingController extends Controller
             'start_time' => 'required',
             'end_time' => 'required|after:start_time',
             'payment_method' => 'required|in:cash,qris,voucher',
+            //'user_id' => 'required|exists:users,id', 
         ]);
 
         $studio = Studio::where('id', $request->studio_id)
@@ -38,17 +40,16 @@ class BookingController extends Controller
             return back()->with('error', 'Studio tidak aktif atau tidak ditemukan!');
         }
 
-        // Cek bentrok jadwal (Cek keseluruhan waktu yang diinput)
+        // 1. Pastikan tanggal diubah menjadi STRING format Y-m-d
+        $tanggalMurniString = Carbon::parse($request->booking_date)->format('Y-m-d');
+
+        // 2. Cek bentrok jadwal menggunakan tanggal yang sudah di-format
         $isBooked = Booking::where('studio_id', $request->studio_id)
-            ->where('booking_date', $request->booking_date)
+            ->where('booking_date', $tanggalMurniString) // Gunakan String!
             ->whereIn('status', ['pending', 'confirmed'])
             ->where(function ($query) use ($request) {
-                $query->whereBetween('start_time', [$request->start_time, $request->end_time])
-                    ->orWhereBetween('end_time', [$request->start_time, $request->end_time])
-                    ->orWhere(function ($q) use ($request) {
-                        $q->where('start_time', '<=', $request->start_time)
-                            ->where('end_time', '>=', $request->end_time);
-                    });
+                $query->where('start_time', '<', $request->end_time)
+                      ->where('end_time', '>', $request->start_time);
             })
             ->exists();
 
@@ -56,52 +57,44 @@ class BookingController extends Controller
             return back()->with('error', 'Jadwal sudah dibooking, silakan pilih waktu lain!');
         }
 
-        // ==========================================
-        // PERBAIKAN: MEMECAH SESI MENJADI BANYAK DATA (MULTIPLE ROWS)
-        // ==========================================
+        // 3. Persiapan Data Waktu
+        $waktuMulai = Carbon::parse($tanggalMurniString . ' ' . $request->start_time);
+        $waktuSelesai = Carbon::parse($tanggalMurniString . ' ' . $request->end_time);
         
-        $waktuMulai = Carbon::parse($request->booking_date . ' ' . $request->start_time);
-        $waktuSelesai = Carbon::parse($request->booking_date . ' ' . $request->end_time);
-        
-        // Hitung durasi dan jumlah sesi (per 5 menit)
         $durasiMenit = $waktuMulai->diffInMinutes($waktuSelesai);
-        $jumlahSesi = max(1, ceil($durasiMenit / 5));
+        $jumlahSesi = max(1, intval($durasiMenit / 5));
 
-        // Tentukan status pembayaran
+        // Penentuan status berdasarkan metode pembayaran
         $status = 'pending';
         if ($request->payment_method == 'cash' || $request->payment_method == 'voucher') {
             $status = 'confirmed';
         }
 
-        $bookingCode = 'INV-' . strtoupper(uniqid());
+        $baseBookingCode = 'INV-' . strtoupper(uniqid());
         $currentStartTime = $waktuMulai->copy();
 
-        // Lakukan looping sebanyak jumlah sesi
+        // 4. Simpan ke database menggunakan Looping
         for ($i = 0; $i < $jumlahSesi; $i++) {
-        $currentEndTime = $currentStartTime->copy()->addMinutes(5);
+            $currentEndTime = $currentStartTime->copy()->addMinutes(5);
 
-        // 🔥 Biar gak lewat dari end_time asli
-        if ($currentEndTime > $waktuSelesai) {
-            $currentEndTime = $waktuSelesai->copy();
-        }
+            Booking::create([
+                'booking_code' => $baseBookingCode . '-' . ($i + 1), 
+                // Jika Admin memilih pelanggan dari form, gunakan $request->user_id
+                // Jika tidak, sementara biarkan auth()->id() atau ID khusus Walk-in
+                'user_id' => auth()->id(), 
+                'studio_id' => $request->studio_id,
+                'booking_date' => $tanggalMurniString, // Gunakan String!
+                'start_time' => $currentStartTime->format('H:i'), 
+                'end_time' => $currentEndTime->format('H:i'),     
+                'payment_method' => $request->payment_method,
+                'status' => $status, 
+                'notes' => ($request->notes ?? '') . " (Booking by Admin)",
+                'total_price' => $studio->price, 
+            ]);
 
-        Booking::create([
-            'booking_code' => $bookingCode,
-            'user_id' => auth()->id(),
-            'studio_id' => $request->studio_id,
-            'booking_date' => $request->booking_date,
-            'start_time' => $currentStartTime->format('H:i'),
-            'end_time' => $currentEndTime->format('H:i'),
-            'payment_method' => $request->payment_method,
-            'status' => $status,
-            'total_price' => $studio->price,
-            'notes' => ($request->notes ?? '') . " (Sesi Admin Offline)",
-        ]);
-
-            // Majukan waktu mulai untuk sesi berikutnya (looping selanjutnya)
+            // Majukan waktu untuk sesi berikutnya
             $currentStartTime->addMinutes(5);
         }
-        // ==========================================
 
         ActivityLog::record(
             'Tambah Booking Manual',

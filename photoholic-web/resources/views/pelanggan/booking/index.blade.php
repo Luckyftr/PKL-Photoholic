@@ -5,6 +5,7 @@
 @section('main_class', 'bookingPage')
 
 @section('styles')
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <link rel="stylesheet" href="{{ asset('css/pelanggan/booking.css') }}">
 @endsection
 
@@ -265,7 +266,9 @@
     endTime.setHours(22, 0, 0, 0); // Selesai jam 22:00
 
     while (currentTime < endTime) {
-      let timeStr = currentTime.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", hour12: false });
+      let hour = String(currentTime.getHours()).padStart(2, '0');
+      let minute = String(currentTime.getMinutes()).padStart(2, '0');
+      let timeStr = `${hour}:${minute}`;
       let timestamp = currentTime.getTime();
       
       let btn = document.createElement("button");
@@ -341,7 +344,9 @@
     const [hour, minute] = timeStr.split(":").map(Number);
     const date = new Date();
     date.setHours(hour, minute + 5);
-    return date.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", hour12: false });
+    let h = String(date.getHours()).padStart(2, '0');
+    let m = String(date.getMinutes()).padStart(2, '0');
+    return `${h}:${m}`;
   }
 
   // UPDATE PREVIEW CARD
@@ -453,12 +458,78 @@
 
   document.getElementById("backTo2").addEventListener("click", () => showStep(2));
 
-  document.getElementById("simulateSuccess").addEventListener("click", () => {
-    document.getElementById("statusIcon").textContent = "✓";
-    document.getElementById("statusIcon").className = "statusIcon success";
-    document.getElementById("statusTitle").textContent = "Pembayaran Berhasil";
-    document.getElementById("statusText").textContent = "Pemesanan kamu berhasil dibuat dan sudah masuk ke jadwal.";
-    showStep(4);
+  document.getElementById("simulateSuccess").addEventListener("click", async () => {
+    // 1. Ambil data dari form
+    const studio_id = document.getElementById("studio").value;
+    const booking_date = document.getElementById("tanggal").value;
+    const notes = document.getElementById("catatan").value;
+    
+    // Validasi ulang untuk jaga-jaga
+    if (!studio_id || !booking_date || selectedSlots.length === 0) {
+        alert("Data pemesanan tidak lengkap!");
+        return;
+    }
+
+    // Ambil jam pertama dan terakhir
+    const start_time = selectedSlots[0].time;
+    // Tambahkan 5 menit ke slot terakhir untuk mendapatkan end_time
+    const end_time = addFiveMinutes(selectedSlots[selectedSlots.length - 1].time); 
+
+    if (!/^\d{2}:\d{2}$/.test(start_time) || !/^\d{2}:\d{2}$/.test(end_time)) {
+    alert("Format jam tidak valid!");
+    console.log("DEBUG TIME:", start_time, end_time);
+    return;
+    }
+
+    // Siapkan data yang mau dikirim
+    const payload = {
+        studio_id: studio_id,
+        booking_date: booking_date,
+        start_time: start_time,
+        end_time: end_time,
+        notes: notes
+    };
+
+    // 2. Ambil CSRF Token Laravel
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+    try {
+        // 3. Tembak data ke Controller pakai Fetch API
+        const response = await fetch("{{ route('pelanggan.booking.store') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
+                'Accept': 'application/json' // Beritahu Laravel kita mau terima balasan JSON
+            },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        // 4. Cek Balasan dari Laravel
+        if (response.ok && data.success) {
+            // BERHASIL DISIMPAN KE DATABASE! 🎉
+            document.getElementById("statusIcon").textContent = "✓";
+            document.getElementById("statusIcon").className = "statusIcon success";
+            document.getElementById("statusTitle").textContent = "Pemesanan Berhasil Disimpan";
+            document.getElementById("statusText").textContent = "Pesanan masuk ke sistem. Silakan lunasi pembayaran di kasir/admin.";
+            
+            // Masukkan Nomor Invoice yang di-generate Controller ke halaman Step 5
+            document.getElementById("invNo").textContent = "Invoice No. " + data.booking_code;
+            
+            showStep(4);
+        } else {
+            // GAGAL KARENA BENTROK/VALIDASI
+            alert(data.message || "Terjadi kesalahan saat memproses jadwal.");
+            console.error(data);
+        }
+
+    } catch (error) {
+        // GAGAL KARENA KONEKSI/SERVER ERROR
+        alert("Gagal terhubung ke server. Silakan cek console.");
+        console.error("AJAX Error:", error);
+    }
   });
 
   document.getElementById("simulateFail").addEventListener("click", () => {

@@ -59,17 +59,16 @@ class BookingController extends Controller
             'end_time' => 'required',
         ]);
 
-        // 2. Cek bentrok jadwal (Penting untuk pelanggan!)
+        // 2. Ubah tanggal menjadi STRING murni (Y-m-d) agar aman masuk database
+        $tanggalMurniString = Carbon::parse($request->booking_date)->format('Y-m-d');
+
+        // 3. Cek bentrok jadwal menggunakan String
         $isBooked = Booking::where('studio_id', $request->studio_id)
-            ->where('booking_date', $request->booking_date)
+            ->where('booking_date', $tanggalMurniString)
             ->whereIn('status', ['pending', 'confirmed'])
             ->where(function ($query) use ($request) {
-                $query->whereBetween('start_time', [$request->start_time, $request->end_time])
-                    ->orWhereBetween('end_time', [$request->start_time, $request->end_time])
-                    ->orWhere(function ($q) use ($request) {
-                        $q->where('start_time', '<=', $request->start_time)
-                            ->where('end_time', '>=', $request->end_time);
-                    });
+                $query->where('start_time', '<', $request->end_time)
+                    ->where('end_time', '>', $request->start_time);
             })
             ->exists();
 
@@ -77,59 +76,123 @@ class BookingController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Maaf, jadwal ini baru saja di-booking orang lain.'
-            ], 422); // 422 Unprocessable Entity
+            ], 422); 
         }
 
         // Ambil data studio untuk mendapatkan harga per sesinya
         $studio = Studio::findOrFail($request->studio_id);
 
         // ==========================================
-        // PERBAIKAN: MEMECAH SESI (Sama seperti Admin)
+        // PERBAIKAN: MEMECAH SESI & FORMAT TANGGAL
         // ==========================================
-        $waktuMulai = Carbon::parse($request->booking_date . ' ' . $request->start_time);
-        $waktuSelesai = Carbon::parse($request->booking_date . ' ' . $request->end_time);
+        $waktuMulai = Carbon::parse($tanggalMurniString . ' ' . $request->start_time);
+        $waktuSelesai = Carbon::parse($tanggalMurniString . ' ' . $request->end_time);
         
-        // Hitung durasi dan jumlah sesi (per 5 menit)
         $durasiMenit = $waktuMulai->diffInMinutes($waktuSelesai);
         $jumlahSesi = max(1, intval($durasiMenit / 5));
 
-        // Generate 1 Kode Invoice untuk semua sesi yang dipesan
-        $bookingCode = 'INV-' . strtoupper(uniqid());
+        $baseBookingCode = 'INV-' . strtoupper(uniqid());
         
         $currentStartTime = $waktuMulai->copy();
 
-        // 3. Simpan ke database menggunakan Looping
+        // 4. Simpan ke database menggunakan Looping
         for ($i = 0; $i < $jumlahSesi; $i++) {
             $currentEndTime = $currentStartTime->copy()->addMinutes(5);
 
             Booking::create([
-                'booking_code' => $bookingCode,
+                'booking_code' => $baseBookingCode . '-' . ($i + 1), 
                 'user_id' => Auth::id(), 
                 'studio_id' => $request->studio_id,
-                'booking_date' => $request->booking_date,
-                'start_time' => $currentStartTime->format('H:i'), // Waktu mulai per sesi
-                'end_time' => $currentEndTime->format('H:i'),     // Waktu selesai per sesi
+                'booking_date' => $tanggalMurniString, // Gunakan String
+                'start_time' => $currentStartTime->format('H:i'), 
+                'end_time' => $currentEndTime->format('H:i'),     
                 'payment_method' => 'qris',
-                'status' => 'confirmed', 
+                'status' => 'pending',
                 'notes' => $request->notes,
-                'total_price' => $studio->price, // Menambahkan harga per sesi
+                'total_price' => $studio->price, 
             ]);
 
-            // Majukan waktu untuk sesi berikutnya
             $currentStartTime->addMinutes(5);
         }
         // ==========================================
 
         ActivityLog::record(
             'Pemesanan Baru', 
-            'Pelanggan ' . Auth::user()->name . " membuat pesanan $bookingCode ($jumlahSesi sesi)"
+            'Pelanggan ' . Auth::user()->name . " membuat pesanan $baseBookingCode ($jumlahSesi sesi)"
         );
 
-        // 4. Kembalikan nomor invoice agar bisa dicetak di frontend
+        // 5. Kembalikan respons AJAX
         return response()->json([
             'success' => true, 
-            'booking_code' => $bookingCode,
-            'jumlah_sesi' => $jumlahSesi // Opsional, jika mau ditampilkan di frontend
+            'booking_code' => $baseBookingCode,
+            'jumlah_sesi' => $jumlahSesi
         ]);
+    }
+
+    // 4. Menampilkan halaman Jadwal Saya
+    public function jadwal()
+    {
+        $user = Auth::user();
+
+        // Ambil semua booking milik user ini, urutkan dari yang terbaru
+        $allBookings = Booking::with('studio')
+            ->where('user_id', $user->id)
+            ->orderBy('booking_date', 'desc')
+            ->orderBy('start_time', 'asc')
+            ->get();
+
+        // Mengelompokkan booking yang punya kode (atau base kode) yang sama
+        $groupedBookings = $allBookings->groupBy(function ($item) {
+            // Jika kamu menggunakan format INV-XXXX-1, INV-XXXX-2, kita ambil depannya saja
+            $parts = explode('-', $item->booking_code);
+            if (count($parts) > 2) {
+                return $parts[0] . '-' . $parts[1]; // Mengembalikan 'INV-XXXX'
+            }
+            return $item->booking_code; // Jika formatnya tetap sama
+        });
+
+        return view('pelanggan.jadwal.index', compact('user', 'groupedBookings'));
+    }
+
+    // 5. Menampilkan halaman Riwayat Pembayaran
+    public function riwayatPembayaran()
+    {
+        $user = Auth::user();
+
+        // Ambil semua booking milik user, urutkan dari waktu pembuatan (transaksi) terbaru
+        $allBookings = Booking::with('studio')
+            ->where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // Kelompokkan berdasarkan base kode (INV-XXXX)
+        $groupedBookings = $allBookings->groupBy(function ($item) {
+            $parts = explode('-', $item->booking_code);
+            if (count($parts) > 2) {
+                return $parts[0] . '-' . $parts[1]; 
+            }
+            return $item->booking_code;
+        });
+
+        // Hitung ringkasan status pembayaran
+        $summary = [
+            'total' => $groupedBookings->count(),
+            'berhasil' => 0,
+            'menunggu' => 0,
+            'gagal' => 0,
+        ];
+
+        foreach ($groupedBookings as $group) {
+            $status = $group->first()->status;
+            if ($status == 'confirmed') {
+                $summary['berhasil']++;
+            } elseif ($status == 'pending') {
+                $summary['menunggu']++;
+            } elseif ($status == 'canceled') {
+                $summary['gagal']++;
+            }
+        }
+
+        return view('pelanggan.pembayaran.index', compact('user', 'groupedBookings', 'summary'));
     }
 }

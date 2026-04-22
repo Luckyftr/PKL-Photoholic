@@ -53,11 +53,11 @@
             Ubah Kata Sandi
           </a>
   
-          <a class="menuItem" href="#">
+          <a class="menuItem" href="{{ route('pelanggan.jadwal.index') }}">
             Jadwal Saya
           </a>
   
-          <a class="menuItem" href="#">
+          <a class="menuItem" href="{{ route('pelanggan.pembayaran.index') }}">
             Riwayat Pembayaran
           </a>
   

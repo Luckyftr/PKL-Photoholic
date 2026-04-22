@@ -40,6 +40,14 @@ Route::get('/pelanggan/dashboard', function () {
     return view('pelanggan.dashboard', compact('studios'));
 })->name('home');
 
+Route::get('/pelanggan/blog', function () {
+    $blogs = App\Models\Blog::where('status', 'published')->latest()->get();
+    $featuredBlog = $blogs->first(); 
+    $gridBlogs = $blogs->skip(1);
+    return view('pelanggan.blog.index', compact('blogs', 'featuredBlog', 'gridBlogs'));
+})->name('pelanggan.blog.index');
+
+
 Route::prefix('pelanggan')->name('pelanggan.')->group(function () {
     Route::get('/studio', function () {
         $studios = App\Models\Studio::latest()->get();
@@ -48,14 +56,11 @@ Route::prefix('pelanggan')->name('pelanggan.')->group(function () {
 
     // === ROUTE YANG WAJIB LOGIN ===
     Route::middleware('auth')->group(function () {
-        // Halaman Form Booking
         Route::get('/booking', [PelangganBookingController::class, 'index'])->name('booking.index');
-        
-        // API untuk mengambil jam yang sudah dibooking (dijadikan abu-abu)
         Route::get('/api/booked-slots', [PelangganBookingController::class, 'getBookedSlots'])->name('booking.slots');
-        
-        // API untuk menyimpan data ke database
         Route::post('/booking/store', [PelangganBookingController::class, 'store'])->name('booking.store');
+        Route::get('/profile', [App\Http\Controllers\Pelanggan\ProfileController::class, 'index'])->name('profile.index');
+        Route::put('/profile/update', [App\Http\Controllers\Pelanggan\ProfileController::class, 'update'])->name('profile.update');
     });
 });
 

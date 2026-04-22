@@ -80,28 +80,56 @@ class BookingController extends Controller
             ], 422); // 422 Unprocessable Entity
         }
 
+        // Ambil data studio untuk mendapatkan harga per sesinya
+        $studio = Studio::findOrFail($request->studio_id);
+
+        // ==========================================
+        // PERBAIKAN: MEMECAH SESI (Sama seperti Admin)
+        // ==========================================
+        $waktuMulai = Carbon::parse($request->booking_date . ' ' . $request->start_time);
+        $waktuSelesai = Carbon::parse($request->booking_date . ' ' . $request->end_time);
+        
+        // Hitung durasi dan jumlah sesi (per 5 menit)
+        $durasiMenit = $waktuMulai->diffInMinutes($waktuSelesai);
+        $jumlahSesi = max(1, intval($durasiMenit / 5));
+
+        // Generate 1 Kode Invoice untuk semua sesi yang dipesan
         $bookingCode = 'INV-' . strtoupper(uniqid());
+        
+        $currentStartTime = $waktuMulai->copy();
 
-        // 3. Simpan ke database
-        $booking = Booking::create([
-            'booking_code' => $bookingCode,
-            'user_id' => Auth::id(), // Diambil dari ID pelanggan yang sedang login
-            'studio_id' => $request->studio_id,
-            'booking_date' => $request->booking_date,
-            'start_time' => $request->start_time,
-            'end_time' => $request->end_time,
-            'payment_method' => 'qris',
-            // Kita gunakan 'confirmed' agar langsung masuk daftar sukses dan dibaca oleh sistem admin
-            'status' => 'confirmed', 
-            'notes' => $request->notes,
-        ]);
+        // 3. Simpan ke database menggunakan Looping
+        for ($i = 0; $i < $jumlahSesi; $i++) {
+            $currentEndTime = $currentStartTime->copy()->addMinutes(5);
 
-        ActivityLog::record('Pemesanan Baru', 'Pelanggan ' . Auth::user()->name . ' membuat pesanan ' . $bookingCode);
+            Booking::create([
+                'booking_code' => $bookingCode,
+                'user_id' => Auth::id(), 
+                'studio_id' => $request->studio_id,
+                'booking_date' => $request->booking_date,
+                'start_time' => $currentStartTime->format('H:i'), // Waktu mulai per sesi
+                'end_time' => $currentEndTime->format('H:i'),     // Waktu selesai per sesi
+                'payment_method' => 'qris',
+                'status' => 'confirmed', 
+                'notes' => $request->notes,
+                'total_price' => $studio->price, // Menambahkan harga per sesi
+            ]);
+
+            // Majukan waktu untuk sesi berikutnya
+            $currentStartTime->addMinutes(5);
+        }
+        // ==========================================
+
+        ActivityLog::record(
+            'Pemesanan Baru', 
+            'Pelanggan ' . Auth::user()->name . " membuat pesanan $bookingCode ($jumlahSesi sesi)"
+        );
 
         // 4. Kembalikan nomor invoice agar bisa dicetak di frontend
         return response()->json([
             'success' => true, 
-            'booking_code' => $bookingCode
+            'booking_code' => $bookingCode,
+            'jumlah_sesi' => $jumlahSesi // Opsional, jika mau ditampilkan di frontend
         ]);
     }
 }

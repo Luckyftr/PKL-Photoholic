@@ -22,13 +22,13 @@
 
     <nav class="topnav" aria-label="Main navigation">
         <a class="topnav__link {{ Request::is('pelanggan/dashboard') ? 'is-active' : '' }}" href="{{ route('home') }}">Beranda</a>
-        <a class="topnav__link {{ Request::is('pelanggan/studio*') ? 'is-active' : '' }}" href="{{ route('pelanggan.studio.index') }}">Studio</a>
-        <a class="topnav__link {{ Request::is('pelanggan/blog*') ? 'is-active' : '' }}" href="#">Blog</a>
-        <a class="topnav__link {{ Request::is('pelanggan/booking*') ? 'is-active' : '' }}" href="#">Pemesanan</a>
+        <a class="topnav__link {{ Request::is('pelanggan/studio') ? 'is-active' : '' }}" href="{{ route('pelanggan.studio.index') }}">Studio</a>
+        <a class="topnav__link {{ Request::is('pelanggan/blog') ? 'is-active' : '' }}" href="{{ route('pelanggan.blog.index') }}">Blog</a>
+        <a class="topnav__link {{ Request::is('pelanggan/booking') ? 'is-active' : '' }}" href="{{ route('pelanggan.booking.index') }}">Pemesanan</a>
       </nav>
 
     @auth
-        <a href="{{ url('/profile') }}" class="topbar__user" aria-label="User menu">
+    <a href="{{ route('pelanggan.profile.index') }}" class="topbar__user {{ Request::is('profile') ? 'is-active' : '' }}" aria-label="User menu">
           <span class="topbar__userCircle">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12Z" fill="none" stroke="currentColor" stroke-width="2"/>

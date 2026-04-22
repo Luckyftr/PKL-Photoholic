@@ -38,7 +38,7 @@ class BookingController extends Controller
             return back()->with('error', 'Studio tidak aktif atau tidak ditemukan!');
         }
 
-        // Cek bentrok jadwal
+        // Cek bentrok jadwal (Cek keseluruhan waktu yang diinput)
         $isBooked = Booking::where('studio_id', $request->studio_id)
             ->where('booking_date', $request->booking_date)
             ->whereIn('status', ['pending', 'confirmed'])
@@ -57,48 +57,58 @@ class BookingController extends Controller
         }
 
         // ==========================================
-        // PERBAIKAN PERHITUNGAN HARGA (ANTI BADAI)
+        // PERBAIKAN: MEMECAH SESI MENJADI BANYAK DATA (MULTIPLE ROWS)
         // ==========================================
-        // 1. Gabungkan tanggal dan jam agar Carbon menghitung durasi dengan sangat akurat
+        
         $waktuMulai = Carbon::parse($request->booking_date . ' ' . $request->start_time);
         $waktuSelesai = Carbon::parse($request->booking_date . ' ' . $request->end_time);
         
-        // 2. Ambil selisih murni dalam menit
+        // Hitung durasi dan jumlah sesi (per 5 menit)
         $durasiMenit = $waktuMulai->diffInMinutes($waktuSelesai);
-        
-        // 3. Hitung jumlah sesi (dibagi 5). 
-        // Menggunakan intval() untuk memastikan jadi angka bulat, 
-        // dan max(1, ...) untuk memastikan minimal selalu ada 1 sesi.
-        $jumlahSesi = max(1, intval($durasiMenit / 5));
+        $jumlahSesi = max(1, ceil($durasiMenit / 5));
 
-        // 4. Kalikan dengan harga studio
-        $totalHarga = $jumlahSesi * $studio->price; 
-        // ==========================================
-
+        // Tentukan status pembayaran
         $status = 'pending';
         if ($request->payment_method == 'cash' || $request->payment_method == 'voucher') {
             $status = 'confirmed';
         }
 
-        $booking = Booking::create([
-            'booking_code' => 'INV-' . strtoupper(uniqid()),
-            'user_id' => auth()->id(), 
+        $bookingCode = 'INV-' . strtoupper(uniqid());
+        $currentStartTime = $waktuMulai->copy();
+
+        // Lakukan looping sebanyak jumlah sesi
+        for ($i = 0; $i < $jumlahSesi; $i++) {
+        $currentEndTime = $currentStartTime->copy()->addMinutes(5);
+
+        // 🔥 Biar gak lewat dari end_time asli
+        if ($currentEndTime > $waktuSelesai) {
+            $currentEndTime = $waktuSelesai->copy();
+        }
+
+        Booking::create([
+            'booking_code' => $bookingCode,
+            'user_id' => auth()->id(),
             'studio_id' => $request->studio_id,
             'booking_date' => $request->booking_date,
-            'start_time' => $request->start_time,
-            'end_time' => $request->end_time,
+            'start_time' => $currentStartTime->format('H:i'),
+            'end_time' => $currentEndTime->format('H:i'),
             'payment_method' => $request->payment_method,
             'status' => $status,
-            'total_price' => $totalHarga, // Data dimasukkan ke database
+            'total_price' => $studio->price,
             'notes' => ($request->notes ?? '') . " (Sesi Admin Offline)",
         ]);
 
+            // Majukan waktu mulai untuk sesi berikutnya (looping selanjutnya)
+            $currentStartTime->addMinutes(5);
+        }
+        // ==========================================
+
         ActivityLog::record(
             'Tambah Booking Manual',
-            'Admin membuat jadwal offline untuk Studio ' . $studio->name
+            "Admin membuat jadwal offline ($jumlahSesi sesi) untuk Studio " . $studio->name
         );
 
-        return back()->with('success', 'Jadwal berhasil dipesan!');
+        return back()->with('success', "Berhasil memesan $jumlahSesi jadwal!");
     }
 
     public function update(Request $request, Booking $booking)
@@ -135,21 +145,13 @@ class BookingController extends Controller
 
         $studio = Studio::findOrFail($request->studio_id);
 
-        // ==========================================
-        // PERBAIKAN PERHITUNGAN HARGA SAAT UPDATE
-        // ==========================================
-        $waktuMulai = Carbon::parse($request->booking_date . ' ' . $request->start_time);
-        $waktuSelesai = Carbon::parse($request->booking_date . ' ' . $request->end_time);
-        $durasiMenit = $waktuMulai->diffInMinutes($waktuSelesai);
-        $jumlahSesi = max(1, intval($durasiMenit / 5));
-        $totalHarga = $jumlahSesi * $studio->price;
-        // ==========================================
-
         $status = 'pending';
         if ($request->payment_method == 'cash' || $request->payment_method == 'voucher') {
             $status = 'confirmed';
         }
 
+        // Perbaikan Update: Karena sekarang 1 baris = 1 sesi, 
+        // harga selalu menggunakan harga dasar studio
         $booking->update([
             'studio_id' => $request->studio_id,
             'booking_date' => $request->booking_date,
@@ -158,7 +160,7 @@ class BookingController extends Controller
             'payment_method' => $request->payment_method,
             'status' => $status,
             'notes' => $request->notes,
-            'total_price' => $totalHarga, 
+            'total_price' => $studio->price, // Dikembalikan ke harga 1 sesi
         ]);
 
         ActivityLog::record('Update Booking', 'Mengubah booking: ' . $booking->booking_code);

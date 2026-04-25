@@ -25,6 +25,7 @@ const captionEl = document.getElementById("caption");
 const isiEl = document.getElementById("isi");
 const igSyncEl = document.getElementById("igSync");
 const statusEl = document.getElementById("status");
+const igLinkEl = document.getElementById("igLink");
 
 const modal = document.getElementById("modal");
 const modalTitle = document.getElementById("modalTitle");
@@ -186,9 +187,9 @@ function renderList() {
         <div class="blogFooter">
           <div>
             <div class="blogDate">📅 ${formatTanggal(blog.tanggal)}</div>
-            <div class="blogIg">📲 Instagram: ${blog.igSync}</div>
-          </div>
-
+            <div class="blogIg">
+              📲 ${blog.igLink ? `<a href="${blog.igLink}" target="_blank">Buka Instagram</a>` : "Tidak ada link"}
+            </div>
           <div class="blogActions">
             <button class="smallBtn" type="button" data-action="edit">Edit</button>
             <button class="smallBtn smallBtn--danger" type="button" data-action="delete">Hapus</button>
@@ -332,8 +333,8 @@ blogForm.addEventListener("submit", (e) => {
     caption: captionEl.value.trim(),
     isi: isiEl.value.trim(),
     igSync: igSyncEl.value,
-    status: statusEl.value
-  };
+    igLink: igLinkEl.value.trim()  
+};
 
   if (!payload.judul || !payload.kategori || !payload.tanggal || !payload.caption || !payload.isi) return;
 

@@ -119,95 +119,124 @@
         </div>
       </aside>
 
-    <!-- PANEL -->
-    <section class="panel">
-      <div class="panelCard">
-        <h1 class="panelCard__title">Ubah Password</h1>
-        <p class="panelCard__sub">Pastikan password baru berbeda dari password sebelumnya.</p>
+      <!-- CONTENT -->
+      <section class="contentCard">
+        <div class="contentHead">
+          <h1 class="contentTitle">Ubah Kata Sandi</h1>
+          <p class="contentSub">
+            Jaga keamanan akun Anda dengan mengganti kata sandi secara berkala.
+          </p>
+        </div>
+
+        <!-- Tips keamanan -->
+        <div class="securityInfo">
+          <div class="securityInfo__icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6l7-3Z" fill="none" stroke="currentColor" stroke-width="2"/>
+              <path d="M9.5 12.5l2 2 3.5-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div>
+            <div class="securityInfo__title">Tips Keamanan</div>
+            <div class="securityInfo__text">
+              Gunakan kombinasi huruf besar, huruf kecil, angka, dan simbol agar kata sandi lebih aman.
+            </div>
+          </div>
+        </div>
 
         <form class="passForm" id="passForm">
+          <!-- Password lama -->
           <div class="field">
-            <label for="oldPass">Password Lama</label>
-            <div class="inputIcon">
-              <input id="oldPass" type="password" placeholder="Masukkan password lama" required>
+            <label for="oldPass">Kata Sandi Lama</label>
+            <div class="inputWrap">
+              <input id="oldPass" type="password" placeholder="Masukkan kata sandi lama" required>
 
-              <button class="eyeBtn" type="button" data-target="oldPass" data-state="hidden" aria-label="toggle password">
-                <!-- eye open -->
-                <svg class="icon-eye icon-eye-open" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-                  <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
-                        fill="none" stroke="currentColor" stroke-width="2"/>
-                </svg>
-
-                <!-- eye off -->
-                <svg class="icon-eye icon-eye-off" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M3 3l18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                  <path d="M10.6 10.6a2.5 2.5 0 0 0 3.4 3.4" fill="none" stroke="currentColor" stroke-width="2"/>
-                  <path d="M6.5 6.5C4 8.5 2 12 2 12s3.5 7 10 7c2 0 3.8-.5 5.3-1.4"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-                  <path d="M9.5 4.3A10.8 10.8 0 0 1 12 5c6.5 0 10 7 10 7a18 18 0 0 1-3.2 4.5"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-                </svg>
-              </button>
-            </div>          
-          </div>
-
-          <div class="field">
-            <label for="newPass">Password Baru</label>
-            <div class="inputIcon">
-              <input id="newPass" type="password" placeholder="Masukkan password baru" required>
-              <button class="eyeBtn" type="button" data-target="newPass" data-state="hidden" aria-label="toggle password">
-                <svg class="icon-eye icon-eye-open" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              <button class="eyeBtn" type="button" data-target="oldPass" data-state="hidden" aria-label="Lihat password">
+                <svg class="icon-eye icon-eye-open" viewBox="0 0 24 24">
+                  <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" fill="none" stroke="currentColor" stroke-width="2"/>
                   <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" fill="none" stroke="currentColor" stroke-width="2"/>
                 </svg>
-                <svg class="icon-eye icon-eye-off" viewBox="0 0 24 24" aria-hidden="true">
+                <svg class="icon-eye icon-eye-off" viewBox="0 0 24 24">
                   <path d="M3 3l18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                   <path d="M10.6 10.6a2.5 2.5 0 0 0 3.4 3.4" fill="none" stroke="currentColor" stroke-width="2"/>
-                  <path d="M6.5 6.5C4 8.5 2 12 2 12s3.5 7 10 7c2 0 3.8-.5 5.3-1.4" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-                  <path d="M9.5 4.3A10.8 10.8 0 0 1 12 5c6.5 0 10 7 10 7a18 18 0 0 1-3.2 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                  <path d="M6.5 6.5C4 8.5 2 12 2 12s3.5 7 10 7c2 0 3.8-.5 5.3-1.4" fill="none" stroke="currentColor" stroke-width="2"/>
+                  <path d="M9.5 4.3A10.8 10.8 0 0 1 12 5c6.5 0 10 7 10 7a18 18 0 0 1-3.2 4.5" fill="none" stroke="currentColor" stroke-width="2"/>
                 </svg>
               </button>
             </div>
           </div>
 
+          <!-- Password baru -->
           <div class="field">
-            <label for="confirmPass">Konfirmasi Password</label>
-            <div class="inputIcon">
-              <input id="confirmPass" type="password" placeholder="Ulangi password baru" required>
-              <button class="eyeBtn" type="button" data-target="confirmPass" data-state="hidden" aria-label="toggle password">
-                <svg class="icon-eye icon-eye-open" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <label for="newPass">Kata Sandi Baru</label>
+            <div class="inputWrap">
+              <input id="newPass" type="password" placeholder="Masukkan kata sandi baru" required>
+
+              <button class="eyeBtn" type="button" data-target="newPass" data-state="hidden" aria-label="Lihat password">
+                <svg class="icon-eye icon-eye-open" viewBox="0 0 24 24">
+                  <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" fill="none" stroke="currentColor" stroke-width="2"/>
                   <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" fill="none" stroke="currentColor" stroke-width="2"/>
                 </svg>
-                <svg class="icon-eye icon-eye-off" viewBox="0 0 24 24" aria-hidden="true">
+                <svg class="icon-eye icon-eye-off" viewBox="0 0 24 24">
                   <path d="M3 3l18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                   <path d="M10.6 10.6a2.5 2.5 0 0 0 3.4 3.4" fill="none" stroke="currentColor" stroke-width="2"/>
-                  <path d="M6.5 6.5C4 8.5 2 12 2 12s3.5 7 10 7c2 0 3.8-.5 5.3-1.4" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-                  <path d="M9.5 4.3A10.8 10.8 0 0 1 12 5c6.5 0 10 7 10 7a18 18 0 0 1-3.2 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                  <path d="M6.5 6.5C4 8.5 2 12 2 12s3.5 7 10 7c2 0 3.8-.5 5.3-1.4" fill="none" stroke="currentColor" stroke-width="2"/>
+                  <path d="M9.5 4.3A10.8 10.8 0 0 1 12 5c6.5 0 10 7 10 7a18 18 0 0 1-3.2 4.5" fill="none" stroke="currentColor" stroke-width="2"/>
                 </svg>
               </button>
             </div>
+
+            <!-- strength -->
+            <div class="strengthBox">
+              <div class="strengthBar">
+                <span id="strengthFill"></span>
+              </div>
+              <div class="strengthText" id="strengthText">Kekuatan kata sandi: -</div>
+            </div>
+
+            <ul class="passwordRules" id="passwordRules">
+              <li id="ruleLength">Minimal 8 karakter</li>
+              <li id="ruleUpper">Mengandung huruf besar</li>
+              <li id="ruleNumber">Mengandung angka</li>
+              <li id="ruleSymbol">Mengandung simbol</li>
+            </ul>
+          </div>
+
+          <!-- Konfirmasi -->
+          <div class="field">
+            <label for="confirmPass">Konfirmasi Kata Sandi Baru</label>
+            <div class="inputWrap">
+              <input id="confirmPass" type="password" placeholder="Ulangi kata sandi baru" required>
+
+              <button class="eyeBtn" type="button" data-target="confirmPass" data-state="hidden" aria-label="Lihat password">
+                <svg class="icon-eye icon-eye-open" viewBox="0 0 24 24">
+                  <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" fill="none" stroke="currentColor" stroke-width="2"/>
+                  <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" fill="none" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                <svg class="icon-eye icon-eye-off" viewBox="0 0 24 24">
+                  <path d="M3 3l18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M10.6 10.6a2.5 2.5 0 0 0 3.4 3.4" fill="none" stroke="currentColor" stroke-width="2"/>
+                  <path d="M6.5 6.5C4 8.5 2 12 2 12s3.5 7 10 7c2 0 3.8-.5 5.3-1.4" fill="none" stroke="currentColor" stroke-width="2"/>
+                  <path d="M9.5 4.3A10.8 10.8 0 0 1 12 5c6.5 0 10 7 10 7a18 18 0 0 1-3.2 4.5" fill="none" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </button>
+            </div>
+            <div class="helperText" id="confirmText">Pastikan kata sandi baru sama persis.</div>
           </div>
 
           <div class="actions">
-            <button class="btn btn--primary" type="submit" id="saveBtn">Simpan Perubahan</button>
+            <button class="btn btn--primary" type="submit">Simpan Perubahan</button>
             <button class="btn btn--ghost" type="button" id="resetBtn">Reset</button>
           </div>
         </form>
-
-      </div>
-    </section>
-  </main>
 
   <!-- MODAL -->
   <div class="modal" id="modal" aria-hidden="true">
     <div class="modal__overlay" data-close="true"></div>
 
     <div class="modal__card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      <h3 class="modal__title" id="modalTitle">Title</h3>
-      <p class="modal__text" id="modalText">Text</p>
+      <h3 class="modal__title" id="modalTitle">Judul</h3>
+      <p class="modal__text" id="modalText">Isi</p>
       <div class="modal__actions" id="modalActions"></div>
     </div>
   </div>

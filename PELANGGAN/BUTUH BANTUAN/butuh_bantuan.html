@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <!-- Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <title>Masuk - Photoholic</title>
+  <link rel="stylesheet" href="butuh_bantuan.css" />
+</head>
+<body>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="brand">
+      <img class="brand__logo" src="assets/logo-photoholic.png" alt="Photoholic" />
+  </header>
+
+  <!-- CONTENT -->
+  <main class="content">
+
+ <section class="left">
+    <div class="logoGroup">
+      <img class="left__illus" src="assets/logo-icon.png" />
+      <img class="left__bigLogo" src="assets/test-photoholic.png" />
+    </div>
+  </section>
+
+<div class="card">
+  <h2 class="card__title">Pusat Bantuan</h2>
+  <p class="card__desc">
+    Temukan jawaban cepat untuk pertanyaan kamu atau hubungi tim kami jika butuh bantuan lebih lanjut.
+  </p>
+
+  <!-- FAQ -->
+  <div class="faq">
+
+    <div class="faq-item">
+      <button class="faq-question">
+        <span>Bagaimana cara booking?</span>
+        <span class="faq-chevron">+</span>
+      </button>
+      <div class="faq-answer">
+        Pilih studio → pilih jadwal → lakukan pembayaran → booking selesai.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question">
+        <span>Metode pembayaran apa saja?</span>
+        <span class="faq-chevron">+</span>
+      </button>
+      <div class="faq-answer">
+        Kami menerima transfer bank dan e-wallet seperti OVO, DANA, dan lainnya.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question">
+        <span>Apakah bisa reschedule?</span>
+        <span class="faq-chevron">+</span>
+      </button>
+      <div class="faq-answer">
+        Bisa, maksimal H-1 sebelum jadwal booking kamu.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question">
+        <span>Apakah bisa refund?</span>
+        <span class="faq-chevron">+</span>
+      </button>
+      <div class="faq-answer">
+        Refund hanya berlaku sesuai kebijakan pembatalan yang berlaku.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CONTACT -->
+  <div class="contact">
+    <p class="contact__title">Hubungi Kami</p>
+
+    <div class="contact-box">
+      <div class="contact-item">
+        <span>✉️</span>
+        <p>support@photoholic.com</p>
+      </div>
+
+      <div class="contact-item">
+        <span>💬</span>
+        <p>08123456789</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  document.querySelectorAll(".faq-question").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const item = btn.parentElement;
+      item.classList.toggle("active");
+    });
+  });
+</script>
+
+  <button class="btn" onclick="window.history.back()">Kembali</button>
+</div>

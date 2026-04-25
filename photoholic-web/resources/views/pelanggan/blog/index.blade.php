@@ -70,13 +70,15 @@
           <span>{{ ceil(str_word_count(strip_tags($featuredBlog->content)) / 200) }} menit baca</span>
         </div>
 
-        <a href="#" class="readBtn">Baca Selengkapnya</a>
+        {{-- Logika Redirect Langsung ke URL Eksternal/Instagram --}}
+        <a href="{{ $featuredBlog->instagram_url ?? '#' }}" 
+           {{ $featuredBlog->instagram_url ? 'target="_blank"' : '' }} 
+           class="readBtn">Baca Selengkapnya</a>
       </div>
     </div>
   </section>
   @endif
 
-  {{-- Gunakan div, bukan main, karena tag <main> sudah ada di layouts.app --}}
   <div class="blogLayout" id="artikelTerbaru">
 
     <section class="blogContent">
@@ -107,7 +109,11 @@
                 <span>•</span>
                 <span>{{ ceil(str_word_count(strip_tags($blog->content)) / 200) }} menit baca</span>
               </div>
-              <a href="#" class="readBtn readBtn--small">Baca Artikel</a>
+              
+              {{-- Logika Redirect Langsung ke URL Eksternal/Instagram --}}
+              <a href="{{ $blog->instagram_url ?? '#' }}" 
+                 {{ $blog->instagram_url ? 'target="_blank"' : '' }} 
+                 class="readBtn readBtn--small">Baca Artikel</a>
             </div>
           </article>
         @empty
@@ -148,5 +154,6 @@
 @endsection
 
 @section('scripts')
+  {{-- Pastikan js/blog.js tetap ada untuk fitur search dan filter kategori --}}
   <script src="{{ asset('js/blog.js') }}"></script>
 @endsection

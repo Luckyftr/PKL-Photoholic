@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('bookings', function (Blueprint $table) {
             $table->id();
-            $table->string('booking_code');
+            $table->string('booking_code')->unique(); 
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('studio_id')->constrained()->cascadeOnDelete();
             $table->date('booking_date');
@@ -22,8 +22,7 @@ return new class extends Migration
             $table->enum('payment_method', ['cash', 'qris', 'voucher']);
             $table->decimal('total_price', 10, 2)->default(0);
             $table->text('notes')->nullable();
-            $table->enum('status', ['pending', 'confirmed', 'completed', 'canceled'])
-                  ->default('pending');
+            $table->enum('status', ['pending', 'confirmed', 'completed', 'canceled'])->default('pending');
             $table->timestamps();
             $table->softDeletes();
         });

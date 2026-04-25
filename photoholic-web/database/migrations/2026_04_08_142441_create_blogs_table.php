@@ -24,6 +24,7 @@ return new class extends Migration
             $table->date('publish_date');
             $table->string('short_caption');
             $table->text('content');
+            $table->string('instagram_url')->nullable();
             $table->boolean('sync_insta')->default(false);
             $table->enum('status', ['draft', 'published'])->default('draft');
             $table->timestamps();

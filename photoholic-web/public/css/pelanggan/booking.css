@@ -90,6 +90,12 @@
 .secondaryBtn { background: #fff; color: var(--accent-red); border: 1.5px solid rgba(255,74,93,.25); }
 .dangerBtn { background: #ffe4e4; color: #d61515; }
 .primaryBtn:hover, .secondaryBtn:hover, .dangerBtn:hover { transform: translateY(-2px); }
+.slotBtn.unavailable {
+  background: #e5e5e5;
+  color: #999;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
 
 /* PRINT */
 @media print {

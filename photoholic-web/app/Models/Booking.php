@@ -19,7 +19,7 @@ class Booking extends Model
         'start_time',
         'end_time',
         'payment_method',
-        'total_price', // [KODE BARU] Izinkan total_price untuk diisi
+        'total_price',
         'notes',
         'status'
     ];

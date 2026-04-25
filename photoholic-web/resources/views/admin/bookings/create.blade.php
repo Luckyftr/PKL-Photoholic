@@ -191,7 +191,7 @@
                     Status Pemesanan
                 </a>
 
-                <a class="menuItem" href="">
+                <a class="menuItem" href="{{ route('bookings.history') }}">
                     <svg viewBox="0 0 24 24"><path d="M7 3h10v18l-2-1-3 1-3-1-2 1V3Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 7h6M9 11h6M9 15h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
                     Riwayat Transaksi
                 </a>
@@ -222,11 +222,6 @@
             <h1 class="panelCard__title">Atur Jadwal</h1>
             <p class="panelCard__sub">Jam operasional akan menyesuaikan hari yang kamu pilih.</p>
 
-            @if(session('success'))
-                <div class="alert-success" style="margin-top: 18px;">
-                    {{ session('success') }}
-                </div>
-            @endif
             @if(session('error'))
                 <div class="alert-error" style="margin-top: 18px;">
                     {{ session('error') }}
@@ -250,7 +245,7 @@
                 <div class="grid2">
                     <div class="field">
                         <label for="date">Tanggal</label>
-                        <input id="date" name="booking_date" type="date" required value="{{ date('Y-m-d') }}">
+                        <input id="date" name="booking_date" type="date" required value="{{ old('booking_date', $date) }}">
                     </div>
 
                     <div class="field">
@@ -258,7 +253,9 @@
                         <select id="studio" name="studio_id" required>
                             <option value="" selected disabled>Pilih studio</option>
                             @foreach($studios as $studio)
-                                <option value="{{ $studio->id }}">{{ $studio->name }}</option>
+                                <option value="{{ $studio->id }}" {{ (old('studio_id') ?? $studio_id) == $studio->id ? 'selected' : '' }}>
+                                    {{ $studio->name }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
@@ -285,15 +282,15 @@
                         <label for="payment">Metode Pembayaran</label>
                         <select id="payment" name="payment_method" required>
                             <option value="" selected disabled>Pilih metode</option>
-                            <option value="qris">QRIS</option>
-                            <option value="cash">Cash</option>
-                            <option value="voucher">Voucher</option>
+                            <option value="qris" {{ old('payment_method') == 'qris' ? 'selected' : '' }}>QRIS</option>
+                            <option value="cash" {{ old('payment_method') == 'cash' ? 'selected' : '' }}>Cash</option>
+                            <option value="voucher" {{ old('payment_method') == 'voucher' ? 'selected' : '' }}>Voucher</option>
                         </select>
                     </div>
 
                     <div class="field">
                         <label for="note">Catatan</label>
-                        <textarea id="note" name="notes" rows="2" placeholder="(opsional)"></textarea>
+                        <textarea id="note" name="notes" rows="2" placeholder="(opsional)">{{ old('notes') }}</textarea>
                     </div>
                 </div>
 
@@ -353,35 +350,114 @@
 @endsection
 
 @section('scripts')
+@section('scripts')
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    const form = document.getElementById("scheduleForm");
-    const formMethod = document.getElementById("formMethod");
-    const resetBtn = document.getElementById("resetBtn");
-    const saveBtn = document.getElementById("saveBtn");
-    const list = document.getElementById("scheduleList");
+    // === 1. DEKLARASI ELEMEN & VARIABEL ===
+    const form          = document.getElementById("scheduleForm");
+    const formMethod    = document.getElementById("formMethod");
+    const saveBtn       = document.getElementById("saveBtn");
+    const resetBtn      = document.getElementById("resetBtn");
+    const logoutBtn     = document.getElementById("logoutBtn");
 
-    const dateEl = document.getElementById("date");
-    const studioEl = document.getElementById("studio");
-    const startEl = document.getElementById("start");
-    const endEl = document.getElementById("end");
-    const paymentEl = document.getElementById("payment");
-    const noteEl = document.getElementById("note");
+    const dateEl        = document.getElementById("date");
+    const studioEl      = document.getElementById("studio");
+    const startEl       = document.getElementById("start");
+    const endEl         = document.getElementById("end");
+    const paymentEl     = document.getElementById("payment");
+    const noteEl        = document.getElementById("note");
 
-    const logoutBtn = document.getElementById("logoutBtn");
+    const modal         = document.getElementById("modal");
+    const modalTitle    = document.getElementById("modalTitle");
+    const modalText     = document.getElementById("modalText");
+    const modalActions  = document.getElementById("modalActions");
 
-    const modal = document.getElementById("modal");
-    const modalTitle = document.getElementById("modalTitle");
-    const modalText = document.getElementById("modalText");
-    const modalActions = document.getElementById("modalActions");
-
-    let editMode = false;
-    let editItemEl = null;
-
-    const storeUrl = "{{ route('bookings.store') }}";
+    const storeUrl      = "{{ route('bookings.store') }}";
     const updateUrlBase = "{{ url('admin/bookings') }}"; 
+    
+    let editMode        = false;
+    let bookedSlots     = [];
 
-    /* ================= MODAL ================= */
+    // === 2. FUNGSI AJAX & LOGIKA WAKTU ===
+
+    async function fetchBookedSlotsAdmin() {
+        if (!studioEl.value || !dateEl.value) return;
+        try {
+            // Gunakan API yang sudah ada untuk cek slot terisi
+            const response = await fetch(`/pelanggan/api/booked-slots?studio_id=${studioEl.value}&date=${dateEl.value}`);
+            const data = await response.json();
+            bookedSlots = data.unavailable || [];
+            fillTimeOptions(); 
+        } catch (error) {
+            console.error("Gagal fetch booked slots:", error);
+        }
+    }
+
+    function getCloseHourByDate(isoDate) {
+        const d = new Date(isoDate + "T00:00:00");
+        const day = d.getDay(); 
+        const isMonToThu = day >= 1 && day <= 4;
+        return isMonToThu ? 22 : 23;
+    }
+
+    function fillTimeOptions(selectedStart = null, selectedEnd = null) {
+        const currentStart = selectedStart || startEl.value;
+        const currentEnd   = selectedEnd || endEl.value;
+
+        startEl.innerHTML = `<option value="" disabled ${!currentStart ? 'selected' : ''}>Pilih jam mulai</option>`;
+        endEl.innerHTML   = `<option value="" disabled ${!currentEnd ? 'selected' : ''}>Pilih jam selesai</option>`;
+
+        if (!dateEl.value) return;
+
+        const openMinute  = 11 * 60; // 11:00
+        const closeMinute = getCloseHourByDate(dateEl.value) * 60;
+
+        // Render Start Time (t sampai close - 5 menit)
+        for (let t = openMinute; t <= closeMinute - 5; t += 5) {
+            const val = minutesToHHMM(t);
+            const opt = document.createElement("option");
+            opt.value = val;
+            opt.textContent = val;
+            
+            if (bookedSlots.includes(val)) {
+                opt.disabled = true;
+                opt.style.color = "#aaa";
+                opt.textContent += " (Terisi)";
+            }
+            if (val === currentStart) opt.selected = true;
+            startEl.appendChild(opt);
+        }
+
+        // Render End Time (t+5 sampai close)
+        for (let t = openMinute + 5; t <= closeMinute; t += 5) {
+            const val = minutesToHHMM(t);
+            const opt = document.createElement("option");
+            opt.value = val;
+            opt.textContent = val;
+
+            if (bookedSlots.includes(minutesToHHMM(t - 5))) { // Cek slot sebelumnya
+                opt.disabled = true;
+                opt.style.color = "#aaa";
+            }
+            if (val === currentEnd) opt.selected = true;
+            endEl.appendChild(opt);
+        }
+        enforceEndAfterStart();
+    }
+
+    function enforceEndAfterStart() {
+        if (!startEl.value) return;
+        const startMin = hhmmToMinutes(startEl.value);
+        Array.from(endEl.options).forEach(opt => {
+            if (!opt.value) return;
+            const endMin = hhmmToMinutes(opt.value);
+            // Disable jika jam selesai <= jam mulai
+            if (endMin <= startMin) opt.disabled = true;
+        });
+    }
+
+    // === 3. FUNGSI MODAL & UTILITAS ===
+
     function openModal({ title, text, actions }) {
         modalTitle.textContent = title;
         modalText.textContent = text;
@@ -405,188 +481,57 @@ document.addEventListener("DOMContentLoaded", function() {
         modal.setAttribute("aria-hidden", "true");
     }
 
-    modal.addEventListener("click", (e) => {
-        if (e.target.dataset.close === "true") closeModal();
-    });
-
-    /* ================= UTIL ================= */
     function pad2(n) { return String(n).padStart(2, "0"); }
-
-    function minutesToHHMM(total) {
-        const h = Math.floor(total / 60);
-        const m = total % 60;
-        return `${pad2(h)}:${pad2(m)}`;
-    }
-
+    function minutesToHHMM(total) { return `${pad2(Math.floor(total / 60))}:${pad2(total % 60)}`; }
     function hhmmToMinutes(hhmm) {
+        if(!hhmm) return 0;
         const [h, m] = hhmm.split(":").map(Number);
         return h * 60 + m;
     }
 
-    /* ================= JAM OPERASIONAL ================= */
-    function getCloseHourByDate(isoDate) {
-        const d = new Date(isoDate + "T00:00:00");
-        const day = d.getDay(); 
-        const isMonToThu = day >= 1 && day <= 4;
-        return isMonToThu ? 22 : 23;
-    }
+    // === 4. EVENT LISTENERS ===
 
-    function fillTimeOptions() {
-        startEl.innerHTML = `<option value="" selected disabled>Pilih jam mulai</option>`;
-        endEl.innerHTML = `<option value="" selected disabled>Pilih jam selesai</option>`;
-
-        if (!dateEl.value) return;
-
-        const openMinute = 11 * 60;
-        const closeHour = getCloseHourByDate(dateEl.value);
-        const closeMinute = closeHour * 60;
-
-        for (let t = openMinute; t <= closeMinute - 5; t += 5) {
-            const val = minutesToHHMM(t);
-            const opt = document.createElement("option");
-            opt.value = val;
-            opt.textContent = val;
-            startEl.appendChild(opt);
-        }
-
-        for (let t = openMinute + 5; t <= closeMinute; t += 5) {
-            const val = minutesToHHMM(t);
-            const opt = document.createElement("option");
-            opt.value = val;
-            opt.textContent = val;
-            endEl.appendChild(opt);
-        }
-    }
-
-    function enforceEndAfterStart() {
-        if (!startEl.value) return;
-
-        const startMin = hhmmToMinutes(startEl.value);
-
-        Array.from(endEl.options).forEach(opt => {
-            if (!opt.value) return;
-            const endMin = hhmmToMinutes(opt.value);
-            opt.disabled = endMin <= startMin;
-        });
-
-        if (endEl.value) {
-            const endMin = hhmmToMinutes(endEl.value);
-            if (endMin <= startMin) endEl.value = "";
-        }
-    }
-
-    /* init */
-    fillTimeOptions();
+    // Listener perubahan Input
     dateEl.addEventListener("change", () => {
-        fillTimeOptions();
+        fetchBookedSlotsAdmin(); // Ambil data slot terisi
         startEl.value = "";
         endEl.value = "";
     });
+
+    studioEl.addEventListener("change", fetchBookedSlotsAdmin);
     startEl.addEventListener("change", enforceEndAfterStart);
 
-    /* ================= SUBMIT FORM ================= */
+    // Form Submit (Simpan/Update)
     form.addEventListener("submit", (e) => {
         e.preventDefault();
-
         if (!dateEl.value || !studioEl.value || !startEl.value || !endEl.value || !paymentEl.value) return;
 
-        if (hhmmToMinutes(endEl.value) <= hhmmToMinutes(startEl.value)) {
-            openModal({
-                title: "Jam Tidak Valid",
-                text: "Jam selesai harus lebih besar dari jam mulai.",
-                actions: [{ label: "OK", className: "modalBtn--cancel", onClick: closeModal }]
-            });
-            return;
-        }
-
-        const actionTitle = editMode ? "Update Jadwal?" : "Simpan Jadwal?";
-        const actionText = editMode ? "Apakah kamu yakin ingin menyimpan perubahan jadwal ini?" : "Apakah kamu yakin ingin membuat jadwal baru ini?";
-
         openModal({
-            title: actionTitle,
-            text: actionText,
+            title: editMode ? "Update Jadwal?" : "Simpan Jadwal?",
+            text: editMode ? "Simpan perubahan jadwal ini?" : "Buat jadwal baru ini?",
             actions: [
-                {
-                    label: "Ya",
-                    className: "modalBtn--ok",
-                    onClick: () => {
-                        form.submit();
-                    }
-                },
+                { label: "Ya", className: "modalBtn--ok", onClick: () => form.submit() },
                 { label: "Batal", className: "modalBtn--cancel", onClick: closeModal }
             ]
         });
     });
 
-    /* ================= LIST: EDIT / DELETE ================= */
-    document.querySelectorAll('.deleteBtn').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            const deleteForm = this.closest('form');
-            openModal({
-                title: "Hapus Jadwal?",
-                text: "Apakah kamu yakin ingin menghapus jadwal ini?",
-                actions: [
-                    {
-                        label: "Hapus",
-                        className: "modalBtn--danger",
-                        onClick: () => {
-                            deleteForm.submit();
-                        }
-                    },
-                    { label: "Batal", className: "modalBtn--cancel", onClick: closeModal }
-                ]
-            });
-        });
-    });
-
-    document.querySelectorAll('.editBtn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const item = this.closest(".scheduleItem");
-            if (!item) return;
-
-            editMode = true;
-            editItemEl = item;
-            saveBtn.textContent = "Simpan Perubahan";
-
-            form.action = updateUrlBase + '/' + item.dataset.id;
-            formMethod.value = "PUT";
-
-            dateEl.value = item.dataset.date || "";
-            fillTimeOptions();
-
-            studioEl.value = item.dataset.studio || "";
-            startEl.value = item.dataset.start || "";
-            enforceEndAfterStart();
-            endEl.value = item.dataset.end || "";
-            paymentEl.value = item.dataset.payment || "";
-            
-            let rawNote = item.dataset.note || "";
-            rawNote = rawNote.replace(" (Sesi Admin Offline)", "");
-            noteEl.value = rawNote;
-
-            window.scrollTo({ top: 0, behavior: "smooth" });
-        });
-    });
-
-    /* ================= RESET POPUP ================= */
+    // Reset Form
     resetBtn.addEventListener("click", () => {
         openModal({
             title: "Reset Form?",
-            text: "Apakah kamu yakin ingin mereset form? Semua isian akan kosong.",
+            text: "Semua isian akan dikosongkan.",
             actions: [
-                {
-                    label: "Reset",
-                    className: "modalBtn--danger",
+                { 
+                    label: "Reset", 
+                    className: "modalBtn--danger", 
                     onClick: () => {
                         editMode = false;
-                        editItemEl = null;
                         saveBtn.textContent = "Simpan Jadwal";
-                        
                         form.action = storeUrl;
                         formMethod.value = "POST";
-
                         form.reset();
+                        bookedSlots = [];
                         fillTimeOptions();
                         closeModal();
                     }
@@ -596,27 +541,72 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-    /* ================= LOGOUT POPUP ================= */
+    // Edit Item dari List
+    document.querySelectorAll('.editBtn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const item = this.closest(".scheduleItem");
+            if (!item) return;
+
+            editMode = true;
+            saveBtn.textContent = "Simpan Perubahan";
+            form.action = updateUrlBase + '/' + item.dataset.id;
+            formMethod.value = "PUT";
+
+            dateEl.value = item.dataset.date;
+            studioEl.value = item.dataset.studio;
+            paymentEl.value = item.dataset.payment;
+            noteEl.value = item.dataset.note;
+
+            // Render jam dan pilih sesuai data item
+            fetchBookedSlotsAdmin().then(() => {
+                fillTimeOptions(item.dataset.start, item.dataset.end);
+            });
+
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+    });
+
+    // Delete Item
+    document.querySelectorAll('.deleteBtn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const deleteForm = this.closest('form');
+            openModal({
+                title: "Hapus Jadwal?",
+                text: "Yakin ingin menghapus jadwal ini?",
+                actions: [
+                    { label: "Hapus", className: "modalBtn--danger", onClick: () => deleteForm.submit() },
+                    { label: "Batal", className: "modalBtn--cancel", onClick: closeModal }
+                ]
+            });
+        });
+    });
+
+    // Logout
     if (logoutBtn) {
         logoutBtn.addEventListener("click", (e) => {
             e.preventDefault();
             const logoutForm = logoutBtn.closest('form');
             openModal({
                 title: "Keluar Akun?",
-                text: "Apakah kamu yakin ingin mengeluarkan akun?",
+                text: "Yakin ingin keluar?",
                 actions: [
-                    {
-                        label: "Keluar",
-                        className: "modalBtn--danger",
-                        onClick: () => {
-                            logoutForm.submit();
-                        }
-                    },
+                    { label: "Keluar", className: "modalBtn--danger", onClick: () => logoutForm.submit() },
                     { label: "Batal", className: "modalBtn--cancel", onClick: closeModal }
                 ]
             });
         });
     }
+
+    // Modal Background Click
+    modal.addEventListener("click", (e) => {
+        if (e.target.dataset.close === "true") closeModal();
+    });
+
+    // Inisialisasi awal
+    if(dateEl.value) fetchBookedSlotsAdmin();
+
 });
 </script>
 @endsection
+@endsection
+

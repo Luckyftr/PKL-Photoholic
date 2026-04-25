@@ -73,7 +73,10 @@ Route::prefix('pelanggan')->name('pelanggan.')->group(function () {
 */
 Route::prefix('admin')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
-    Route::get('/bookings/history', [BookingController::class, 'history'])->name('bookings.history');
+    Route::get('/history-bookings', [BookingController::class, 'history'])->name('bookings.history');
+    Route::get('/admin/bookings/{booking}/invoice', [BookingController::class, 'invoice'])
+    ->name('bookings.invoice');
+    
 
     // --- TAMBAHKAN ROUTE KHUSUS BOOKING DI SINI ---
     // Route untuk ACC / Konfirmasi Pembayaran
@@ -88,7 +91,7 @@ Route::prefix('admin')->group(function () {
     // Resource Route untuk CRUD otomatis
     Route::resource('users', UserController::class);
     Route::resource('studios', StudioController::class);
-    Route::resource('bookings', BookingController::class);
+    Route::resource('bookings', BookingController::class)->except(['show']);
     Route::resource('blogs', BlogController::class);
     
     // Route tambahan untuk toggle status

@@ -101,51 +101,59 @@
       <div class="scheduleLayout">
         
         <div class="bookingList">
-          @forelse ($groupedBookings as $baseCode => $group)
+          @forelse ($bookings as $booking)
             @php
-              // Ambil data dari sesi pertama dan terakhir untuk perhitungan
-              $firstSession = $group->first();
-              $lastSession = $group->last();
-              
-              // Total gabungan
-              $totalPrice = $group->sum('total_price');
-              $jumlahSesi = $group->count();
-              $totalMenit = $jumlahSesi * 5;
-              
-              // Pengecekan Tanggal yang BENAR (Hanya 1 baris)
-              $jadwalSelesai = $firstSession->booking_date->copy()->setTimeFromTimeString($lastSession->end_time)->isPast();
+              // --- Logic Mengikuti Admin ---
+              $now = time();
+              $date = date('Y-m-d', strtotime($booking->booking_date));
 
-              // Logika Status Dinamis
+              // Ubah titik ke titik dua agar strtotime bisa baca jamnya
+              $startStr = str_replace('.', ':', $booking->start_time);
+              $endStr = str_replace('.', ':', $booking->end_time);
+
+              $start = strtotime($date . ' ' . $startStr);
+              $end = strtotime($date . ' ' . $endStr);
+
+              // Variabel pendukung UI
               $statusBadgeClass = '';
               $statusText = '';
               $noteText = '';
+              
+              // Perhitungan durasi
+              $diffSeconds = $end - $start;
+              $totalMenit = round($diffSeconds / 60);
+              $jumlahSesi = ceil($totalMenit / 5);
 
-              if ($firstSession->status == 'pending') {
-                  $statusBadgeClass = 'statusBadge--waiting';
-                  $statusText = 'Menunggu Pembayaran';
-                  $noteText = 'Silakan lanjutkan pembayaran melalui kasir untuk mendapatkan konfirmasi.';
-              } elseif ($firstSession->status == 'canceled') {
+              // Penentuan Status sesuai logic admin + integrasi UI pelanggan
+              if ($booking->status == 'canceled') {
                   $statusBadgeClass = 'statusBadge--failed';
                   $statusText = 'Gagal';
                   $noteText = 'Booking dibatalkan atau pembayaran kadaluarsa.';
-              } elseif ($firstSession->status == 'confirmed') {
-                  if ($jadwalSelesai) {
-                      $statusBadgeClass = 'statusBadge--done';
-                      $statusText = 'Selesai';
-                      $noteText = 'Sesi foto telah selesai. Terima kasih sudah booking di Photoholic.';
-                  } else {
-                      $statusBadgeClass = 'statusBadge--paid';
-                      $statusText = 'Akan Datang';
-                      $noteText = 'Sudah dibayar. Silakan datang sesuai jadwal booking Anda.';
-                  }
+              } elseif ($booking->status == 'pending') {
+                  $statusBadgeClass = 'statusBadge--waiting';
+                  $statusText = 'Menunggu Pembayaran';
+                  $noteText = 'Silakan lanjutkan pembayaran melalui kasir untuk mendapatkan konfirmasi.';
+              } elseif ($now > $end) {
+                  $statusBadgeClass = 'statusBadge--done';
+                  $statusText = 'Selesai';
+                  $noteText = 'Sesi foto telah selesai. Terima kasih sudah booking di Photoholic.';
+              } elseif ($now >= $start) {
+                  // Jika sedang berlangsung, kita masukkan ke kategori "Akan Datang" di UI Pelanggan agar filter tetap jalan
+                  $statusBadgeClass = 'statusBadge--paid';
+                  $statusText = 'Akan Datang';
+                  $noteText = 'Sesi sedang berlangsung! Silakan segera menuju ke studio.';
+              } else {
+                  $statusBadgeClass = 'statusBadge--paid';
+                  $statusText = 'Akan Datang';
+                  $noteText = 'Sudah dibayar. Silakan datang sesuai jadwal booking Anda.';
               }
             @endphp
 
             <div class="bookingCard" data-status="{{ strtolower($statusText) }}">
               <div class="bookingCard__top">
                 <div>
-                  <p class="bookingCard__code">Booking #{{ $baseCode }}</p>
-                  <h3 class="bookingCard__theme">{{ $firstSession->studio->name }} Studio</h3>
+                  <p class="bookingCard__code">Booking #{{ $booking->booking_code }}</p>
+                  <h3 class="bookingCard__theme">{{ $booking->studio->name }} Studio</h3>
                 </div>
                 <span class="statusBadge {{ $statusBadgeClass }}">{{ $statusText }}</span>
               </div>
@@ -153,11 +161,11 @@
               <div class="bookingInfoGrid">
                 <div class="bookingInfoItem">
                   <span class="bookingInfoLabel">Tanggal</span>
-                  <span class="bookingInfoValue">{{ $firstSession->booking_date->translatedFormat('d F Y') }}</span>
+                  <span class="bookingInfoValue">{{ \Carbon\Carbon::parse($booking->booking_date)->translatedFormat('d F Y') }}</span>
                 </div>
                 <div class="bookingInfoItem">
                   <span class="bookingInfoLabel">Jam</span>
-                  <span class="bookingInfoValue">{{ \Carbon\Carbon::parse($firstSession->start_time)->format('H.i') }} - {{ \Carbon\Carbon::parse($lastSession->end_time)->format('H.i') }} WIB</span>
+                  <span class="bookingInfoValue">{{ str_replace(':', '.', date('H:i', $start)) }} - {{ str_replace(':', '.', date('H:i', $end)) }} WIB</span>
                 </div>
                 <div class="bookingInfoItem">
                   <span class="bookingInfoLabel">Durasi</span>
@@ -165,7 +173,7 @@
                 </div>
                 <div class="bookingInfoItem">
                   <span class="bookingInfoLabel">Total Harga</span>
-                  <span class="bookingInfoValue">Rp{{ number_format($totalPrice, 0, ',', '.') }}</span>
+                  <span class="bookingInfoValue">Rp{{ number_format($booking->total_price, 0, ',', '.') }}</span>
                 </div>
               </div>
 
@@ -176,7 +184,7 @@
             </div>
           @empty
             <div style="text-align: center; padding: 40px; color: #888; background: #fff; border-radius: 12px; border: 1px dashed #ccc;">
-              <img src="{{ asset('assets/logo-icon.png') }}" alt="Kosong" style="width: 60px; opacity: 0.5; margin-bottom: 10px;">
+              <img src="{{ asset('img/pelanggan/logo-icon.png') }}" alt="Kosong" style="width: 60px; opacity: 0.5; margin-bottom: 10px;">
               <p>Belum ada jadwal pemesanan.</p>
             </div>
           @endforelse

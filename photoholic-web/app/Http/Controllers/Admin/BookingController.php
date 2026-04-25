@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str; 
 use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class BookingController extends Controller
 {
@@ -155,6 +156,23 @@ class BookingController extends Controller
     public function history()
     {
         $bookings = Booking::with(['user', 'studio'])->latest()->get();
-        return view('admin.bookings.history', compact('bookings'));
+
+        $studios = Studio::where('is_active', true)->get();
+
+        $recentBookings = Booking::with('studio')
+            ->orderBy('created_at', 'desc')
+            ->take(5)
+            ->get();
+
+        return view('admin.bookings.history', compact('bookings', 'studios', 'recentBookings'));
+    }
+
+    public function invoice(Booking $booking)
+    {
+        $booking->load(['user', 'studio']);
+
+        $pdf = Pdf::loadView('admin.bookings.invoice', compact('booking'));
+
+        return $pdf->download('invoice-'.$booking->id.'.pdf');
     }
 }

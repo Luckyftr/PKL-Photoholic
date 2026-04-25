@@ -126,6 +126,7 @@
     foreach($bookings as $b) {
         $start = \Carbon\Carbon::parse($b->start_time);
         $end = \Carbon\Carbon::parse($b->end_time);
+        $sessionCount = ceil($start->diffInMinutes($end) / $b->studio->session_duration);
         
         $jsBookings[] = [
             'db_id' => $b->id, // ID asli untuk form ACC
@@ -137,6 +138,8 @@
             'tanggal' => \Carbon\Carbon::parse($b->booking_date)->translatedFormat('d M Y'),
             'waktu' => $start->format('H:i') . ' - ' . $end->format('H:i'),
             'durasi' => $start->diffInMinutes($end) . ' Menit',
+            'hargaSesi' => (int)($b->studio->price ?? 0),
+            'jumlahSesi' => $sessionCount,
             'hargaTotal' => (int)$b->total_price,
             'statusBayar' => ($b->status === 'confirmed') ? 'Lunas' : 'Pending',
             'metode' => strtoupper($b->payment_method),
@@ -199,14 +202,20 @@
 
 @section('scripts')
 <script>
+    // 1. Ambil data dari PHP
     const bookings = {!! json_encode($jsBookings) !!};
     const elList = document.getElementById("bookingList");
     const elDetail = document.getElementById("detailBody");
     const accForm = document.getElementById("accForm");
+    
+    // Default pilih yang pertama kalau ada data
     let selectedId = bookings.length > 0 ? bookings[0].id : null;
 
-    function rupiah(n){ return "Rp " + n.toLocaleString("id-ID"); }
+    function rupiah(n){ 
+        return "Rp " + (n || 0).toLocaleString("id-ID"); 
+    }
 
+    // 2. Fungsi Render List (Sisi Kiri)
     function renderList(){
         const keyword = document.getElementById("q").value.toLowerCase();
         const filterStatus = document.getElementById("status").value;
@@ -221,6 +230,7 @@
         filtered.forEach(b => {
             const card = document.createElement("div");
             card.className = "card" + (b.id === selectedId ? " is-active" : "");
+            card.onclick = () => selectBooking(b.id); // Tambah click pada cardnya langsung
             card.innerHTML = `
                 <div class="cardTop">
                     <div class="person">
@@ -232,51 +242,94 @@
                         </div>
                     </div>
                 </div>
-                <button class="cardBtn" onclick="selectBooking('${b.id}')">Lihat Rincian</button>
+                <button class="cardBtn" onclick="event.stopPropagation(); selectBooking('${b.id}')">Lihat Rincian</button>
             `;
             elList.appendChild(card);
         });
     }
 
+    // 3. Fungsi Pilih Booking
     function selectBooking(id){
         selectedId = id;
         renderList();
         renderDetail();
     }
 
+    // 4. Fungsi Render Detail (Sisi Kanan) - SUDAH DIRAPIKAN
     function renderDetail(){
         const b = bookings.find(x => x.id === selectedId);
-        if(!b) return;
+        if(!b) {
+            elDetail.innerHTML = '<p style="text-align:center; padding:40px; color:#999;">Pilih pesanan untuk melihat detail</p>';
+            return;
+        }
 
+        // Hitung Sesi secara manual karena tidak ada di array
+        const durasiMenit = parseInt(b.durasi);
+        const jumlahSesi = Math.ceil(durasiMenit / 5);
+
+        // Tombol ACC hanya muncul jika pending
         let accButton = "";
         if(b.statusBayar.toLowerCase() === 'pending'){
             accButton = `<button class="accBtn" onclick="confirmPayment(${b.db_id})">Konfirmasi Pembayaran (ACC)</button>`;
         }
+
+        // Tampilkan Tanggal Bayar & Catatan hanya jika ada isinya
+        const rowTglBayar = (b.tglBayar && b.tglBayar !== '-') 
+            ? `<div class="boxRow"><div class="k">Tanggal Bayar</div><div class="v">${b.tglBayar}</div></div>` 
+            : '';
+        
+        const rowNotes = (b.notes && b.notes !== '-') 
+            ? `<div class="boxRow"><div class="k">Catatan</div><div class="v">${b.notes}</div></div>` 
+            : '';
 
         elDetail.innerHTML = `
             <div class="box">
                 <div class="boxTitle">Pemesan</div>
                 <div class="boxRow"><div class="k">Nama</div><div class="v">${b.name}</div></div>
                 <div class="boxRow"><div class="k">Kontak</div><div class="v">${b.phone}</div></div>
+                <div class="boxRow"><div class="k">Email</div><div class="v">${b.email}</div></div>
             </div>
+        
             <div class="box">
-                <div class="boxTitle">Jadwal & Biaya</div>
+                <div class="boxTitle">Informasi Pemesanan</div>
+                <div class="boxRow"><div class="k">ID Booking</div><div class="v">${b.id}</div></div>
+                <div class="boxRow"><div class="k">Durasi</div><div class="v">${b.durasi}</div></div>
+            </div>
+
+            <div class="box">
+                <div class="boxTitle">Jadwal & Sesi</div>
                 <div class="boxRow"><div class="k">Studio</div><div class="v">${b.studio}</div></div>
-                <div class="boxRow"><div class="k">Waktu</div><div class="v">${b.tanggal}, ${b.waktu}</div></div>
-                <div class="boxRow"><div class="k">Total</div><div class="v">${rupiah(b.hargaTotal)}</div></div>
+                <div class="boxRow"><div class="k">Tanggal</div><div class="v">${b.tanggal}</div></div>
+                <div class="boxRow"><div class="k">Waktu</div><div class="v">${b.waktu}</div></div>
+                <div class="boxRow"><div class="k">Jumlah Sesi</div><div class="v">${jumlahSesi} Sesi</div></div>
             </div>
+
             <div class="box">
-                <div class="boxTitle">Status</div>
+                <div class="boxTitle">Rincian Biaya</div>
+                <div class="boxRow"><div class="k" style="color:var(--accent-red); font-weight:900;">TOTAL BAYAR</div><div class="v" style="color:var(--accent-red); font-weight:900;">${rupiah(b.hargaTotal)}</div></div>
+            </div>
+
+            <div class="box">
+                <div class="boxTitle">Status Pembayaran</div>
                 <div class="boxRow"><div class="k">Metode</div><div class="v">${b.metode}</div></div>
-                <div class="boxRow"><div class="k">Status</div><div class="v"><span class="pill ${b.statusBayar === 'Lunas' ? 'pill--lunas' : 'pill--pending'}">${b.statusBayar}</span></div></div>
+                <div class="boxRow">
+                    <div class="k">Status</div>
+                    <div class="v">
+                        <span class="pill ${b.statusBayar === 'Lunas' ? 'pill--lunas' : 'pill--pending'}">
+                            ${b.statusBayar}
+                        </span>
+                    </div>
+                </div>
+                ${rowTglBayar}
+                ${rowNotes}
                 ${accButton}
             </div>
         `;
     }
 
+    // 5. Fungsi Konfirmasi
     function confirmPayment(dbId) {
-        const yakin = confirm("Apakah Anda yakin ingin mengonfirmasi pembayaran ini?");
-        if (yakin) {
+        if (confirm("Apakah Anda yakin ingin mengonfirmasi pembayaran ini?")) {
             accForm.action = `/admin/bookings/${dbId}/accept`;
             const btn = document.querySelector('.accBtn');
             if(btn) {
@@ -287,8 +340,11 @@
         }
     }
 
+    // 6. Inisialisasi Event
     document.getElementById("q").addEventListener("input", renderList);
     document.getElementById("status").addEventListener("change", renderList);
+    
+    // Jalankan pertama kali
     renderList();
     renderDetail();
 </script>

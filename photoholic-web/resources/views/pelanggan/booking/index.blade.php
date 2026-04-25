@@ -245,25 +245,45 @@
     document.querySelector(`.step[data-step="${stepNumber}"]`).classList.add("active");
   }
 
-  // ELEMENT SELECTORS
   const studioSelect = document.getElementById("studio");
   const tanggalInput = document.getElementById("tanggal");
   const slotGrid = document.getElementById("slotGrid");
   
-  let selectedSlots = []; // Sekarang array, untuk menyimpan banyak sesi
+  let selectedSlots = []; 
   let selectedStudioData = null;
+  let bookedSlots = []; // Sekarang dinamis dari DB
 
-  // ==== LOGIKA GENERATE JAM OTOMATIS (11:00 - 22:00) ====
-  // Di dunia nyata, list 'bookedSlots' ini ditarik dari database berdasarkan tanggal & studio.
-  // Untuk sementara, kita mock beberapa jam agar terlihat abu-abu (tidak tersedia).
-  const bookedSlots = ['13:00', '13:05', '16:30', '16:35', '19:00', '19:05']; 
+  // ==== 1. FUNGSI AMBIL DATA DARI SERVER (DATABASE) ====
+  async function fetchBookedSlots() {
+    const studioId = studioSelect.value;
+    const date = tanggalInput.value;
 
+    if (!studioId || !date) return;
+
+    try {
+        const response = await fetch(`{{ route('pelanggan.booking.slots') }}?studio_id=${studioId}&date=${date}`);
+        const data = await response.json();
+       
+        // Simpan data jam yang sudah dipesan ke variabel global
+        bookedSlots = data.unavailable.map(t => {
+            // ambil hanya jam:menit dari format apapun
+            return t.split(' ')[1]?.slice(0,5) || t.slice(0,5);
+        });
+        
+        // Render ulang tampilan jam (Tetap cantik dengan logic generatemu)
+        generateTimeSlots(); 
+    } catch (error) {
+        console.error("Gagal mengambil data slot:", error);
+    }
+  }
+
+  // ==== 2. LOGIKA GENERATE TAMPILAN JAM (TETAP CANTIK) ====
   function generateTimeSlots() {
-    slotGrid.innerHTML = ""; // Bersihkan grid sebelumnya
+    slotGrid.innerHTML = ""; 
     let currentTime = new Date();
-    currentTime.setHours(11, 0, 0, 0); // Mulai jam 11:00
+    currentTime.setHours(11, 0, 0, 0); 
     const endTime = new Date();
-    endTime.setHours(22, 0, 0, 0); // Selesai jam 22:00
+    endTime.setHours(22, 0, 0, 0); 
 
     while (currentTime < endTime) {
       let hour = String(currentTime.getHours()).padStart(2, '0');
@@ -272,34 +292,29 @@
       let timestamp = currentTime.getTime();
       
       let btn = document.createElement("button");
-      btn.className = "slotBtn";
+      btn.className = "slotBtn"; // Tetap pakai class CSS-mu
       btn.textContent = timeStr;
       
-      // Jika jam sudah dipesan, jadikan abu-abu
+      // CEK APAKAH TERISI (DATA DARI DB)
       if(bookedSlots.includes(timeStr)) {
-        btn.classList.add("unavailable");
+        btn.classList.add("unavailable"); // Tetap abu-abu sesuai CSS
         btn.disabled = true;
       } else {
-        // Jika tersedia, tambahkan event click
         btn.onclick = () => handleSlotClick(timeStr, timestamp);
       }
 
-      // Cek apakah tombol ini masuk di array pilihan user
       if(selectedSlots.find(s => s.time === timeStr)) {
         btn.classList.add("selected");
       }
 
       slotGrid.appendChild(btn);
-
-      // Tambah 5 menit untuk slot berikutnya
       currentTime.setMinutes(currentTime.getMinutes() + 5);
     }
   }
 
-  // ==== LOGIKA MEMILIH BANYAK SESI BERURUTAN ====
+  // ==== LOGIKA MEMILIH BANYAK SESI ====
   function handleSlotClick(timeStr, timestamp) {
-    const fiveMins = 5 * 60 * 1000; // 5 menit dalam milidetik
-
+    const fiveMins = 5 * 60 * 1000;
     if (selectedSlots.length === 0) {
       selectedSlots.push({ time: timeStr, ts: timestamp });
     } else {
@@ -307,78 +322,54 @@
       const first = selectedSlots[0];
       const last = selectedSlots[selectedSlots.length - 1];
 
-      // Jika klik jam persis SEBELUM jam pertama
       if (timestamp === first.ts - fiveMins) {
         selectedSlots.unshift({ time: timeStr, ts: timestamp });
-      }
-      // Jika klik jam persis SETELAH jam terakhir
-      else if (timestamp === last.ts + fiveMins) {
+      } else if (timestamp === last.ts + fiveMins) {
         selectedSlots.push({ time: timeStr, ts: timestamp });
-      }
-      // Jika klik jam yang SAMA (Deselect jam paling ujung)
-      else if (timestamp === last.ts) {
+      } else if (timestamp === last.ts) {
         selectedSlots.pop();
       } else if (timestamp === first.ts) {
         selectedSlots.shift();
-      }
-      // Jika melompat jauh (tidak berurutan), RESET pilihan
-      else {
+      } else {
         selectedSlots = [{ time: timeStr, ts: timestamp }];
       }
     }
-    
-    // Render ulang tombol agar warnanya berubah
     generateTimeSlots(); 
     updateSummary();
   }
 
-  // FORMATTER BANTUAN
+  // FORMATTER & UPDATE UI LAINNYA
   const formatRupiah = (angka) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka);
-  
   function formatTanggal(tanggal){
     if(!tanggal) return "-";
     return new Date(tanggal).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" });
   }
-
   function addFiveMinutes(timeStr){
     const [hour, minute] = timeStr.split(":").map(Number);
     const date = new Date();
     date.setHours(hour, minute + 5);
-    let h = String(date.getHours()).padStart(2, '0');
-    let m = String(date.getMinutes()).padStart(2, '0');
-    return `${h}:${m}`;
+    return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
   }
 
-  // UPDATE PREVIEW CARD
   function updateStudioPreview(){
     const studioId = studioSelect.value;
     selectedStudioData = dbStudios.find(s => s.id == studioId);
-
     if(selectedStudioData) {
       document.getElementById("selectedStudioTitle").textContent = selectedStudioData.name;
       document.getElementById("selectedStudioDesc").textContent = `Max ${selectedStudioData.max_people_per_session} Orang • ${selectedStudioData.paper_type.replace('_', ' ').toUpperCase()}`;
       document.getElementById("selectedStudioPrice").textContent = `${formatRupiah(selectedStudioData.price)} / Sesi`;
-      const imgSrc = selectedStudioData.photo ? `/storage/${selectedStudioData.photo}` : '{{ asset("img/admin/logo-photoholic.png") }}';
-      document.getElementById("previewImg").src = imgSrc;
-      
-      generateTimeSlots(); // Re-generate jika studio ganti (di masa depan bisa narik data bookedSlots spesifik studio)
+      document.getElementById("previewImg").src = selectedStudioData.photo ? `/storage/${selectedStudioData.photo}` : '{{ asset("img/admin/logo-photoholic.png") }}';
     }
   }
 
-  // UPDATE RINGKASAN HARGA & DURASI MULTI-SESI
   function updateSummary(){
     if(!selectedStudioData) return;
-
     const namaStudio = selectedStudioData.name;
     const tanggal = formatTanggal(tanggalInput.value);
-    
-    // Kalkulasi Total Sesi
     const jumlahSesi = selectedSlots.length;
     const totalHargaNum = selectedStudioData.price * jumlahSesi;
     const hargaFormat = formatRupiah(totalHargaNum);
-    const hargaPerSesi = formatRupiah(selectedStudioData.price);
 
-    // Rentang Jam
     let jamRange = "-";
     if (jumlahSesi > 0) {
       const startTime = selectedSlots[0].time;
@@ -386,165 +377,75 @@
       jamRange = `${startTime} WIB - ${endTime} WIB`;
     }
 
-    // Update DOM (Step 2)
     document.getElementById("sumStudio").textContent = namaStudio;
     document.getElementById("sumTanggal").textContent = tanggal;
     document.getElementById("sumJam").textContent = jamRange;
     document.getElementById("sumDurasi").textContent = `${jumlahSesi * 5} Menit (${jumlahSesi} Sesi)`;
     document.getElementById("sumHarga").textContent = hargaFormat;
 
-    // Update DOM (Step 3 Payment)
     document.getElementById("payStudio").textContent = namaStudio;
     document.getElementById("payJadwal").textContent = `${tanggal} • ${jamRange}`;
     document.getElementById("payHarga").textContent = hargaFormat;
-
-    // Update DOM (Step 4 Status)
-    document.getElementById("statusStudio").textContent = namaStudio;
-    document.getElementById("statusTanggal").textContent = tanggal;
-    document.getElementById("statusJam").textContent = jamRange;
-    document.getElementById("statusHarga").textContent = hargaFormat;
-
-    // Update DOM (Step 5 Invoice)
-    document.getElementById("invTanggal").textContent = tanggal;
-    document.getElementById("invStudio").textContent = namaStudio;
-    document.getElementById("invJam").textContent = jamRange;
-    document.getElementById("invDesk").textContent = namaStudio;
-    document.getElementById("invHarga").textContent = hargaPerSesi;
-    document.getElementById("invJumlahSesi").textContent = jumlahSesi;
-    document.getElementById("invJumlah").textContent = hargaFormat;
-    document.getElementById("invSubtotal").textContent = hargaFormat;
-    document.getElementById("invTotal").textContent = hargaFormat;
   }
-
-  // AWAL LOAD HALAMAN
-  generateTimeSlots();
 
   // EVENT LISTENERS
   studioSelect.addEventListener("change", () => {
-    selectedSlots = []; // Reset jam kalau studio ganti
+    selectedSlots = [];
     updateStudioPreview();
+    fetchBookedSlots(); // Panggil data asli
     updateSummary();
   });
 
   tanggalInput.addEventListener("change", () => {
-    selectedSlots = []; // Reset jam kalau tanggal ganti
-    generateTimeSlots();
+    selectedSlots = [];
+    fetchBookedSlots(); // Panggil data asli
     updateSummary();
   });
 
-  // NAVIGASI STEPS
   document.getElementById("toStep2").addEventListener("click", () => {
     if(!studioSelect.value){ alert("Silakan pilih studio terlebih dahulu."); return; }
     if(!tanggalInput.value || selectedSlots.length === 0){ alert("Silakan pilih tanggal dan minimal 1 sesi jam kosong."); return; }
-    updateSummary();
     showStep(2);
   });
 
   document.getElementById("backTo1").addEventListener("click", () => showStep(1));
-
-  document.getElementById("toStep3").addEventListener("click", () => {
-    const nama = document.getElementById("nama").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const telp = document.getElementById("telp").value.trim();
-    const jumlah = document.getElementById("jumlah").value.trim();
-
-    if(!nama || !email || !telp || !jumlah){ alert("Silakan lengkapi data pemesanan."); return; }
-
-    document.getElementById("invNama").textContent = nama;
-    document.getElementById("invEmail").textContent = email;
-    document.getElementById("invTelp").textContent = telp;
-    showStep(3);
-  });
-
+  document.getElementById("toStep3").addEventListener("click", () => showStep(3));
   document.getElementById("backTo2").addEventListener("click", () => showStep(2));
 
   document.getElementById("simulateSuccess").addEventListener("click", async () => {
-    // 1. Ambil data dari form
-    const studio_id = document.getElementById("studio").value;
-    const booking_date = document.getElementById("tanggal").value;
-    const notes = document.getElementById("catatan").value;
-    
-    // Validasi ulang untuk jaga-jaga
-    if (!studio_id || !booking_date || selectedSlots.length === 0) {
-        alert("Data pemesanan tidak lengkap!");
-        return;
-    }
-
-    // Ambil jam pertama dan terakhir
     const start_time = selectedSlots[0].time;
-    // Tambahkan 5 menit ke slot terakhir untuk mendapatkan end_time
     const end_time = addFiveMinutes(selectedSlots[selectedSlots.length - 1].time); 
 
-    if (!/^\d{2}:\d{2}$/.test(start_time) || !/^\d{2}:\d{2}$/.test(end_time)) {
-    alert("Format jam tidak valid!");
-    console.log("DEBUG TIME:", start_time, end_time);
-    return;
-    }
-
-    // Siapkan data yang mau dikirim
-    const payload = {
-        studio_id: studio_id,
-        booking_date: booking_date,
+    const dataKeServer = {
+        studio_id: studioSelect.value,
+        booking_date: tanggalInput.value,
         start_time: start_time,
         end_time: end_time,
-        notes: notes
+        notes: document.getElementById("catatan").value
     };
 
-    // 2. Ambil CSRF Token Laravel
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
     try {
-        // 3. Tembak data ke Controller pakai Fetch API
         const response = await fetch("{{ route('pelanggan.booking.store') }}", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrfToken,
-                'Accept': 'application/json' // Beritahu Laravel kita mau terima balasan JSON
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json'
             },
-            body: JSON.stringify(payload)
+            body: JSON.stringify(dataKeServer)
         });
-
-        const data = await response.json();
-
-        // 4. Cek Balasan dari Laravel
-        if (response.ok && data.success) {
-            // BERHASIL DISIMPAN KE DATABASE! 🎉
-            document.getElementById("statusIcon").textContent = "✓";
-            document.getElementById("statusIcon").className = "statusIcon success";
-            document.getElementById("statusTitle").textContent = "Pemesanan Berhasil Disimpan";
-            document.getElementById("statusText").textContent = "Pesanan masuk ke sistem. Silakan lunasi pembayaran di kasir/admin.";
-            
-            // Masukkan Nomor Invoice yang di-generate Controller ke halaman Step 5
-            document.getElementById("invNo").textContent = "Invoice No. " + data.booking_code;
-            
-            showStep(4);
+        const result = await response.json();
+        if (response.ok && result.success) {
+            alert(result.message); 
+            window.location.href = result.redirect_url; 
         } else {
-            // GAGAL KARENA BENTROK/VALIDASI
-            alert(data.message || "Terjadi kesalahan saat memproses jadwal.");
-            console.error(data);
+            alert(result.message || "Gagal menyimpan.");
         }
-
     } catch (error) {
-        // GAGAL KARENA KONEKSI/SERVER ERROR
-        alert("Gagal terhubung ke server. Silakan cek console.");
-        console.error("AJAX Error:", error);
+        alert("Gagal terhubung ke server.");
     }
   });
 
-  document.getElementById("simulateFail").addEventListener("click", () => {
-    document.getElementById("statusIcon").textContent = "✕";
-    document.getElementById("statusIcon").className = "statusIcon fail";
-    document.getElementById("statusTitle").textContent = "Pembayaran Gagal";
-    document.getElementById("statusText").textContent = "Pembayaran belum berhasil. Silakan coba lagi atau scan QRIS ulang.";
-    showStep(4);
-  });
-
-  document.getElementById("toStep5").addEventListener("click", () => {
-    if(document.getElementById("statusTitle").textContent === "Pembayaran Gagal"){
-      alert("Invoice hanya tersedia jika pembayaran berhasil."); return;
-    }
-    showStep(5);
-  });
+  generateTimeSlots(); // Awal load
 </script>
 @endsection

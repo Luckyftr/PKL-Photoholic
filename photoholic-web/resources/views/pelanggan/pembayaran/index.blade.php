@@ -98,75 +98,68 @@
       <div class="paymentLayout">
 
         <div class="paymentList">
-          @forelse ($groupedBookings as $baseCode => $group)
+          @forelse ($bookings as $booking)
             @php
-              $firstSession = $group->first();
-              $lastSession = $group->last();
-              
-              $totalPrice = $group->sum('total_price');
-              $jumlahSesi = $group->count();
-              $totalMenit = $jumlahSesi * 5;
-              
               $statusBadgeClass = '';
               $statusText = '';
               $noteText = '';
-
-              if ($firstSession->status == 'confirmed') {
+        
+              if ($booking->status == 'confirmed') {
                   $statusBadgeClass = 'statusBadge--success';
                   $statusText = 'Berhasil';
                   $noteText = 'Pembayaran berhasil dan booking Anda sudah dikonfirmasi.';
-              } elseif ($firstSession->status == 'pending') {
+              } elseif ($booking->status == 'pending') {
                   $statusBadgeClass = 'statusBadge--waiting';
                   $statusText = 'Menunggu';
-                  $noteText = 'Pembayaran belum diselesaikan. Silakan lanjutkan pembayaran.';
-              } elseif ($firstSession->status == 'canceled') {
+                  $noteText = 'Menunggu konfirmasi admin. Mohon cek berkala.';
+              } elseif ($booking->status == 'canceled') {
                   $statusBadgeClass = 'statusBadge--failed';
                   $statusText = 'Gagal';
-                  $noteText = 'Pembayaran tidak berhasil diproses atau sudah kadaluarsa.';
+                  $noteText = 'Pembayaran tidak berhasil diproses atau dibatalkan.';
               }
             @endphp
-
+        
             <div class="paymentCard" data-status="{{ strtolower($statusText) }}">
               <div class="paymentCard__top">
                 <div>
-                  <p class="paymentCard__id">Pembayaran #{{ $baseCode }}</p>
-                  <h3 class="paymentCard__theme">{{ $firstSession->studio->name }} Studio</h3>
+                  <p class="paymentCard__id">Pembayaran #{{ $booking->booking_code }}</p>
+                  <h3 class="paymentCard__theme">{{ $booking->studio->name }} Studio</h3>
                 </div>
                 <span class="statusBadge {{ $statusBadgeClass }}">{{ $statusText }}</span>
               </div>
-
+        
               <div class="paymentInfoGrid">
                 <div class="paymentInfoItem">
                   <span class="paymentInfoLabel">Tanggal Transaksi</span>
-                  <span class="paymentInfoValue">{{ $firstSession->created_at->translatedFormat('d F Y') }}</span>
+                  <span class="paymentInfoValue">{{ $booking->created_at->translatedFormat('d F Y') }}</span>
                 </div>
                 <div class="paymentInfoItem">
                   <span class="paymentInfoLabel">Tanggal Booking</span>
-                  <span class="paymentInfoValue">{{ $firstSession->booking_date->translatedFormat('d F Y') }}</span>
+                  <span class="paymentInfoValue">{{ $booking->booking_date->translatedFormat('d F Y') }}</span>
                 </div>
                 <div class="paymentInfoItem">
                   <span class="paymentInfoLabel">Jam Booking</span>
-                  <span class="paymentInfoValue">{{ \Carbon\Carbon::parse($firstSession->start_time)->format('H.i') }} WIB</span>
+                  <span class="paymentInfoValue">{{ \Carbon\Carbon::parse($booking->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($booking->end_time)->format('H:i') }} WIB</span>
                 </div>
                 <div class="paymentInfoItem">
                   <span class="paymentInfoLabel">Metode Pembayaran</span>
-                  <span class="paymentInfoValue">{{ strtoupper($firstSession->payment_method) }}</span>
+                  <span class="paymentInfoValue">{{ strtoupper($booking->payment_method) }}</span>
                 </div>
                 <div class="paymentInfoItem">
                   <span class="paymentInfoLabel">Durasi</span>
-                  <span class="paymentInfoValue">{{ $jumlahSesi }} sesi / {{ $totalMenit }} menit</span>
+                  <span class="paymentInfoValue">{{ $booking->jumlah_sesi }} sesi</span>
                 </div>
                 <div class="paymentInfoItem">
                   <span class="paymentInfoLabel">Total Bayar</span>
-                  <span class="paymentInfoValue price">Rp{{ number_format($totalPrice, 0, ',', '.') }}</span>
+                  <span class="paymentInfoValue price">Rp{{ number_format($booking->total_price, 0, ',', '.') }}</span>
                 </div>
               </div>
-
+        
               <div class="paymentCard__bottom">
                 <p class="paymentNote">{{ $noteText }}</p>
                 <div class="paymentActions">
                   <a href="#" class="paymentBtn">Lihat Detail</a>
-                  @if($firstSession->status == 'confirmed')
+                  @if($booking->status == 'confirmed')
                     <a href="#" class="paymentBtn paymentBtn--outline">Unduh Invoice</a>
                   @endif
                 </div>
@@ -174,12 +167,10 @@
             </div>
           @empty
             <div style="text-align: center; padding: 40px; color: #888; background: #fff; border-radius: 12px; border: 1px dashed #ccc;">
-              <img src="{{ asset('assets/logo-icon.png') }}" alt="Kosong" style="width: 60px; opacity: 0.5; margin-bottom: 10px;">
               <p>Belum ada riwayat transaksi pembayaran.</p>
             </div>
           @endforelse
         </div>
-
         <aside class="paymentSide">
           <div class="infoBox">
             <h3 class="infoBox__title">Ringkasan Pembayaran</h3>

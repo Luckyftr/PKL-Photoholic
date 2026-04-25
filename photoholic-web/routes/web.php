@@ -75,6 +75,13 @@ Route::prefix('admin')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('/bookings/history', [BookingController::class, 'history'])->name('bookings.history');
 
+    // --- TAMBAHKAN ROUTE KHUSUS BOOKING DI SINI ---
+    // Route untuk ACC / Konfirmasi Pembayaran
+    Route::post('bookings/{booking}/accept', [BookingController::class, 'accept'])->name('bookings.accept');
+    // Route untuk Membatalkan Pesanan
+    Route::post('bookings/{booking}/cancel', [BookingController::class, 'cancel'])->name('bookings.cancel');
+    // ----------------------------------------------
+
     // Route khusus halaman profil admin
     Route::view('/profile', 'admin.profile')->name('admin.profile');
 

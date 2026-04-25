@@ -102,19 +102,37 @@
 
         <div class="scheduleList">
           @forelse($todaySchedules as $schedule)
+          @php
+              $now = time();
+
+              // ambil tanggal doang
+              $date = date('Y-m-d', strtotime($schedule->booking_date));
+
+              $start = strtotime($date . ' ' . str_replace('.', ':', $schedule->start_time));
+              $end = strtotime($date . ' ' . str_replace('.', ':', $schedule->end_time));
+
+              if ($schedule->status == 'canceled') {
+                  $pillClass = 'pill--red';
+                  $statusText = 'Batal';
+              } elseif ($now > $end) {
+                  $pillClass = 'pill--green';
+                  $statusText = 'Selesai';
+              } elseif ($now >= $start) {
+                  $pillClass = 'pill--green';
+                  $statusText = 'Berlangsung';
+              } else {
+                  $pillClass = 'pill--yellow';
+                  $statusText = 'Menunggu';
+              }
+          @endphp
               <div class="scheduleItem">
                 <div class="scheduleItem__time">{{ \Carbon\Carbon::parse($schedule->start_time)->format('H:i') }}</div>
                 <div class="scheduleItem__info">
                   <div class="scheduleItem__name">{{ $schedule->user->name ?? 'Pelanggan' }}</div>
                   <div class="scheduleItem__meta">{{ $schedule->studio->name ?? 'Studio' }} • {{ \Carbon\Carbon::parse($schedule->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($schedule->end_time)->format('H:i') }}</div>
                 </div>
-                @if($schedule->status == 'selesai')
-                    <span class="pill pill--gray">Selesai</span>
-                @elseif($schedule->status == 'berlangsung')
-                    <span class="pill pill--green">Sedang Berlangsung</span>
-                @else
-                    <span class="pill pill--yellow">Menunggu</span>
-                @endif
+                
+                <span class="pill {{ $pillClass }}">{{ $statusText }}</span>
               </div>
           @empty
               <p style="color: #666; font-size: 14px; padding: 10px 0;">Tidak ada jadwal pemesanan hari ini.</p>

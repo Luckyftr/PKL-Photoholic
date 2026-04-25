@@ -17,6 +17,7 @@ class Blog extends Model
         'publish_date',
         'short_caption',
         'content',
+        'instagram_url',
         'sync_insta',
         'status',
     ];

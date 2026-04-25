@@ -26,6 +26,7 @@ class BlogController extends Controller
             'content' => 'required',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'status' => 'required|in:draft,published',
+            'instagram_url' => 'nullable|url',
         ]);
 
         // upload foto
@@ -58,6 +59,7 @@ class BlogController extends Controller
             'content' => 'required',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'status' => 'required|in:draft,published',
+            'instagram_url' => 'nullable|url',
         ]);
 
         // update foto

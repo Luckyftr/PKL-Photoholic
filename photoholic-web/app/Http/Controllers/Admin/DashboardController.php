@@ -7,28 +7,25 @@ use App\Models\ActivityLog;
 use App\Models\Booking;
 use App\Models\Studio;
 use App\Models\User;
-use Carbon\Carbon; // Pastikan import Carbon untuk manipulasi tanggal
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
     public function index()
     {
         $today = Carbon::today();
-        $currentMonth = Carbon::now()->month;
-        $currentYear = Carbon::now()->year;
+        $now = Carbon::now();
+        $currentMonth = $now->month;
+        $currentYear = $now->year;
 
         // 1. STATISTIK ATAS
-        // Menghitung pendapatan hari ini (asumsi dari relasi studio->price untuk booking yang tidak dibatalkan)
+        // Menghitung pendapatan hari ini dari total_price booking yang sudah dikonfirmasi/lunas
         $revenueToday = Booking::whereDate('booking_date', $today)
-            ->whereNotIn('status', ['dibatalkan']) // Sesuaikan dengan enum status kamu
-            ->with('studio')
-            ->get()
-            ->sum(function ($booking) {
-                return $booking->studio->price ?? 0;
-            });
+            ->whereIn('status', ['confirmed', 'selesai']) // Hanya yang sudah sah
+            ->sum('total_price');
 
         $bookingsToday = Booking::whereDate('booking_date', $today)->count();
-        $totalUsers = User::where('role', '!=', 'admin')->count(); // Hanya menghitung pelanggan
+        $totalUsers = User::where('role', '!=', 'admin')->count(); 
         
         $activeStudiosCount = Studio::where('is_active', true)->count();
         $totalStudiosCount = Studio::count();
@@ -37,13 +34,14 @@ class DashboardController extends Controller
             ->whereYear('booking_date', $currentYear)
             ->count();
 
-        $pendingPayments = Booking::where('status', 'pending')->count(); // Sesuaikan nama status
+        $pendingPayments = Booking::where('status', 'pending')->count();
 
         // 2. DATA LIST & TABEL
-        // Jadwal Hari Ini
+        // Jadwal Hari Ini - Dibatasi 5 data saja sesuai permintaan
         $todaySchedules = Booking::with(['user', 'studio'])
             ->whereDate('booking_date', $today)
             ->orderBy('start_time', 'asc')
+            ->take(5)
             ->get();
 
         // Aktivitas Terbaru

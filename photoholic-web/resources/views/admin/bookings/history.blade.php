@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Riwayat Transaksi')
+@section('title', 'Atur Jadwal')
 
 @section('styles')
     <style>
@@ -23,15 +23,15 @@
           color: var(--text);
         }
 
-        /* PAGE GRID - KITA PAKAI TRIK ANTI NYEMPIT LAGI DI SINI! */
-        .page{
+        /* PAGE GRID */
+        .page {
           width: 100% !important;
-          max-width: 100% !important;
-          margin-left: -210px !important; /* Tarik nembus pembungkus admin */
-          padding: 3px 10px 34px 0px;
+          max-width: 100% !important; 
+          margin-left: -210px !important; 
+          padding:3px 50px 34px;
           display: grid;
-          grid-template-columns: 360px minmax(1150px, 1fr) !important;
-          gap: 40px;
+          grid-template-columns: 360px minmax(1150px, 2fr) !important; 
+          gap: 34px;
           align-items: start;
         }
 
@@ -58,81 +58,83 @@
         .sidebarDecor{ margin-top:28px; display:flex; justify-content:center; }
         .sidebarDecor img{ width:140px; opacity:.92; }
 
-        /* PANEL */
-        .panel { width: 100% !important; min-width: 0; }
-        .panelCard{ width: 100% !important; background: var(--panel-bg); border-radius:12px; padding:26px 30px 30px; }
-        .panelCard__title{ color: var(--accent-red); font-size:24px; font-weight:900; margin-bottom:8px; }
-        .panelCard__sub{ color: rgba(255, 74, 93, .9); font-size:13px; font-weight:600; }
+        /* PANEL CARD */
+        .panel { width: 100%; min-width: 0; }
+        .panelCard{ width:100%; background:var(--panel-bg); border-radius:12px; padding:26px 30px 30px; }
+        .panelCard__title{ color:var(--accent-red); font-size:28px; font-weight:900; margin-bottom:6px; }
+        .panelCard__sub{ color:rgba(255,74,93,.9); font-size:13px; font-weight:600; }
 
-        /* LIST TRANSAKSI */
-        .trxList{ margin-top:16px; display:grid; gap:12px; }
-        .trxItem{ background:#fff; border-radius:14px; border:1.5px solid rgba(255,74,93,.28); padding:14px 16px; display:flex; justify-content:space-between; gap:14px; box-shadow:0 6px 0 rgba(120,160,255,.10); }
-        .pillDate{ display:inline-flex; padding:6px 10px; border-radius:999px; border:1.5px solid rgba(255,74,93,.45); color: var(--accent-red); font-weight:900; font-size:12px; width:max-content; margin-bottom:8px; }
-        .trxTitle{ color: var(--accent-red); font-weight:900; font-size:14px; margin-bottom:4px; }
-        .trxMeta{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; color: rgba(45,45,45,.75); font-size:12px; font-weight:600; margin-bottom:6px; }
-        .trxMeta .dot{ opacity:.5; }
-        .trxNote{ color: rgba(45,45,45,.70); font-size:12px; font-weight:600; }
-        .trxRight{ display:flex; flex-direction:column; align-items:flex-end; gap:10px; min-width:220px; }
-        .trxTotal{ font-weight:900; color: rgba(45,45,45,.85); font-size:14px; }
-        .trxActions{ display:flex; gap:8px; }
-        .miniBtn{ height:36px; padding:0 12px; border-radius:12px; border:2px solid rgba(255,74,93,.45); background:transparent; color: var(--accent-red); font-weight:900; cursor:pointer; }
-        .miniBtn:hover{ background: rgba(255,74,93,.08); }
+        /* FORM */
+        .scheduleForm{ margin-top:18px; display:grid; gap:14px; }
+        .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+        .field{ display:grid; gap:8px; }
+        .field label{ color:var(--accent-red); font-weight:800; font-size:13px; }
+        .field input, .field select, .field textarea{ width:100%; border-radius:14px; border:1.5px solid rgba(255,74,93,.65); background:#fff; padding:10px 14px; font-size:13px; color:var(--accent-red); outline:none; box-shadow:0 6px 0 rgba(120,160,255,.10); }
+        .field textarea{ resize:none; min-height:44px; }
+
+        /* SELECT ARROW FIX */
+        .field select{
+          cursor:pointer;
+          -webkit-appearance:none;
+          -moz-appearance:none;
+          appearance:none;
+          padding-right:46px;
+          background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6' fill='none' stroke='%23ff4a5d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+          background-repeat:no-repeat;
+          background-position:right 16px center;
+          background-size:18px 18px;
+        }
+        .field select::-ms-expand{ display:none; }
+        .field input:focus, .field select:focus, .field textarea:focus{ border-color:rgba(255,74,93,.9); }
+
+        /* BUTTONS */
+        .actions{ display:flex; gap:12px; margin-top:4px; }
+        .btn{ height:44px; border-radius:14px; border:none; cursor:pointer; font-weight:900; padding:0 18px; display: inline-flex; align-items: center; justify-content: center;}
+        .btn--primary{ background:var(--teal-btn); color:#fff; min-width:180px; }
+        .btn--ghost{ background:transparent; border:2px solid rgba(255,74,93,.55); color:var(--accent-red); }
+
+        /* LIST */
+        .listHead{ margin-top:22px; }
+        .listTitle{ color:var(--accent-red); font-size:18px; font-weight:900; margin-bottom:6px; }
+        .scheduleList{ margin-top:14px; display:grid; gap:12px; }
+        .scheduleItem{ background:#fff; border-radius:14px; border:1.5px solid rgba(255,74,93,.28); padding:14px 16px; display:flex; justify-content:space-between; gap:12px; box-shadow:0 6px 0 rgba(120,160,255,.10); }
+        .pill{ display:inline-flex; padding:6px 10px; border-radius:999px; border:1.5px solid rgba(255,74,93,.45); color:var(--accent-red); font-weight:900; font-size:12px; width:max-content; margin-bottom:8px; }
+        .scheduleItem__title{ color:var(--accent-red); font-weight:900; font-size:14px; margin-bottom:4px; }
+        .scheduleItem__desc{ color:rgba(45,45,45,.75); font-size:12px; font-weight:700; }
+        .scheduleItem__right{ display:flex; align-items:center; gap:8px; }
+        .miniBtn{ height:36px; padding:0 12px; border-radius:12px; border:2px solid rgba(255,74,93,.45); background:transparent; color:var(--accent-red); font-weight:900; cursor:pointer; }
+        .miniBtn--danger{ border-color:rgba(255,74,93,.65); background:rgba(255,74,93,.10); }
 
         /* MODAL */
         .modal{ position: fixed; inset: 0; display: none; z-index: 9999; }
         .modal.is-open{ display:block; }
         .modal__overlay{ position:absolute; inset:0; background: rgba(0,0,0,.25); }
+        .modal__card{ position:absolute; left:50%; top:50%; transform: translate(-50%, -50%); width: min(620px, 92%); background: var(--pink-card); border-radius: 16px; padding: 22px 24px 18px; box-shadow: 10px 10px 0 var(--shadow-blue); text-align: center; }
+        .modal__title{ color: var(--accent-red); font-weight: 900; font-size: 22px; margin-bottom: 8px; }
+        .modal__text{ color: rgba(45,45,45,.78); font-weight: 700; font-size: 13px; line-height: 1.35; margin-bottom: 14px; }
+        .modal__actions{ display:flex; justify-content:center; gap:12px; flex-wrap:wrap; }
+        .modalBtn{ height:42px; padding: 0 18px; border-radius: 14px; border: none; cursor: pointer; font-weight: 900; }
+        .modalBtn--ok{ background: var(--teal-btn); color: #fff; min-width: 140px; }
+        .modalBtn--danger{ background: #ff4a5d; color:#fff; min-width: 140px; }
+        .modalBtn--cancel{ background:#fff; color: var(--accent-red); border: 2px solid rgba(255,74,93,.55); min-width: 140px; }
 
-        /* RECEIPT CARD */
-        .receipt{ position:absolute; left:50%; top:50%; transform: translate(-50%, -50%); width: min(620px, 92%); background:#fff; border-radius:12px; border:2px solid rgba(255,74,93,.55); padding:18px 18px 14px; box-shadow: 10px 10px 0 var(--shadow-blue); }
-        .receipt__close{ position:absolute; right:10px; top:10px; width:34px; height:34px; border-radius:10px; border:1.5px solid rgba(0,0,0,.15); background:#fff; cursor:pointer; font-size:20px; line-height:0; }
-        .receipt__head{ display:flex; justify-content:space-between; gap:12px; padding-right:44px; }
-        .receipt__title{ font-size:26px; font-weight:900; color:#111; line-height:1.05; }
-        .receipt__headRight{ text-align:right; }
-        .receipt__small{ font-size:11px; font-weight:700; color: rgba(0,0,0,.65); }
-        .receipt__hr{ height:1px; background: rgba(0,0,0,.18); margin:14px 0; }
-        .receipt__grid2{ display:grid; grid-template-columns: 1fr 1fr; gap:14px; }
-        .receipt__label{ font-size:11px; font-weight:900; color: rgba(0,0,0,.65); margin-bottom:6px; }
-        .receipt__text{ font-size:12px; font-weight:700; color: rgba(0,0,0,.78); line-height:1.35; }
-        
-        /* table */
-        .receipt__tableHead, .receipt__tableRow{ display:grid; grid-template-columns: 1.4fr .7fr .3fr .7fr; gap:10px; font-size:12px; }
-        .receipt__tableHead{ font-weight:900; color:#111; border-bottom:1px solid rgba(0,0,0,.18); padding-bottom:8px; margin-bottom:10px; }
-        .receipt__tableRow{ font-weight:700; color: rgba(0,0,0,.78); }
-        .receipt__payGrid{ display:grid; grid-template-columns: 1.2fr .8fr; gap:14px; align-items:start; }
-        .receipt__sum{ border-left: 1px solid rgba(0,0,0,.12); padding-left:14px; }
-        .sumRow{ display:flex; justify-content:space-between; gap:10px; font-size:12px; font-weight:800; color: rgba(0,0,0,.75); margin-bottom:8px; }
-        .sumRow--total{ font-size:13px; color:#111; }
-        .receipt__footer{ display:flex; justify-content:space-between; gap:12px; align-items:flex-end; margin-top:12px; }
-        .receipt__brand{ font-size:11px; font-weight:700; color: rgba(0,0,0,.72); line-height:1.35; }
-        .receipt__logo{ width:120px; height:auto; opacity:.95; }
-        .receipt__actions{ margin-top:12px; display:flex; justify-content:center; gap:10px; flex-wrap:wrap; }
-        .rcBtn{ height:42px; padding:0 16px; border-radius:12px; border:none; cursor:pointer; font-weight:900; }
-        .rcBtn--print{ background: var(--teal-btn); color:#fff; min-width:170px; }
-        .rcBtn--close{ background:#fff; border:2px solid rgba(255,74,93,.55); color: var(--accent-red); min-width:170px; }
-
-        /* responsive */
+        /* RESPONSIVE */
         @media (max-width:1000px){
-          .page{ grid-template-columns:1fr; margin-left: 0 !important; }
+          .page{ grid-template-columns:1fr; }
           .sidebarDecor{ position:static; transform:none; margin-top:18px; display:flex; justify-content:center; }
-        }
-        @media (max-width:720px){
-          .trxItem{ flex-direction:column; }
-          .trxRight{ align-items:flex-start; min-width:0; }
-          .receipt__grid2{ grid-template-columns:1fr; }
-          .receipt__headRight{ text-align:left; }
-          .receipt__payGrid{ grid-template-columns:1fr; }
-          .receipt__sum{ border-left:none; padding-left:0; border-top:1px solid rgba(0,0,0,.12); padding-top:12px; }
+          .grid2{ grid-template-columns:1fr; }
+          .actions{ flex-direction:column; }
+          .btn--primary, .btn--ghost{ width:100%; }
+          .scheduleItem{ flex-direction:column; }
+          .scheduleItem__right{ justify-content:flex-end; }
+          .modal__actions{ flex-direction:column; }
+          .modalBtn{ width: 100%; }
         }
 
-        /* PRINT: invoice */
-        @media print{
-          body *{ visibility:hidden !important; }
-          .modal.is-open, .modal.is-open *{ visibility:visible !important; }
-          .modal__overlay{ display:none !important; }
-          .receipt{ position:static !important; transform:none !important; width:100% !important; max-width:820px !important; margin:0 auto !important; box-shadow:none !important; border:1px solid rgba(0,0,0,.25) !important; }
-          .receipt__close,.receipt__actions{ display:none !important; }
-        }
+        /* Pesan Bawaan Laravel */
+        .alert-success { background: #dcfce3; color: #16a34a; border: 1px solid #86efac; padding: 12px 16px; margin-bottom: 20px; border-radius: 14px; font-weight: 700; font-size: 13px; }
+        .alert-error { background: #fff3f4; color: #ff4a5d; border: 1.5px solid rgba(255,74,93,.65); padding: 12px 16px; margin-bottom: 20px; border-radius: 14px; font-weight: 700; font-size: 13px; box-shadow:0 6px 0 rgba(120,160,255,.10); }
+        .alert-error ul { margin: 4px 0 0 20px; padding: 0; }
     </style>
 @endsection
 
@@ -174,13 +176,13 @@
                     Profil
                 </a>
 
-                <a class="menuItem" href="{{ route('bookings.create') }}">
+                <a class="menuItem is-active" href="{{ route('bookings.create') }}">
                     <svg viewBox="0 0 24 24"><path d="M7 3v3M17 3v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M4 7h16v13H4V7Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 11h16" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 15h2M12 15h2M16 15h0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
                     Atur Jadwal
                 </a>
 
                 <a class="menuItem" href="#">
-                    <svg viewBox="0 0 24 24"><path d="M7 11V8a5 5 0 0 1 10 0v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M6 11h12v10H6V11Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 15v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                    <svg viewBox="0 0 24 24"><path d="M7 11V8a5 5 0 0 1 10 0v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M6 11h12v10H6V11Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 15v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
                     Ubah Kata Sandi
                 </a>
 
@@ -189,7 +191,7 @@
                     Status Pemesanan
                 </a>
 
-                <a class="menuItem is-active" href="{{ route('bookings.history') }}">
+                <a class="menuItem" href="{{ route('bookings.history') }}">
                     <svg viewBox="0 0 24 24"><path d="M7 3h10v18l-2-1-3 1-3-1-2 1V3Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 7h6M9 11h6M9 15h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
                     Riwayat Transaksi
                 </a>
@@ -216,136 +218,138 @@
 
     <section class="panel">
         <div class="panelCard">
-            <h1 class="panelCard__title">Riwayat Transaksi</h1>
-            <p class="panelCard__sub">Klik <b>Detail</b> atau <b>Invoice</b> untuk melihat bukti seperti contoh gambarmu.</p>
 
-            <div class="trxList" id="trxList">
-                @forelse($bookings as $b)
-                    @php
-                        $statusText = ($b->status === 'confirmed' || $b->status === 'lunas') ? 'Lunas' : 'Pending';
-                        $invoiceId = $b->booking_code ?? 'INV-' . str_pad($b->id, 5, '0', STR_PAD_LEFT);
-                        $start = \Carbon\Carbon::parse($b->start_time);
-                        $end = \Carbon\Carbon::parse($b->end_time);
-                        $durasiMenit = $start->diffInMinutes($end);
-                        $jumlahSesi = $durasiMenit > 0 ? ($durasiMenit / 5) : 1; 
-                        $totalHarga = ($b->studio->price ?? 0) * $jumlahSesi;
-                    @endphp
+            <h1 class="panelCard__title">Atur Jadwal</h1>
+            <p class="panelCard__sub">Jam operasional akan menyesuaikan hari yang kamu pilih.</p>
 
-                    <article class="trxItem"
-                        data-id="{{ $invoiceId }}"
-                        data-date="{{ \Carbon\Carbon::parse($b->booking_date)->translatedFormat('d F Y') }}"
-                        data-time="{{ \Carbon\Carbon::parse($b->start_time)->format('H:i') }} WIB - {{ \Carbon\Carbon::parse($b->end_time)->format('H:i') }} WIB"
-                        data-studio="{{ $b->studio->name ?? 'Studio Terhapus' }}"
-                        data-studio_code="{{ 'S'.str_pad($b->studio_id ?? 0, 3, '0', STR_PAD_LEFT) }}"
-                        data-to_name="{{ $b->user->name ?? 'Admin Photoholic' }}"
-                        data-to_phone="{{ $b->user->phone ?? '-' }}"
-                        data-to_email="{{ $b->user->email ?? 'admin@photoholic.com' }}"
-                        data-method="{{ strtoupper($b->payment_method ?? 'QRIS') }}"
-                        data-status="{{ $statusText }}"
-                        
-                        data-price="{{ $b->studio->price ?? 0 }}"
-                        data-sessions="{{ $jumlahSesi }}"
-                        data-tax="0"
-                    >
-                        <div class="trxLeft">
-                            <div class="pillDate">{{ \Carbon\Carbon::parse($b->booking_date)->translatedFormat('d M Y') }}</div>
-                            <div class="trxTitle">{{ $b->studio->name ?? '-' }} • {{ \Carbon\Carbon::parse($b->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($b->end_time)->format('H:i') }}</div>
-                            <div class="trxMeta">
-                                <span>ID: <b>{{ $invoiceId }}</b></span>
-                                <span class="dot">•</span>
-                                <span>Metode: <b>{{ strtoupper($b->payment_method ?? 'QRIS') }}</b></span>
-                                <span class="dot">•</span>
-                                <span>Status: <b>{{ $statusText }}</b></span>
-                            </div>
-                            <div class="trxNote">Catatan: {{ $b->notes ?: 'tidak ada catatan.' }}</div>
+            @if(session('success'))
+                <div class="alert-success" style="margin-top: 18px;">
+                    {{ session('success') }}
+                </div>
+            @endif
+            @if(session('error'))
+                <div class="alert-error" style="margin-top: 18px;">
+                    {{ session('error') }}
+                </div>
+            @endif
+            @if($errors->any())
+                <div class="alert-error" style="margin-top: 18px;">
+                    Terdapat kesalahan:
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <form class="scheduleForm" id="scheduleForm" action="{{ route('bookings.store') }}" method="POST">
+                @csrf
+                <input type="hidden" name="_method" id="formMethod" value="POST">
+
+                <div class="grid2">
+                    <div class="field">
+                        <label for="date">Tanggal</label>
+                        <input id="date" name="booking_date" type="date" required value="{{ old('booking_date', date('Y-m-d')) }}">
+                    </div>
+
+                    <div class="field">
+                        <label for="studio">Studio</label>
+                        <select id="studio" name="studio_id" required>
+                            <option value="" selected disabled>Pilih studio</option>
+                            @foreach($studios as $studio)
+                                <option value="{{ $studio->id }}" {{ old('studio_id') == $studio->id ? 'selected' : '' }}>{{ $studio->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid2">
+                    <div class="field">
+                        <label for="start">Jam Mulai (per 5 menit)</label>
+                        <select id="start" name="start_time" required>
+                            <option value="" selected disabled>Pilih jam mulai</option>
+                            {{-- Diisi via JS --}}
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="end">Jam Selesai (per 5 menit)</label>
+                        <select id="end" name="end_time" required>
+                            <option value="" selected disabled>Pilih jam selesai</option>
+                            {{-- Diisi via JS --}}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid2">
+                    <div class="field">
+                        <label for="payment">Metode Pembayaran</label>
+                        <select id="payment" name="payment_method" required>
+                            <option value="" selected disabled>Pilih metode</option>
+                            <option value="qris" {{ old('payment_method') == 'qris' ? 'selected' : '' }}>QRIS</option>
+                            <option value="cash" {{ old('payment_method') == 'cash' ? 'selected' : '' }}>Cash</option>
+                            <option value="voucher" {{ old('payment_method') == 'voucher' ? 'selected' : '' }}>Voucher</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="note">Catatan</label>
+                        <textarea id="note" name="notes" rows="2" placeholder="(opsional)">{{ old('notes') }}</textarea>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button class="btn btn--primary" type="submit" id="saveBtn">Simpan Jadwal</button>
+                    <button class="btn btn--ghost" type="button" id="resetBtn">Reset</button>
+                </div>
+            </form>
+
+            <div class="listHead">
+                <div class="listTitle">Daftar Jadwal</div>
+            </div>
+
+            <div class="scheduleList" id="scheduleList">
+                @forelse($recentBookings as $rb)
+                    <div class="scheduleItem"
+                         data-id="{{ $rb->id }}"
+                         data-date="{{ \Carbon\Carbon::parse($rb->booking_date)->format('Y-m-d') }}"
+                         data-studio="{{ $rb->studio_id }}"
+                         data-start="{{ \Carbon\Carbon::parse($rb->start_time)->format('H:i') }}"
+                         data-end="{{ \Carbon\Carbon::parse($rb->end_time)->format('H:i') }}"
+                         data-payment="{{ strtolower($rb->payment_method) }}"
+                         data-note="{{ $rb->notes }}">
+                        <div class="scheduleItem__left">
+                            <div class="pill">{{ \Carbon\Carbon::parse($rb->booking_date)->translatedFormat('d M Y') }}</div>
+                            <div class="scheduleItem__title">{{ $rb->studio->name ?? 'Studio Terhapus' }} • {{ \Carbon\Carbon::parse($rb->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($rb->end_time)->format('H:i') }}</div>
+                            <div class="scheduleItem__desc">Metode: {{ strtoupper($rb->payment_method) }} • Catatan: {{ $rb->notes ?: 'tidak ada catatan.' }}</div>
                         </div>
-
-                        <div class="trxRight">
-                            <div class="trxTotal">Total: Rp{{ number_format($totalHarga, 0, ',', '.') }}</div>
-                            <div class="trxActions">
-                                <button class="miniBtn" type="button" data-action="detail">Detail</button>
-                                <button class="miniBtn" type="button" data-action="invoice">Invoice</button>
-                            </div>
+                        <div class="scheduleItem__right">
+                            <button class="miniBtn editBtn" data-action="edit" type="button">Edit</button>
+                            <form action="{{ route('bookings.destroy', $rb->id) }}" method="POST" class="deleteForm" style="margin:0;">
+                                @csrf
+                                @method('DELETE')
+                                <button class="miniBtn miniBtn--danger deleteBtn" data-action="delete" type="button">Hapus</button>
+                            </form>
                         </div>
-                    </article>
+                    </div>
+                @empty
+                    <div class="scheduleItem" style="justify-content: center;">
+                        <div class="scheduleItem__desc" style="text-align: center; width: 100%;">Belum ada riwayat pembuatan jadwal offline.</div>
+                    </div>
+                @endforelse
+            </div>
+
         </div>
     </section>
 </main>
 
 <div class="modal" id="modal" aria-hidden="true">
     <div class="modal__overlay" data-close="true"></div>
-
-    <div class="receipt" role="dialog" aria-modal="true" aria-labelledby="rcTitle">
-        <button class="receipt__close" type="button" aria-label="Close" data-close="true">×</button>
-
-        <div class="receipt__head">
-            <h2 class="receipt__title" id="rcTitle">Bukti Pembayaran</h2>
-            <div class="receipt__headRight">
-                <div class="receipt__small" id="rcDate">-</div>
-                <div class="receipt__small">Bukti No. <b id="rcProof">-</b></div>
-            </div>
-        </div>
-
-        <div class="receipt__hr"></div>
-
-        <div class="receipt__grid2">
-            <div>
-                <div class="receipt__label">Ditagihkan Kepada:</div>
-                <div class="receipt__text" id="rcToName">-</div>
-                <div class="receipt__text" id="rcToPhone">-</div>
-                <div class="receipt__text" id="rcToEmail">-</div>
-            </div>
-            <div>
-                <div class="receipt__label">Informasi Pemesanan:</div>
-                <div class="receipt__text" id="rcInfoDate">-</div>
-                <div class="receipt__text" id="rcInfoStudio">-</div>
-                <div class="receipt__text" id="rcInfoTime">-</div>
-            </div>
-        </div>
-
-        <div class="receipt__hr"></div>
-
-        <div class="receipt__table">
-            <div class="receipt__tableHead">
-                <div>Deskripsi</div>
-                <div>Harga</div>
-                <div>Sesi</div>
-                <div>Jumlah</div>
-            </div>
-            <div class="receipt__tableRow">
-                <div id="rcDesc">-</div>
-                <div id="rcPrice">-</div>
-                <div id="rcSess">-</div>
-                <div id="rcAmount">-</div>
-            </div>
-        </div>
-
-        <div class="receipt__hr"></div>
-
-        <div class="receipt__payGrid">
-            <div>
-                <div class="receipt__label">Metode Pembayaran</div>
-                <div class="receipt__text" id="rcMethod">-</div>
-                <div class="receipt__text">Status: <b id="rcStatus">-</b></div>
-                <div class="receipt__text">ID Transaksi: <b id="rcTrxId">-</b></div>
-            </div>
-            <div class="receipt__sum">
-                <div class="sumRow"><span>Subtotal</span><b id="rcSubtotal">-</b></div>
-                <div class="sumRow"><span>Pajak(0%)</span><b id="rcTax">-</b></div>
-                <div class="sumRow sumRow--total"><span>Total</span><b id="rcTotal">-</b></div>
-            </div>
-        </div>
-
-        <div class="receipt__footer">
-            <div class="receipt__brand">
-                <b>Photoholic Indonesia</b><br>
-                Pasar Tunjungan Lt.2 No.84-86<br>
-                08512400 0950
-            </div>
-            <img class="receipt__logo" src="{{ asset('img/admin/logo-photoholic.png') }}" alt="logo">
-        </div>
-
-        <div class="receipt__actions" id="rcActions"></div>
+    <div class="modal__card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <h3 class="modal__title" id="modalTitle">Title</h3>
+        <p class="modal__text" id="modalText">Text</p>
+        <div class="modal__actions" id="modalActions"></div>
     </div>
 </div>
 @endsection
@@ -353,139 +357,255 @@
 @section('scripts')
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    const trxList = document.getElementById("trxList");
+    const form = document.getElementById("scheduleForm");
+    const formMethod = document.getElementById("formMethod");
+    const resetBtn = document.getElementById("resetBtn");
+    const saveBtn = document.getElementById("saveBtn");
+    const list = document.getElementById("scheduleList");
+
+    const dateEl = document.getElementById("date");
+    const studioEl = document.getElementById("studio");
+    const startEl = document.getElementById("start");
+    const endEl = document.getElementById("end");
+    const paymentEl = document.getElementById("payment");
+    const noteEl = document.getElementById("note");
+
+    const logoutBtn = document.getElementById("logoutBtn");
+
     const modal = document.getElementById("modal");
-    const rcActions = document.getElementById("rcActions");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalText = document.getElementById("modalText");
+    const modalActions = document.getElementById("modalActions");
 
-    // elemen isi modal
-    const rcTitle = document.getElementById("rcTitle");
-    const rcDate = document.getElementById("rcDate");
-    const rcProof = document.getElementById("rcProof");
+    let editMode = false;
+    let editItemEl = null;
 
-    const rcToName = document.getElementById("rcToName");
-    const rcToPhone = document.getElementById("rcToPhone");
-    const rcToEmail = document.getElementById("rcToEmail");
+    const storeUrl = "{{ route('bookings.store') }}";
+    const updateUrlBase = "{{ url('admin/bookings') }}"; 
 
-    const rcInfoDate = document.getElementById("rcInfoDate");
-    const rcInfoStudio = document.getElementById("rcInfoStudio");
-    const rcInfoTime = document.getElementById("rcInfoTime");
+    /* ================= MODAL ================= */
+    function openModal({ title, text, actions }) {
+        modalTitle.textContent = title;
+        modalText.textContent = text;
+        modalActions.innerHTML = "";
 
-    const rcDesc = document.getElementById("rcDesc");
-    const rcPrice = document.getElementById("rcPrice");
-    const rcSess = document.getElementById("rcSess");
-    const rcAmount = document.getElementById("rcAmount");
+        actions.forEach(a => {
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = `modalBtn ${a.className || ""}`.trim();
+            btn.textContent = a.label;
+            btn.addEventListener("click", a.onClick);
+            modalActions.appendChild(btn);
+        });
 
-    const rcMethod = document.getElementById("rcMethod");
-    const rcStatus = document.getElementById("rcStatus");
-    const rcTrxId = document.getElementById("rcTrxId");
-
-    const rcSubtotal = document.getElementById("rcSubtotal");
-    const rcTax = document.getElementById("rcTax");
-    const rcTotal = document.getElementById("rcTotal");
-
-    function formatRp(num) {
-      const n = Number(num || 0);
-      return "Rp" + n.toLocaleString("id-ID");
+        modal.classList.add("is-open");
+        modal.setAttribute("aria-hidden", "false");
     }
 
     function closeModal() {
-      modal.classList.remove("is-open");
-      modal.setAttribute("aria-hidden", "true");
+        modal.classList.remove("is-open");
+        modal.setAttribute("aria-hidden", "true");
     }
 
-    function openModal() {
-      modal.classList.add("is-open");
-      modal.setAttribute("aria-hidden", "false");
-    }
-
-    // klik overlay / tombol X menutup
     modal.addEventListener("click", (e) => {
-      if (e.target.dataset.close === "true") closeModal();
+        if (e.target.dataset.close === "true") closeModal();
     });
 
-    // ESC menutup
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && modal.classList.contains("is-open")) closeModal();
-    });
+    /* ================= UTIL ================= */
+    function pad2(n) { return String(n).padStart(2, "0"); }
 
-    function openReceipt(mode, itemEl) {
-      const id = itemEl.dataset.id || "-";
-      
-      // Mengambil 5 karakter terakhir sebagai Nomor Bukti
-      const proofNo = (id.slice(-5) || "12345");
-
-      // title (detail / invoice)
-      rcTitle.textContent = (mode === "invoice") ? "Bukti Pembayaran" : "Detail Transaksi";
-
-      rcDate.textContent = itemEl.dataset.date || "-";
-      rcProof.textContent = proofNo;
-
-      rcToName.textContent = itemEl.dataset.to_name || "-";
-      rcToPhone.textContent = itemEl.dataset.to_phone || "-";
-      rcToEmail.textContent = itemEl.dataset.to_email || "-";
-
-      rcInfoDate.textContent = itemEl.dataset.date || "-";
-      rcInfoStudio.textContent = `${itemEl.dataset.studio || "-"} (${itemEl.dataset.studio_code || "-"})`;
-      rcInfoTime.textContent = itemEl.dataset.time || "-";
-
-      // table
-      const studio = itemEl.dataset.studio || "-";
-      const code = itemEl.dataset.studio_code || "-";
-      const price = Number(itemEl.dataset.price || 0);
-      const sessions = Number(itemEl.dataset.sessions || 1);
-      const tax = Number(itemEl.dataset.tax || 0);
-
-      const subtotal = price * sessions;
-      const total = subtotal + tax;
-
-      rcDesc.textContent = `Studio : ${studio} (${code})`;
-      rcPrice.textContent = `${formatRp(price)}/Sesi`;
-      rcSess.textContent = String(sessions);
-      rcAmount.textContent = formatRp(subtotal);
-
-      rcMethod.textContent = `Metode: ${itemEl.dataset.method || "-"}`;
-      rcStatus.textContent = itemEl.dataset.status || "-";
-      rcTrxId.textContent = id;
-
-      rcSubtotal.textContent = formatRp(subtotal);
-      rcTax.textContent = formatRp(tax);
-      rcTotal.textContent = formatRp(total);
-
-      // tombol aksi bawah
-      rcActions.innerHTML = "";
-
-      if (mode === "invoice") {
-        const printBtn = document.createElement("button");
-        printBtn.type = "button";
-        printBtn.className = "rcBtn rcBtn--print";
-        printBtn.textContent = "Cetak / Download PDF";
-        printBtn.addEventListener("click", () => window.print());
-        rcActions.appendChild(printBtn);
-      }
-
-      const closeBtn = document.createElement("button");
-      closeBtn.type = "button";
-      closeBtn.className = "rcBtn rcBtn--close";
-      closeBtn.textContent = "Tutup";
-      closeBtn.addEventListener("click", closeModal);
-      rcActions.appendChild(closeBtn);
-
-      openModal();
+    function minutesToHHMM(total) {
+        const h = Math.floor(total / 60);
+        const m = total % 60;
+        return `${pad2(h)}:${pad2(m)}`;
     }
 
-    /* event delegation biar PASTI kebaca */
-    if (trxList) {
-        trxList.addEventListener("click", (e) => {
-          const btn = e.target.closest("[data-action]");
-          if (!btn) return;
+    function hhmmToMinutes(hhmm) {
+        if(!hhmm) return 0;
+        const [h, m] = hhmm.split(":").map(Number);
+        return h * 60 + m;
+    }
 
-          const item = btn.closest(".trxItem");
-          if (!item) return;
+    /* ================= JAM OPERASIONAL ================= */
+    function getCloseHourByDate(isoDate) {
+        const d = new Date(isoDate + "T00:00:00");
+        const day = d.getDay(); 
+        const isMonToThu = day >= 1 && day <= 4;
+        return isMonToThu ? 22 : 23;
+    }
 
-          const action = btn.dataset.action;
+    function fillTimeOptions(selectedStart = "", selectedEnd = "") {
+        startEl.innerHTML = `<option value="" selected disabled>Pilih jam mulai</option>`;
+        endEl.innerHTML = `<option value="" selected disabled>Pilih jam selesai</option>`;
 
-          if (action === "detail") openReceipt("detail", item);
-          if (action === "invoice") openReceipt("invoice", item);
+        if (!dateEl.value) return;
+
+        const openMinute = 11 * 60;
+        const closeHour = getCloseHourByDate(dateEl.value);
+        const closeMinute = closeHour * 60;
+
+        for (let t = openMinute; t <= closeMinute - 5; t += 5) {
+            const val = minutesToHHMM(t);
+            const opt = document.createElement("option");
+            opt.value = val;
+            opt.textContent = val;
+            if(val === selectedStart) opt.selected = true;
+            startEl.appendChild(opt);
+        }
+
+        for (let t = openMinute + 5; t <= closeMinute; t += 5) {
+            const val = minutesToHHMM(t);
+            const opt = document.createElement("option");
+            opt.value = val;
+            opt.textContent = val;
+            if(val === selectedEnd) opt.selected = true;
+            endEl.appendChild(opt);
+        }
+    }
+
+    function enforceEndAfterStart() {
+        if (!startEl.value) return;
+
+        const startMin = hhmmToMinutes(startEl.value);
+
+        Array.from(endEl.options).forEach(opt => {
+            if (!opt.value) return;
+            const endMin = hhmmToMinutes(opt.value);
+            opt.disabled = endMin <= startMin;
+        });
+
+        if (endEl.value) {
+            const endMin = hhmmToMinutes(endEl.value);
+            if (endMin <= startMin) endEl.value = "";
+        }
+    }
+
+    /* init */
+    fillTimeOptions();
+    dateEl.addEventListener("change", () => {
+        fillTimeOptions();
+        startEl.value = "";
+        endEl.value = "";
+    });
+    startEl.addEventListener("change", enforceEndAfterStart);
+
+    /* ================= SUBMIT FORM ================= */
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        if (!dateEl.value || !studioEl.value || !startEl.value || !endEl.value || !paymentEl.value) return;
+
+        const actionTitle = editMode ? "Update Jadwal?" : "Simpan Jadwal?";
+        const actionText = editMode ? "Apakah kamu yakin ingin menyimpan perubahan jadwal ini?" : "Apakah kamu yakin ingin membuat jadwal baru ini?";
+
+        openModal({
+            title: actionTitle,
+            text: actionText,
+            actions: [
+                {
+                    label: "Ya",
+                    className: "modalBtn--ok",
+                    onClick: () => {
+                        form.submit();
+                    }
+                },
+                { label: "Batal", className: "modalBtn--cancel", onClick: closeModal }
+            ]
+        });
+    });
+
+    /* ================= LIST: EDIT / DELETE ================= */
+    document.querySelectorAll('.deleteBtn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const deleteForm = this.closest('form');
+            openModal({
+                title: "Hapus Jadwal?",
+                text: "Apakah kamu yakin ingin menghapus jadwal ini?",
+                actions: [
+                    {
+                        label: "Hapus",
+                        className: "modalBtn--danger",
+                        onClick: () => {
+                            deleteForm.submit();
+                        }
+                    },
+                    { label: "Batal", className: "modalBtn--cancel", onClick: closeModal }
+                ]
+            });
+        });
+    });
+
+    document.querySelectorAll('.editBtn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const item = this.closest(".scheduleItem");
+            if (!item) return;
+
+            editMode = true;
+            editItemEl = item;
+            saveBtn.textContent = "Simpan Perubahan";
+
+            form.action = updateUrlBase + '/' + item.dataset.id;
+            formMethod.value = "PUT";
+
+            dateEl.value = item.dataset.date || "";
+            // Re-fill options based on new date and pre-select values
+            fillTimeOptions(item.dataset.start, item.dataset.end);
+
+            studioEl.value = item.dataset.studio || "";
+            paymentEl.value = item.dataset.payment || "";
+            noteEl.value = item.dataset.note || "";
+
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+    });
+
+    /* ================= RESET POPUP ================= */
+    resetBtn.addEventListener("click", () => {
+        openModal({
+            title: "Reset Form?",
+            text: "Apakah kamu yakin ingin mereset form? Semua isian akan kosong.",
+            actions: [
+                {
+                    label: "Reset",
+                    className: "modalBtn--danger",
+                    onClick: () => {
+                        editMode = false;
+                        editItemEl = null;
+                        saveBtn.textContent = "Simpan Jadwal";
+                        
+                        form.action = storeUrl;
+                        formMethod.value = "POST";
+
+                        form.reset();
+                        fillTimeOptions();
+                        closeModal();
+                    }
+                },
+                { label: "Batal", className: "modalBtn--cancel", onClick: closeModal }
+            ]
+        });
+    });
+
+    /* ================= LOGOUT POPUP ================= */
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            const logoutForm = logoutBtn.closest('form');
+            openModal({
+                title: "Keluar Akun?",
+                text: "Apakah kamu yakin ingin mengeluarkan akun?",
+                actions: [
+                    {
+                        label: "Keluar",
+                        className: "modalBtn--danger",
+                        onClick: () => {
+                            logoutForm.submit();
+                        }
+                    },
+                    { label: "Batal", className: "modalBtn--cancel", onClick: closeModal }
+                ]
+            });
         });
     }
 });

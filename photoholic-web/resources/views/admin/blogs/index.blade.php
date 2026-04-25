@@ -114,10 +114,8 @@
         .btn--primary{ background:var(--accent-red); color:#fff; }
         .btn--ghost{ background:#fff; color:var(--accent-red); border:2px solid rgba(255,74,93,.45); }
 
-        /* FAB */
         .fab{ position:fixed; right:26px; bottom:26px; width:56px; height:56px; border-radius:50%; border:none; background:var(--accent-red); color:#fff; font-size:34px; line-height:0; display:grid; place-items:center; cursor:pointer; box-shadow:0 12px 0 rgba(120,160,255,.18); }
 
-        /* MODAL */
         .modal{ position:fixed; inset:0; display:none; z-index:9999; }
         .modal.is-open{ display:block; }
         .modal__overlay{ position:absolute; inset:0; background:rgba(0,0,0,.25); }
@@ -130,7 +128,6 @@
         .modalBtn--danger{background:var(--accent-red);color:#fff;min-width:140px}
         .modalBtn--cancel{ background:#fff; color:var(--accent-red); border:2px solid rgba(255,74,93,.55); min-width:140px; }
 
-        /* RESPONSIVE */
         @media (max-width:1100px){
           .layout{grid-template-columns:1fr; margin-left: 0 !important;}
           .backBtn{display:inline-grid}
@@ -147,7 +144,6 @@
 
 @section('content')
 @php
-    // KITA CONVERT DATA DATABASE JADI FORMAT JAVASCRIPT-MU
     $jsBlogs = [];
     if(isset($blogs)) {
         foreach($blogs as $b) {
@@ -158,6 +154,7 @@
                 'tanggal' => $b->publish_date ? $b->publish_date->format('Y-m-d') : '',
                 'caption' => $b->short_caption,
                 'isi' => $b->content,
+                'url' => $b->instagram_url, // Link tujuan (Instagram/Lainnya)
                 'igSync' => $b->sync_insta ? 'Ya' : 'Tidak',
                 'status' => $b->status,
                 'cover' => $b->photo ? asset('storage/' . $b->photo) : ''
@@ -264,6 +261,11 @@
             <textarea id="isi" name="content" rows="6" placeholder="Tulis isi promo, event, atau pengumuman..." required></textarea>
           </div>
 
+          <div class="field">
+            <label for="instagram_url">Link Tujuan (Instagram/Lainnya)</label>
+            <input id="instagram_url" name="instagram_url" type="url" placeholder="https://instagram.com/...">
+          </div>
+
           <div class="doubleField">
             <div class="field">
               <label for="igSync">Sinkron Instagram</label>
@@ -335,6 +337,7 @@
     const tanggalEl = document.getElementById("tanggal");
     const captionEl = document.getElementById("caption");
     const isiEl = document.getElementById("isi");
+    const igUrlEl = document.getElementById("instagram_url");
     const igSyncEl = document.getElementById("igSync");
     const statusEl = document.getElementById("status");
 
@@ -343,9 +346,7 @@
     const modalText = document.getElementById("modalText");
     const modalActions = document.getElementById("modalActions");
 
-    // DATA DARI DATABASE
     let blogs = {!! json_encode($jsBlogs) !!};
-
     let mode = "add";
     let editingId = null;
 
@@ -354,7 +355,6 @@
       modalTitle.textContent = title;
       modalText.textContent = text;
       modalActions.innerHTML = "";
-
       actions.forEach(a => {
         const b = document.createElement("button");
         b.type = "button";
@@ -363,7 +363,6 @@
         b.addEventListener("click", a.onClick);
         modalActions.appendChild(b);
       });
-
       modal.classList.add("is-open");
       modal.setAttribute("aria-hidden", "false");
     }
@@ -372,10 +371,6 @@
       modal.classList.remove("is-open");
       modal.setAttribute("aria-hidden", "true");
     }
-
-    modal.addEventListener("click", (e) => {
-      if (e.target.dataset.close === "true") closeModal();
-    });
 
     /* HELPERS */
     function formatTanggal(tgl) {
@@ -408,29 +403,17 @@
       const keyword = (q.value || "").trim().toLowerCase();
       const kategori = filterKategori.value;
       const status = filterStatus.value;
-
       let data = [...blogs];
 
       if (keyword) {
-        data = data.filter(b =>
-          b.judul.toLowerCase().includes(keyword) ||
-          b.caption.toLowerCase().includes(keyword) ||
-          b.kategori.toLowerCase().includes(keyword)
-        );
+        data = data.filter(b => b.judul.toLowerCase().includes(keyword) || b.caption.toLowerCase().includes(keyword));
       }
-
       if (kategori !== "all") data = data.filter(b => b.kategori === kategori);
       if (status !== "all") data = data.filter(b => b.status === status);
 
       listEl.innerHTML = "";
-
       if (!data.length) {
-        listEl.innerHTML = `
-          <div class="blogCard" style="display:block; text-align:center; padding:30px;">
-            <div class="blogTitle">Belum ada konten</div>
-            <div class="blogCaption">Coba tambahkan promo, event, atau pengumuman baru.</div>
-          </div>
-        `;
+        listEl.innerHTML = `<div class="blogCard" style="display:block; text-align:center; padding:30px;"><div class="blogTitle">Belum ada konten</div></div>`;
         return;
       }
 
@@ -438,11 +421,8 @@
         const card = document.createElement("div");
         card.className = "blogCard";
         card.dataset.id = blog.id;
-
         card.innerHTML = `
-          <div class="blogThumb">
-            ${blog.cover ? `<img src="${blog.cover}" alt="cover">` : `<div style="width:100%; height:100%; background:#ffe4e6;"></div>`}
-          </div>
+          <div class="blogThumb">${blog.cover ? `<img src="${blog.cover}" alt="cover">` : `<div style="width:100%; height:100%; background:#ffe4e6;"></div>`}</div>
           <div>
             <div class="blogTop">
               <div>
@@ -470,23 +450,16 @@
       });
     }
 
-    /* PHOTO */
+    /* PHOTO PREVIEW */
     function setPhotoPreview(dataUrl) {
       if (dataUrl) {
-        photoPreview.src = dataUrl;
-        photoPreview.style.display = "block";
-        photoEmpty.style.display = "none";
-        photoBtn.textContent = "Ubah Cover";
+        photoPreview.src = dataUrl; photoPreview.style.display = "block"; photoEmpty.style.display = "none"; photoBtn.textContent = "Ubah Cover";
       } else {
-        photoPreview.src = "";
-        photoPreview.style.display = "none";
-        photoEmpty.style.display = "grid";
-        photoBtn.textContent = "Tambahkan Cover";
+        photoPreview.src = ""; photoPreview.style.display = "none"; photoEmpty.style.display = "grid"; photoBtn.textContent = "Tambahkan Cover";
       }
     }
 
     photoBtn.addEventListener("click", () => photoInput.click());
-
     photoInput.addEventListener("change", (e) => {
       const file = e.target.files?.[0];
       if (!file) return;
@@ -495,33 +468,26 @@
       reader.readAsDataURL(file);
     });
 
-    /* FORM MODE */
+    /* FORM LOGIC */
     function resetForm() {
       blogForm.reset();
-      blogForm.action = "{{ route('blogs.store') }}"; // Kembali jadi nambah data
-      formMethod.disabled = true; // Matikan method PUT
+      blogForm.action = "{{ route('blogs.store') }}";
+      formMethod.disabled = true;
       editingId = null;
       mode = "add";
       formTitle.textContent = "Tambah Konten";
       submitBtn.textContent = "Simpan Konten";
+      igUrlEl.value = "";
       setPhotoPreview("");
-    }
-
-    function openAdd() {
-      resetForm();
-      showFormPanel();
     }
 
     function openEdit(id) {
       const blog = blogs.find(b => b.id == id);
       if (!blog) return;
-
       mode = "edit";
       editingId = id;
       formTitle.textContent = "Edit Konten";
       submitBtn.textContent = "Simpan Perubahan";
-      
-      // Ubah target form menjadi update (PUT)
       blogForm.action = `/admin/blogs/${id}`;
       formMethod.disabled = false;
       formMethod.value = "PUT";
@@ -531,9 +497,9 @@
       tanggalEl.value = blog.tanggal;
       captionEl.value = blog.caption;
       isiEl.value = blog.isi;
+      igUrlEl.value = blog.url || "";
       igSyncEl.value = blog.igSync;
       statusEl.value = blog.status;
-
       setPhotoPreview(blog.cover || "");
       showFormPanel();
     }
@@ -545,124 +511,57 @@
       }
     }
 
-    function closeFormPanel() {
-      formPanel.classList.remove("is-open");
-    }
+    function closeFormPanel() { formPanel.classList.remove("is-open"); }
 
-    /* LIST ACTION */
     listEl.addEventListener("click", (e) => {
       const btn = e.target.closest("[data-action]");
       if (!btn) return;
-
-      const card = btn.closest(".blogCard");
-      const id = card?.dataset?.id;
-      if (!id) return;
-
-      const action = btn.dataset.action;
-
-      if (action === "edit") {
-        openEdit(id);
-      }
-
-      if (action === "delete") {
-        const blog = blogs.find(b => b.id == id);
-        if (!blog) return;
-
+      const id = btn.closest(".blogCard").dataset.id;
+      if (btn.dataset.action === "edit") openEdit(id);
+      if (btn.dataset.action === "delete") {
         openModal({
           title: "Hapus Konten?",
-          text: `Yakin ingin menghapus "${blog.judul}" secara permanen?`,
+          text: "Yakin ingin menghapus konten ini?",
           actions: [
-            {
-              label: "Hapus",
-              className: "modalBtn--danger",
-              onClick: () => {
-                // Menembak form delete bawaan Laravel
-                const deleteForm = document.getElementById('deleteForm');
-                deleteForm.action = `/admin/blogs/${id}`;
-                deleteForm.submit();
-              }
-            },
-            {
-              label: "Batal",
-              className: "modalBtn--cancel",
-              onClick: closeModal
-            }
+            { label: "Hapus", className: "modalBtn--danger", onClick: () => {
+              const df = document.getElementById('deleteForm');
+              df.action = `/admin/blogs/${id}`;
+              df.submit();
+            }},
+            { label: "Batal", className: "modalBtn--cancel", onClick: closeModal }
           ]
         });
       }
     });
 
-    /* SUBMIT */
     blogForm.addEventListener("submit", (e) => {
-      e.preventDefault(); // Tahan form agar tidak langsung terkirim
-
-      // Tambahkan input hidden igSync jika dipilih 'Ya'
+      e.preventDefault();
       if(igSyncEl.value === 'Ya') {
           const syncInput = document.createElement('input');
-          syncInput.type = 'hidden';
-          syncInput.name = 'sync_insta';
-          syncInput.value = '1';
+          syncInput.type = 'hidden'; syncInput.name = 'sync_insta'; syncInput.value = '1';
           blogForm.appendChild(syncInput);
       }
-
-      const modalTitleText = mode === "add" ? "Simpan Konten?" : "Simpan Perubahan?";
-      const modalBodyText = mode === "add" ? `Tambahkan konten "${judulEl.value}" ke database?` : `Perbarui konten "${judulEl.value}"?`;
-
       openModal({
-        title: modalTitleText,
-        text: modalBodyText,
+        title: "Simpan?",
+        text: "Konfirmasi penyimpanan konten.",
         actions: [
-          {
-            label: "Simpan",
-            className: "modalBtn--ok",
-            onClick: () => {
-              // Benar-benar mengirimkan data form ke Controller Laravel!
-              blogForm.submit(); 
-            }
-          },
-          {
-            label: "Batal",
-            className: "modalBtn--cancel",
-            onClick: closeModal
-          }
+          { label: "Simpan", className: "modalBtn--ok", onClick: () => blogForm.submit() },
+          { label: "Batal", className: "modalBtn--cancel", onClick: closeModal }
         ]
       });
     });
 
-    /* FILTER */
     [q, filterKategori, filterStatus].forEach(el => {
       el.addEventListener("input", renderList);
       el.addEventListener("change", renderList);
     });
 
-    /* BUTTONS */
     cancelBtn.addEventListener("click", () => {
-      openModal({
-        title: "Batalkan?",
-        text: "Semua perubahan di form akan hilang.",
-        actions: [
-          {
-            label: "Batalkan",
-            className: "modalBtn--danger",
-            onClick: () => {
-              closeModal();
-              resetForm();
-              closeFormPanel();
-            }
-          },
-          {
-            label: "Kembali",
-            className: "modalBtn--cancel",
-            onClick: closeModal
-          }
-        ]
-      });
+        closeModal(); resetForm(); closeFormPanel();
     });
 
-    addBtn.addEventListener("click", openAdd);
+    addBtn.addEventListener("click", () => { resetForm(); showFormPanel(); });
     backBtn.addEventListener("click", closeFormPanel);
-
-    /* INIT */
     renderList();
 </script>
 @endsection

@@ -91,6 +91,7 @@
                     @endphp
             
                     <article class="trxItem"
+                        data-booking_id="{{ $rb->id }}" 
                         data-id="{{ $trxId }}"
                         data-date="{{ \Carbon\Carbon::parse($rb->booking_date)->translatedFormat('d F Y') }}"
                         data-time="{{ \Carbon\Carbon::parse($rb->start_time)->format('H:i') }} WIB - {{ \Carbon\Carbon::parse($rb->end_time)->format('H:i') }} WIB"
@@ -233,77 +234,84 @@
 
 @section('scripts')
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-    const modal = document.getElementById("modal");
-    const rc = {
-        date: document.getElementById("rcDate"),
-        proof: document.getElementById("rcProof"),
-        name: document.getElementById("rcToName"),
-        phone: document.getElementById("rcToPhone"),
-        email: document.getElementById("rcToEmail"),
-        infoDate: document.getElementById("rcInfoDate"),
-        infoStudio: document.getElementById("rcInfoStudio"),
-        infoTime: document.getElementById("rcInfoTime"),
-        price: document.getElementById("rcPrice"),
-        sess: document.getElementById("rcSess"),
-        amount: document.getElementById("rcAmount"),
-        subtotal: document.getElementById("rcSubtotal"),
-        method: document.getElementById("rcMethod"),
-        status: document.getElementById("rcStatus"),
-        trxId: document.getElementById("rcTrxId"),
-        total: document.getElementById("rcTotal"),
-    };
-
-    function openModal(item) {
-        const rawPrice = item.dataset.price;
-        const formattedPrice = "Rp " + Number(rawPrice).toLocaleString("id-ID");
-
-        rc.date.textContent = item.dataset.date;
-        rc.proof.textContent = item.dataset.id;
-        rc.name.textContent = item.dataset.to_name;
-        rc.phone.textContent = item.dataset.to_phone;
-        rc.email.textContent = item.dataset.to_email;
-        rc.infoDate.textContent = item.dataset.date;
-        rc.infoStudio.textContent = item.dataset.studio;
-        rc.infoTime.textContent = item.dataset.time;
-        rc.price.textContent = formattedPrice;
-        rc.sess.textContent = item.dataset.sessions;
-        rc.amount.textContent = formattedPrice;
-        rc.subtotal.textContent = formattedPrice;
-        rc.method.textContent = item.dataset.method;
-        rc.status.textContent = item.dataset.status;
-        rc.trxId.textContent = item.dataset.id;
-        rc.total.textContent = formattedPrice;
-
-        modal.classList.add("is-open");
-        modal.style.display = "flex"; // Pastikan modal muncul
-    }
-
-    function closeModal() {
-        modal.classList.remove("is-open");
-        modal.style.display = "none";
-    }
-
-    document.querySelectorAll(".trxItem").forEach(item => {
-        item.querySelectorAll("button").forEach(btn => {
-            btn.addEventListener("click", () => openModal(item));
+    document.addEventListener("DOMContentLoaded", () => {
+        const modal = document.getElementById("modal");
+        const rc = {
+            date: document.getElementById("rcDate"),
+            proof: document.getElementById("rcProof"),
+            name: document.getElementById("rcToName"),
+            phone: document.getElementById("rcToPhone"),
+            email: document.getElementById("rcToEmail"),
+            infoDate: document.getElementById("rcInfoDate"),
+            infoStudio: document.getElementById("rcInfoStudio"),
+            infoTime: document.getElementById("rcInfoTime"),
+            price: document.getElementById("rcPrice"),
+            sess: document.getElementById("rcSess"),
+            amount: document.getElementById("rcAmount"),
+            subtotal: document.getElementById("rcSubtotal"),
+            method: document.getElementById("rcMethod"),
+            status: document.getElementById("rcStatus"),
+            trxId: document.getElementById("rcTrxId"),
+            total: document.getElementById("rcTotal"),
+        };
+    
+        const downloadBtn = document.getElementById("downloadInvoice");
+    
+        function openModal(item) {
+            const rawPrice = item.dataset.price;
+            const formattedPrice = "Rp " + Number(rawPrice).toLocaleString("id-ID");
+    
+            rc.date.textContent = item.dataset.date;
+            rc.proof.textContent = item.dataset.id;
+            rc.name.textContent = item.dataset.to_name;
+            rc.phone.textContent = item.dataset.to_phone;
+            rc.email.textContent = item.dataset.to_email;
+            rc.infoDate.textContent = item.dataset.date;
+            rc.infoStudio.textContent = item.dataset.studio;
+            rc.infoTime.textContent = item.dataset.time;
+            rc.price.textContent = formattedPrice;
+            rc.sess.textContent = item.dataset.sessions;
+            rc.amount.textContent = formattedPrice;
+            rc.subtotal.textContent = formattedPrice;
+            rc.method.textContent = item.dataset.method;
+            rc.status.textContent = item.dataset.status;
+            rc.trxId.textContent = item.dataset.id;
+            rc.total.textContent = formattedPrice;
+    
+            // PENAMBAHAN BARU: Simpan ID asli database ke tombol download
+            if (downloadBtn) {
+                downloadBtn.dataset.bookingId = item.dataset.booking_id;
+            }
+    
+            modal.classList.add("is-open");
+            modal.style.display = "flex"; // Pastikan modal muncul
+        }
+    
+        function closeModal() {
+            modal.classList.remove("is-open");
+            modal.style.display = "none";
+        }
+    
+        document.querySelectorAll(".trxItem").forEach(item => {
+            item.querySelectorAll("button").forEach(btn => {
+                btn.addEventListener("click", () => openModal(item));
+            });
         });
-    });
-
-    modal.addEventListener("click", e => {
-        if (e.target.dataset.close) closeModal();
-    });
-
-    const downloadBtn = document.getElementById("downloadInvoice");
-
-    if (downloadBtn) {
-        downloadBtn.addEventListener("click", function () {
-            const trxId = document.getElementById("rcTrxId").textContent;
-
-            // kalau invoice pakai booking id asli, nanti kita ganti
-            window.open(`/admin/bookings/${trxId}/invoice`, "_blank");
+    
+        modal.addEventListener("click", e => {
+            if (e.target.dataset.close) closeModal();
         });
-    }
-});
-</script>
+    
+        // PERBAIKAN: Gunakan ID asli (bookingId) untuk membuat link URL
+        if (downloadBtn) {
+            downloadBtn.addEventListener("click", function () {
+                // Mengambil ID asli yang kita simpan di tombol saat modal dibuka
+                const bookingId = this.dataset.bookingId; 
+                
+                // Generate link sesuai route Laravel: /admin/bookings/{booking}/invoice
+                window.open(`/admin/bookings/${bookingId}/invoice`, "_blank");
+            });
+        }
+    });
+    </script>
 @endsection

@@ -74,7 +74,7 @@ Route::prefix('pelanggan')->name('pelanggan.')->group(function () {
 Route::prefix('admin')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('/history-bookings', [BookingController::class, 'history'])->name('bookings.history');
-    Route::get('/admin/bookings/{booking}/invoice', [BookingController::class, 'invoice'])
+    Route::get('/bookings/{booking}/invoice', [BookingController::class, 'invoice'])
     ->name('bookings.invoice');
     
 

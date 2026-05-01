@@ -5,11 +5,16 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
 
 class AuthController extends Controller
 {
+    // ==========================================
+    // 1. FITUR LOGIN MANUAL
+    // ==========================================
+    
     // Menampilkan halaman login
     public function showLoginForm()
     {
@@ -41,7 +46,7 @@ class AuthController extends Controller
                 return redirect()->route('admin.dashboard');
             }
             
-            return redirect('/pelanggan/dashboard'); // Ganti dengan rute dashboard customer nanti
+            return redirect('/pelanggan/dashboard'); 
         }
 
         // Jika gagal
@@ -59,6 +64,10 @@ class AuthController extends Controller
         return redirect('/login');
     }
 
+    // ==========================================
+    // 2. FITUR REGISTER MANUAL
+    // ==========================================
+
     // Menampilkan halaman Register
     public function showRegisterForm()
     {
@@ -68,34 +77,34 @@ class AuthController extends Controller
     // Proses Register
     public function register(Request $request)
     {
-        // 1. Validasi Inputan
+        // Validasi Inputan
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users', // Mencegah email kembar
+            'email' => 'required|string|email|max:255|unique:users',
             'phone' => 'required|string|max:20',
-            // Aturan 'confirmed' otomatis mengecek input 'password' dengan 'password_confirmation'
             'password' => 'required|string|min:6|confirmed', 
         ], [
-            // Kustomisasi pesan error
             'email.unique' => 'Email ini sudah terdaftar!',
             'password.confirmed' => 'Konfirmasi password tidak cocok!',
             'password.min' => 'Password minimal harus 6 karakter!'
         ]);
 
-        // 2. Simpan ke Database
+        // Simpan ke Database
         User::create([
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
-            'password' => \Hash::make($request->password), // Wajib di-Hash!
-            'role' => 'customer', // Pendaftar baru otomatis jadi Customer
+            'password' => Hash::make($request->password), 
+            'role' => 'customer', 
             'status' => 'active',
         ]);
 
-        // 3. Kembali ke halaman register dengan membawa pesan Sukses
-        // Ini yang akan memicu "Card Success" muncul di tampilan!
         return back()->with('success', 'Registrasi berhasil!');
     }
+
+    // ==========================================
+    // 3. FITUR LUPA PASSWORD
+    // ==========================================
 
     // Menampilkan halaman Lupa Password
     public function showForgotForm()
@@ -103,10 +112,9 @@ class AuthController extends Controller
         return view('auth.forgot-password');
     }
 
-    // Proses Ganti Password (Simulasi OTP)
+    // Proses Ganti Password
     public function updatePasswordCustom(Request $request)
     {
-        // Validasi input
         $request->validate([
             'email' => 'required|email',
             'password' => 'required|string|min:6|confirmed',
@@ -114,61 +122,73 @@ class AuthController extends Controller
             'password.confirmed' => 'Konfirmasi kata sandi tidak cocok!',
         ]);
 
-        // Cari user berdasarkan email
         $user = User::where('email', $request->email)->first();
 
-        // Kalau email tidak ditemukan
         if (!$user) {
             return back()->withErrors(['email' => 'Email ini tidak terdaftar di sistem kami.']);
         }
 
-        // Kalau email ada, ganti password-nya!
         $user->update([
-            'password' => \Hash::make($request->password)
+            'password' => Hash::make($request->password)
         ]);
 
-        // Kembalikan dengan pesan sukses untuk memunculkan Step 4
         return back()->with('success', 'Kata sandi berhasil diubah!');
     }
 
     // ==========================================
-    // FITUR LOGIN GOOGLE
+    // 4. FITUR LOGIN GOOGLE (OAUTH)
     // ==========================================
+    
+    // Mengarahkan user ke halaman login Google
     public function redirectToGoogle()
     {
         return Socialite::driver('google')->redirect();
     }
 
+    // Menangani kembalian data dari Google setelah user login
     public function handleGoogleCallback()
     {
         try {
+            // 1. Ambil data user dari Google
             $googleUser = Socialite::driver('google')->user();
             
-            // Cari user berdasarkan email google
-            $user = User::where('email', $googleUser->getEmail())->first();
+            // 2. Cari user di database berdasarkan google_id ATAU email
+            $user = User::where('google_id', $googleUser->getId())
+                        ->orWhere('email', $googleUser->getEmail())
+                        ->first();
 
-            // Kalau belum pernah daftar, kita buatkan otomatis
+            // 3. Jika user belum ada di database, buat akun baru
             if (!$user) {
                 $user = User::create([
                     'name' => $googleUser->getName(),
                     'email' => $googleUser->getEmail(),
-                    'password' => bcrypt(uniqid()), // Password acak karena login via Google
-                    'role' => 'customer', // Default role
+                    'google_id' => $googleUser->getId(),
+                    'password' => null, 
+                    'phone' => '-', // <-- TAMBAHAN: Isi default karena Google tidak memberi nomor HP
+                    'role' => 'customer',
                     'status' => 'active',
+                ]);
+            } 
+            // 4. Jika user sudah ada (misal dulu daftar manual), update dengan google_id
+            else if (!$user->google_id) {
+                $user->update([
+                    'google_id' => $googleUser->getId()
                 ]);
             }
 
-            // Lakukan Login
+            // 5. Lakukan proses login
             Auth::login($user);
 
-            // Arahkan sesuai role
+            // 6. Arahkan user sesuai dengan rolenya
             if ($user->role === 'admin') {
                 return redirect()->route('admin.dashboard');
             }
-            return redirect('/');
+            
+            return redirect('/pelanggan/dashboard');
 
         } catch (\Exception $e) {
-            return redirect()->route('login')->withErrors(['login' => 'Gagal masuk dengan Google.']);
+            // PERBAIKAN: Tampilkan error aslinya agar kita tahu jika ada masalah lain di database
+            dd('Error Google Login: ' . $e->getMessage());
         }
     }
 }

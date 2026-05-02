@@ -14,6 +14,7 @@ use App\Http\Controllers\Pelanggan\BookingController as PelangganBookingControll
 |--------------------------------------------------------------------------
 | 1. ROUTE AUTENTIKASI (LOGIN & REGISTER)
 |--------------------------------------------------------------------------
+| Hanya berisi rute yang bisa diakses tanpa login (publik).
 */
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
@@ -28,6 +29,8 @@ Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('regi
 Route::post('/register', [AuthController::class, 'register'])->name('register.post');
 Route::get('/forgot-password', [AuthController::class, 'showForgotForm'])->name('password.request.custom');
 Route::post('/forgot-password', [AuthController::class, 'updatePasswordCustom'])->name('password.update.custom');
+Route::post('/forgot-password/send-otp', [AuthController::class, 'sendOtp'])->name('password.otp.send');
+Route::post('/forgot-password/verify-otp', [AuthController::class, 'verifyOtp'])->name('password.otp.verify');
 
 
 /*
@@ -54,15 +57,21 @@ Route::prefix('pelanggan')->name('pelanggan.')->group(function () {
         return view('pelanggan.studio.index', compact('studios'));
     })->name('studio.index');
 
-    // === ROUTE YANG WAJIB LOGIN ===
+    // === ROUTE YANG WAJIB LOGIN UNTUK PELANGGAN ===
     Route::middleware('auth')->group(function () {
         Route::get('/booking', [PelangganBookingController::class, 'index'])->name('booking.index');
         Route::get('/api/booked-slots', [PelangganBookingController::class, 'getBookedSlots'])->name('booking.slots');
         Route::post('/booking/store', [PelangganBookingController::class, 'store'])->name('booking.store');
+        
         Route::get('/profile', [App\Http\Controllers\Pelanggan\ProfileController::class, 'index'])->name('profile.index');
         Route::put('/profile/update', [App\Http\Controllers\Pelanggan\ProfileController::class, 'update'])->name('profile.update');
+        
         Route::get('/jadwal', [App\Http\Controllers\Pelanggan\BookingController::class, 'jadwal'])->name('jadwal.index');
         Route::get('/riwayat-pembayaran', [App\Http\Controllers\Pelanggan\BookingController::class, 'riwayatPembayaran'])->name('pembayaran.index');
+        
+        // Menambahkan rute Ubah Password khusus Pelanggan
+        Route::get('/ubah-password', [AuthController::class, 'showUbahPasswordPelanggan'])->name('password.form');
+        Route::post('/ubah-password', [AuthController::class, 'updatePasswordAdmin'])->name('password.update');
     });
 });
 
@@ -71,22 +80,24 @@ Route::prefix('pelanggan')->name('pelanggan.')->group(function () {
 | 3. ROUTE ADMIN (BACKEND)
 |--------------------------------------------------------------------------
 */
-Route::prefix('admin')->group(function () {
+// Menambahkan middleware 'auth' agar seluruh rute admin aman
+Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('/history-bookings', [BookingController::class, 'history'])->name('bookings.history');
-    Route::get('/bookings/{booking}/invoice', [BookingController::class, 'invoice'])
-    ->name('bookings.invoice');
+    Route::get('/bookings/{booking}/invoice', [BookingController::class, 'invoice'])->name('bookings.invoice');
     
-
-    // --- TAMBAHKAN ROUTE KHUSUS BOOKING DI SINI ---
     // Route untuk ACC / Konfirmasi Pembayaran
     Route::post('bookings/{booking}/accept', [BookingController::class, 'accept'])->name('bookings.accept');
+    
     // Route untuk Membatalkan Pesanan
     Route::post('bookings/{booking}/cancel', [BookingController::class, 'cancel'])->name('bookings.cancel');
-    // ----------------------------------------------
 
     // Route khusus halaman profil admin
     Route::view('/profile', 'admin.profile')->name('admin.profile');
+
+    // Menambahkan rute Ubah Password khusus Admin
+    Route::get('/ubah-password', [AuthController::class, 'showUbahPasswordAdmin'])->name('admin.password.form');
+    Route::post('/ubah-password', [AuthController::class, 'updatePasswordAdmin'])->name('admin.password.update');
 
     // Resource Route untuk CRUD otomatis
     Route::resource('users', UserController::class);

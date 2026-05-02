@@ -2,6 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -204,21 +205,51 @@
       document.getElementById("step" + stepNumber).classList.add("active");
     }
 
-    // STEP 1 -> STEP 2
+    // ==========================================
+    // STEP 1: Minta OTP ke Server
+    // ==========================================
     const forgotForm = document.getElementById("forgotForm");
     if(forgotForm) {
-        forgotForm.addEventListener("submit", function(e){
+        forgotForm.addEventListener("submit", async function(e){
           e.preventDefault();
           const email = document.getElementById("userInput").value.trim();
           if(!email) return;
 
-          // Simpan email ke form tersembunyi di Step 3
-          document.getElementById("hiddenEmail").value = email;
-          goToStep(2);
+          // Ubah tombol jadi status loading
+          const btn = this.querySelector('button');
+          const originalText = btn.textContent;
+          btn.textContent = "Mengirim...";
+          btn.disabled = true;
+
+          try {
+              // Kirim request ke backend Laravel
+              const response = await fetch("{{ route('password.otp.send') }}", {
+                  method: "POST",
+                  headers: {
+                      "Content-Type": "application/json",
+                      "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                  },
+                  body: JSON.stringify({ email: email })
+              });
+              
+              const data = await response.json();
+
+              if(data.success) {
+                  document.getElementById("hiddenEmail").value = email;
+                  goToStep(2); // Lanjut ke step OTP
+              } else {
+                  alert(data.message); // Tampilkan pesan error dari Laravel
+              }
+          } catch (err) {
+              alert("Terjadi kesalahan jaringan.");
+          } finally {
+              btn.textContent = originalText;
+              btn.disabled = false;
+          }
         });
     }
 
-    // OTP AUTO MOVE
+    // Navigasi input OTP agar otomatis geser
     const otpInputs = document.querySelectorAll(".otp-input");
     otpInputs.forEach((input, index) => {
       input.addEventListener("input", () => {
@@ -230,18 +261,49 @@
       });
     });
 
-    // STEP 2 -> STEP 3
+    // ==========================================
+    // STEP 2: Verifikasi OTP ke Server
+    // ==========================================
     const verifyBtn = document.getElementById("verifyBtn");
     if(verifyBtn) {
-        verifyBtn.addEventListener("click", function(){
+        verifyBtn.addEventListener("click", async function(){
           let otpValue = "";
           otpInputs.forEach(input => otpValue += input.value);
-          if(otpValue.length < 4){ alert("Masukkan 4 digit kode (isi bebas saja)."); return; }
-          goToStep(3);
+          const email = document.getElementById("hiddenEmail").value;
+
+          if(otpValue.length < 4){ alert("Masukkan 4 digit kode."); return; }
+
+          const originalText = this.textContent;
+          this.textContent = "Mengecek...";
+          this.disabled = true;
+
+          try {
+              const response = await fetch("{{ route('password.otp.verify') }}", {
+                  method: "POST",
+                  headers: {
+                      "Content-Type": "application/json",
+                      "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                  },
+                  body: JSON.stringify({ email: email, otp: otpValue })
+              });
+              
+              const data = await response.json();
+
+              if(data.success) {
+                  goToStep(3); // Kode benar! Lanjut buat password baru
+              } else {
+                  alert(data.message); // Kode salah!
+              }
+          } catch (err) {
+              alert("Terjadi kesalahan jaringan.");
+          } finally {
+              this.textContent = originalText;
+              this.disabled = false;
+          }
         });
     }
 
-    // SHOW / HIDE PASSWORD
+    // Toggle Tampilkan Password
     document.querySelectorAll(".eyeBtn").forEach(btn => {
       btn.addEventListener("click", () => {
         const input = document.getElementById(btn.dataset.target);
@@ -251,7 +313,7 @@
       });
     });
 
-    // VALIDASI PASSWORD SEBELUM SUBMIT KE LARAVEL
+    // Validasi Password Baru sebelum submit
     function checkPass() {
         const newPass = document.getElementById("newpass").value;
         const confPass = document.getElementById("confpass").value;

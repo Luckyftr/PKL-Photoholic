@@ -6,8 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Session;
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
+use App\Mail\OtpMail;
 
 class AuthController extends Controller
 {
@@ -135,6 +138,45 @@ class AuthController extends Controller
         return back()->with('success', 'Kata sandi berhasil diubah!');
     }
 
+    // Fungsi untuk mengirim OTP ke Email
+    public function sendOtp(Request $request)
+    {
+        $request->validate(['email' => 'required|email']);
+        
+        // Cek apakah email ada di database
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            return response()->json(['success' => false, 'message' => 'Email ini tidak terdaftar di sistem kami.']);
+        }
+
+        // Generate 4 digit OTP acak
+        $otp = rand(1000, 9999);
+
+        // Simpan OTP dan email ke Session sementara
+        Session::put('reset_otp', $otp);
+        Session::put('reset_email', $request->email);
+
+        // Kirim email menggunakan Mailable yang baru kita buat
+        Mail::to($request->email)->send(new OtpMail($otp));
+
+        return response()->json(['success' => true]);
+    }
+    // Fungsi untuk memverifikasi kecocokan OTP
+    public function verifyOtp(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'otp' => 'required|numeric'
+        ]);
+
+        // Cocokkan data dari inputan dengan data yang ada di Session
+        if ($request->email == Session::get('reset_email') && $request->otp == Session::get('reset_otp')) {
+            return response()->json(['success' => true]);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Kode OTP salah atau tidak valid.']);
+    }
+
     // ==========================================
     // 4. FITUR LOGIN GOOGLE (OAUTH)
     // ==========================================
@@ -190,5 +232,52 @@ class AuthController extends Controller
             // PERBAIKAN: Tampilkan error aslinya agar kita tahu jika ada masalah lain di database
             dd('Error Google Login: ' . $e->getMessage());
         }
+    }
+
+
+    // ==========================================
+    // 5. FITUR UBAH PASSWORD ADMIN
+    // ==========================================
+
+    // Menampilkan halaman ubah password admin
+    public function showUbahPasswordAdmin()
+    {
+        return view('auth.ubah-password');
+    }
+
+    // Memproses perubahan password via AJAX
+    public function updatePasswordAdmin(Request $request)
+    {
+        // Validasi format dari backend
+        $request->validate([
+            'old_password' => 'required',
+            'new_password' => 'required|min:8|confirmed'
+        ]);
+
+        $user = Auth::user();
+
+        // Cek apakah password lama yang dimasukkan sesuai dengan di database
+        if (!Hash::check($request->old_password, $user->password)) {
+            return response()->json([
+                'success' => false, 
+                'message' => 'Kata sandi lama yang Anda masukkan salah.'
+            ]);
+        }
+
+        // Jika cocok, update password baru
+        $user->update([
+            'password' => Hash::make($request->new_password)
+        ]);
+
+        return response()->json([
+            'success' => true, 
+            'message' => 'Kata sandi akun admin berhasil diperbarui!'
+        ]);
+    }
+
+    public function showUbahPasswordPelanggan()
+    {
+        // Mengarahkan ke file resources/views/pelanggan/ubah-password.blade.php
+        return view('pelanggan.ubah-password'); 
     }
 }

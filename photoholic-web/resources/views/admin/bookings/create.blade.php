@@ -181,7 +181,7 @@
                     Atur Jadwal
                 </a>
 
-                <a class="menuItem" href="#">
+                <a class="menuItem" href="{{ route('admin.password.form') }}">
                     <svg viewBox="0 0 24 24"><path d="M7 11V8a5 5 0 0 1 10 0v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M6 11h12v10H6V11Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 15v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
                     Ubah Kata Sandi
                 </a>

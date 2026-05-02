@@ -49,7 +49,7 @@
             Profil
           </a>
   
-          <a class="menuItem" href="#">
+          <a class="menuItem" href="{{ route('pelanggan.password.update') }}">
             Ubah Kata Sandi
           </a>
   

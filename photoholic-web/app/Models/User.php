@@ -11,10 +11,13 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
+    // 🔥 TAMBAHAN: Masukkan 'address' dan 'photo' ke sini
     protected $fillable = [
         'name',
         'email',
         'phone',
+        'address',
+        'photo',
         'password',
         'role',
         'status',

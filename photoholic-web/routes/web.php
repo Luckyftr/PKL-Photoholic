@@ -19,6 +19,8 @@ use App\Http\Controllers\Pelanggan\BookingController as PelangganBookingControll
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::view('/bantuan', 'auth.bantuan')->name('bantuan');
+Route::view('/syarat-ketentuan', 'auth.syarat-ketentuan')->name('syarat-ketentuan');
 
 // Route Google Login
 Route::get('/auth/google', [AuthController::class, 'redirectToGoogle'])->name('google.login');

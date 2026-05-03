@@ -15,15 +15,14 @@
     <aside class="sidebarCard">
       <div class="userCard">
         <div class="userCard__avatar">
-          <img src="{{ $user->photo ? asset('storage/'.$user->photo) : asset('img/pelanggan/image1.png') }}">
+          <img id="sidebarAvatar" src="{{ $user->photo ? asset('storage/'.$user->photo) : asset('img/pelanggan/icon-profile.png') }}">
         </div>
   
         <div class="userCard__info">
           <div class="userCard__name">{{ $user->name }}</div>
           <div class="userCard__role">Pelanggan</div>
   
-          {{-- 🔥 TAMBAHAN (biar sama frontend) --}}
-          <a class="userCard__edit" href="#">
+          <a class="userCard__edit" href="{{ route('pelanggan.profile.index') }}">
             <span class="icon-inline">
               <svg viewBox="0 0 24 24">
                 <path d="M12 20h9" stroke="currentColor" stroke-width="2"/>
@@ -67,7 +66,6 @@
         </div>
       </div>
   
-      {{-- 🔥 DECOR (biar sama frontend) --}}
       <div class="sidebarDecor">
         <img src="{{ asset('img/pelanggan/logo-icon.png') }}">
       </div>
@@ -82,25 +80,31 @@
           Kelola informasi profil Anda untuk mengontrol dan mengamankan akun
         </p>
       </div>
+
+      {{-- Notifikasi Sukses --}}
+      @if(session('success'))
+          <div style="background: #dcfce3; color: #16a34a; padding: 12px; border-radius: 8px; margin-bottom: 16px; border: 1px solid #86efac;">
+              {{ session('success') }}
+          </div>
+      @endif
   
       <div class="profileWrap">
   
-        {{-- 🔥 PHOTO BOX DI LUAR FORM (PENTING) --}}
         <div class="photoBox">
           <div class="photoBox__avatar">
-            <img id="previewAvatar"
-                 src="{{ $user->photo ? asset('storage/'.$user->photo) : asset('img/pelanggan/image1.png') }}">
+            <img id="previewAvatar" src="{{ $user->photo ? asset('storage/'.$user->photo) : asset('img/pelanggan/icon-profile.png') }}">
           </div>
   
           <label class="photoBox__link">
             Ubah Foto Profil
-            <input type="file" name="photo" hidden
-                   onchange="previewAvatar.src = window.URL.createObjectURL(this.files[0])">
+            {{-- 🔥 Trik: Tambahkan form="profileForm" agar input ini dianggap bagian dari form di bawah --}}
+            <input type="file" name="photo" id="photoInput" hidden form="profileForm" accept="image/*">
           </label>
         </div>
   
         {{-- FORM --}}
-        <form class="profileForm"
+        {{-- 🔥 Trik: Tambahkan id="profileForm" --}}
+        <form class="profileForm" id="profileForm"
               action="{{ route('pelanggan.profile.update') }}"
               method="POST"
               enctype="multipart/form-data">
@@ -109,27 +113,18 @@
           @method('PUT')
   
           <div class="row">
-            <label>Username</label>
-            <input type="text" name="username"
-                   value="{{ old('username', $user->username) }}">
-          </div>
-  
-          <div class="row">
             <label>Nama Lengkap</label>
-            <input type="text" name="name"
-                   value="{{ old('name', $user->name) }}">
+            <input type="text" name="name" value="{{ old('name', $user->name) }}" required>
           </div>
   
           <div class="row">
             <label>Email</label>
-            <input type="email" name="email"
-                   value="{{ old('email', $user->email) }}">
+            <input type="email" name="email" value="{{ old('email', $user->email) }}" required>
           </div>
   
           <div class="row">
             <label>No. Telepon</label>
-            <input type="tel" name="phone"
-                   value="{{ old('phone', $user->phone) }}">
+            <input type="tel" name="phone" value="{{ old('phone', $user->phone) }}">
           </div>
   
           <div class="row">
@@ -138,40 +133,16 @@
           </div>
   
           <div class="actions">
-            <button class="btn btn--primary">Simpan Perubahan</button>
+            <button class="btn btn--primary" type="submit">Simpan Perubahan</button>
             <button type="reset" class="btn btn--ghost">Reset</button>
           </div>
         </form>
       </div>
   
     </section>
-  </div>
+</div>
   
-  {{-- MODAL --}}
-  <div class="modal" id="logoutModal">
-    <div class="modal__overlay" id="logoutOverlay"></div>
-  
-    <div class="modal__card">
-      <h2 class="modal__title">Apakah Anda yakin ingin keluar?</h2>
-      <p class="modal__text">Anda akan keluar dari akun Photoholic.</p>
-  
-      <div class="modal__actions">
-        <form id="logout-form" action="{{ route('logout') }}" method="POST">
-          @csrf
-        </form>
-  
-        <button class="modalBtn modalBtn--danger"
-                onclick="document.getElementById('logout-form').submit()">
-          Ya, Keluar
-        </button>
-  
-        <button class="modalBtn modalBtn--cancel" id="logoutNo">
-          Batal
-        </button>
-      </div>
-    </div>
-  </div>
-
+{{-- MODAL LOGOUT --}}
 <div class="modal" id="logoutModal" aria-hidden="true" style="display: none;">
   <div class="modal__overlay" id="logoutOverlay"></div>
   <div class="modal__card" role="dialog" aria-modal="true" aria-labelledby="logoutTitle">
@@ -192,21 +163,33 @@
 @section('scripts')
   <script src="{{ asset('js/profile.js') }}"></script>
   <script>
-    // Script sederhana untuk modal logout
+    // 1. Script Modal Logout
     const logoutBtn = document.getElementById('logoutBtn');
     const logoutModal = document.getElementById('logoutModal');
     const logoutNo = document.getElementById('logoutNo');
     const logoutOverlay = document.getElementById('logoutOverlay');
 
     if(logoutBtn) {
-      logoutBtn.addEventListener('click', () => {
-        logoutModal.style.display = 'flex';
-      });
-      logoutNo.addEventListener('click', () => {
-        logoutModal.style.display = 'none';
-      });
-      logoutOverlay.addEventListener('click', () => {
-        logoutModal.style.display = 'none';
+      logoutBtn.addEventListener('click', () => { logoutModal.style.display = 'flex'; });
+      logoutNo.addEventListener('click', () => { logoutModal.style.display = 'none'; });
+      logoutOverlay.addEventListener('click', () => { logoutModal.style.display = 'none'; });
+    }
+
+    // 2. Script Live Preview Foto Konten & Sidebar
+    const photoInput = document.getElementById('photoInput');
+    const previewAvatar = document.getElementById('previewAvatar');
+    const sidebarAvatar = document.getElementById('sidebarAvatar');
+
+    if(photoInput) {
+      photoInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+          const objectUrl = window.URL.createObjectURL(file);
+          // Ubah gambar di konten tengah
+          previewAvatar.src = objectUrl;
+          // Ubah gambar di sidebar samping (Target tercapai!)
+          sidebarAvatar.src = objectUrl;
+        }
       });
     }
   </script>

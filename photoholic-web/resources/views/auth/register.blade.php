@@ -89,7 +89,7 @@
     <div class="brand">
       <img class="brand__logo" src="{{ asset('img/admin/logo-photoholic.png') }}" alt="Photoholic" />
     </div>
-    <a class="help" href="#">Butuh Bantuan?</a>
+    <a class="help" href="{{ route('bantuan') }}">Butuh Bantuan?</a>
   </header>
 
   <main class="content">
@@ -185,7 +185,7 @@
 
             <label class="terms">
               <input type="checkbox" id="agree" required />
-              <span>Saya setuju dengan <a href="#">syarat & ketentuan</a></span>
+              <span>Saya setuju dengan <a href="{{ route('syarat-ketentuan') }}">syarat & ketentuan</a></span>
             </label>
 
             <button class="btn" type="submit">Daftar</button>

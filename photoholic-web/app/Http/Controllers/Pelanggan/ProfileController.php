@@ -13,7 +13,7 @@ class ProfileController extends Controller
     // Menampilkan halaman profil
     public function index()
     {
-        $user = Auth::user(); // Ambil data pelanggan yang sedang login
+        $user = Auth::user(); 
         return view('pelanggan.profile.index', compact('user'));
     }
 
@@ -22,17 +22,15 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
 
-        // Validasi input
+        // Validasi input (Username sudah dihapus)
         $request->validate([
             'name' => 'required|string|max:255',
-            'username' => 'nullable|string|max:255|unique:users,username,' . $user->id,
             'email' => 'required|email|unique:users,email,' . $user->id,
             'phone' => 'nullable|string|max:20',
-            'address' => 'nullable|string',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        $data = $request->only(['name', 'username', 'email', 'phone', 'address']);
+        $data = $request->only(['name', 'email', 'phone', 'address']);
 
         // Jika user upload foto baru
         if ($request->hasFile('photo')) {

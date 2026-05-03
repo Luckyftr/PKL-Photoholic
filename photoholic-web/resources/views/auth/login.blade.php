@@ -83,7 +83,7 @@
     <div class="brand">
       <img class="brand__logo" src="{{ asset('img/admin/logo-photoholic.png') }}" alt="Photoholic" />
     </div>
-    <a class="help" href="#">Butuh Bantuan?</a>
+    <a class="help" href="{{ route('bantuan') }}">Butuh Bantuan?</a>
   </header>
 
   <main class="content">

@@ -28,18 +28,23 @@
         <a class="topnav__link {{ Request::is('pelanggan/booking') ? 'is-active' : '' }}" href="{{ route('pelanggan.booking.index') }}">Pemesanan</a>
       </nav>
 
-    @auth
-    <a href="{{ route('pelanggan.profile.index') }}" class="topbar__user {{ Request::is('profile') ? 'is-active' : '' }}" aria-label="User menu">
-          <span class="topbar__userCircle">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12Z" fill="none" stroke="currentColor" stroke-width="2"/>
-              <path d="M4 21c1.8-4 14.2-4 16 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
+      @auth
+      <a href="{{ route('pelanggan.profile.index') }}" class="topbar__user {{ Request::is('pelanggan/profile*') ? 'is-active' : '' }}" aria-label="User menu">
+          <span class="topbar__userCircle" style="overflow: hidden; display: grid; place-items: center;">
+              @if(auth()->user()->photo)
+                  {{-- Muncul jika user sudah upload foto --}}
+                  <img src="{{ asset('storage/' . auth()->user()->photo) }}" 
+                       style="width: 100%; height: 100%; object-fit: cover;">
+              @else
+                  {{-- Muncul jika user belum upload foto (Default) --}}
+                  <img src="{{ asset('img/pelanggan/icon-profile.png') }}" 
+                       style="width: 100%; height: 100%; object-fit: cover;">
+              @endif
           </span>
-        </a>
-    @else
-        <a href="{{ route('login') }}" class="topnav__link" style="margin-left: 14px;">Masuk</a>
-    @endauth
+      </a>
+      @else
+          <a href="{{ route('login') }}" class="topnav__link" style="margin-left: 14px;">Masuk</a>
+      @endauth
   </header>
 
   <main class="@yield('main_class', 'homePage')">

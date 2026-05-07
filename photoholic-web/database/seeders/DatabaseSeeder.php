@@ -14,23 +14,31 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+
+/*
         User::create([
             'name' => 'Admin',
             'email' => 'minphotoholic@gmail.com',
             'phone' => '08123456789',
+            'address' => ' - ',
             'password' => Hash::make('admin123'),
             'role' => 'admin',
             'status' => 'active',
+            'google_id' => ' - ',
         ]);
+
 
         User::create([
             'name' => 'Customer',
             'email' => 'customer@mail.com',
             'phone' => '081234567891',
+            'address' => ' - ',
             'password' => Hash::make('cust123'),
             'role' => 'customer',
             'status' => 'active',
+            'google_id' => ' - ',
         ]);
+*/
 
         Studio::create([
             'studio_code' => 'STD-001',

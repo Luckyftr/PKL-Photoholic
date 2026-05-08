@@ -179,7 +179,21 @@
 
               <div class="bookingCard__bottom">
                 <p class="bookingNote">{{ $noteText }}</p>
-                <a href="#" class="bookingBtn">Lihat Booking</a>
+                <!-- KODE BARU: Tombol Lihat Booking dengan data jadwal tersembunyi -->
+                <button type="button" class="bookingBtn detailBtn"
+                data-id="{{ $booking->booking_code }}"
+                data-date="{{ \Carbon\Carbon::parse($booking->booking_date)->translatedFormat('d F Y') }}"
+                data-time="{{ str_replace(':', '.', date('H:i', $start)) }} - {{ str_replace(':', '.', date('H:i', $end)) }} WIB"
+                data-studio="{{ $booking->studio->name }}"
+                data-name="{{ $user->name }}"
+                data-phone="{{ $user->phone ?? '-' }}"
+                data-email="{{ $user->email ?? '-' }}"
+                data-method="{{ strtoupper($booking->payment_method) }}"
+                data-status="{{ $statusText }}"
+                data-price="{{ $booking->total_price }}"
+                data-sessions="{{ $jumlahSesi }}">
+                Lihat Booking
+                </button>
               </div>
             </div>
           @empty
@@ -242,6 +256,71 @@
     </div>
   </section>
 
+<!-- KODE BARU: Struktur Modal/Pop-up Detail Booking -->
+<div class="modal" id="modalDetail" aria-hidden="true">
+  <div class="modal__overlay" data-close="true"></div>
+
+  <div class="receipt" role="dialog" aria-modal="true">
+      <button class="receipt__close" type="button" data-close="true">×</button>
+
+      <div class="receipt__head">
+          <h2 class="receipt__title">Detail Booking</h2>
+          <div class="receipt__headRight">
+              <div class="receipt__small" id="rcDate">-</div>
+              <div class="receipt__small">No. Booking <b id="rcProof">-</b></div>
+          </div>
+      </div>
+
+      <div class="receipt__hr"></div>
+
+      <div class="receipt__grid2">
+          <div>
+              <div class="receipt__label">Pemesan:</div>
+              <div class="receipt__text" id="rcToName">-</div>
+              <div class="receipt__text" id="rcToPhone">-</div>
+              <div class="receipt__text" id="rcToEmail">-</div>
+          </div>
+
+          <div>
+              <div class="receipt__label">Informasi Studio:</div>
+              <div class="receipt__text" id="rcInfoDate">-</div>
+              <div class="receipt__text" id="rcInfoStudio">-</div>
+              <div class="receipt__text" id="rcInfoTime">-</div>
+          </div>
+      </div>
+
+      <div class="receipt__hr"></div>
+
+      <div class="receipt__table">
+          <div class="receipt__tableHead">
+              <div>Deskripsi</div>
+              <div>Sesi</div>
+              <div>Jumlah</div>
+          </div>
+
+          <div class="receipt__tableRow">
+              <div id="rcDesc">Photo Session</div>
+              <div id="rcSess">-</div>
+              <div id="rcAmount">-</div>
+          </div>
+      </div>
+
+      <div class="receipt__hr"></div>
+
+      <div class="receipt__payGrid">
+          <div>
+              <div class="receipt__label">Metode Pembayaran</div>
+              <div class="receipt__text" id="rcMethod">-</div>
+              <div class="receipt__text">Status: <b id="rcStatus">-</b></div>
+          </div>
+
+          <div class="receipt__sum">
+              <div class="sumRow sumRow--total"><span>Total</span><b id="rcTotal">-</b></div>
+          </div>
+      </div>
+  </div>
+</div>
+
 <div class="modal" id="logoutModal" aria-hidden="true">
   <div class="modal__overlay" id="logoutOverlay"></div>
   <div class="modal__box" role="dialog" aria-modal="true" aria-labelledby="logoutTitle">
@@ -287,6 +366,74 @@
           }
         });
       });
+    });
+
+    // === FITUR MODAL LIHAT BOOKING ===
+    const modalDetail = document.getElementById("modalDetail");
+    const detailBtns = document.querySelectorAll(".detailBtn");
+
+    // Mengambil elemen-elemen di dalam pop-up untuk diisi teks
+    const detailData = {
+        date: document.getElementById("rcDate"),
+        proof: document.getElementById("rcProof"),
+        name: document.getElementById("rcToName"),
+        phone: document.getElementById("rcToPhone"),
+        email: document.getElementById("rcToEmail"),
+        infoDate: document.getElementById("rcInfoDate"),
+        infoStudio: document.getElementById("rcInfoStudio"),
+        infoTime: document.getElementById("rcInfoTime"),
+        sess: document.getElementById("rcSess"),
+        amount: document.getElementById("rcAmount"),
+        method: document.getElementById("rcMethod"),
+        status: document.getElementById("rcStatus"),
+        total: document.getElementById("rcTotal"),
+    };
+
+    // Fungsi memunculkan pop-up
+    function openDetailModal(btn) {
+        // Format uang (contoh: 100000 -> Rp 100.000)
+        const rawPrice = btn.getAttribute("data-price");
+        const formattedPrice = "Rp " + Number(rawPrice).toLocaleString("id-ID");
+
+        // Masukkan data dari tombol ke dalam teks pop-up
+        detailData.date.textContent = btn.getAttribute("data-date");
+        detailData.proof.textContent = btn.getAttribute("data-id");
+        detailData.name.textContent = btn.getAttribute("data-name");
+        detailData.phone.textContent = btn.getAttribute("data-phone");
+        detailData.email.textContent = btn.getAttribute("data-email");
+        detailData.infoDate.textContent = btn.getAttribute("data-date");
+        detailData.infoStudio.textContent = btn.getAttribute("data-studio");
+        detailData.infoTime.textContent = btn.getAttribute("data-time");
+        detailData.sess.textContent = btn.getAttribute("data-sessions") + " sesi";
+        detailData.amount.textContent = formattedPrice;
+        detailData.method.textContent = btn.getAttribute("data-method");
+        detailData.status.textContent = btn.getAttribute("data-status");
+        detailData.total.textContent = formattedPrice;
+
+        // Munculkan di layar
+        modalDetail.classList.add("is-open");
+        modalDetail.style.display = "flex";
+        document.body.classList.add("no-scroll");
+    }
+
+    // Fungsi menutup pop-up
+    function closeDetailModal() {
+        modalDetail.classList.remove("is-open");
+        modalDetail.style.display = "none";
+        document.body.classList.remove("no-scroll");
+    }
+
+    // Sambungkan fungsi ke semua tombol "Lihat Booking"
+    detailBtns.forEach(btn => {
+        btn.addEventListener("click", function(e) {
+            e.preventDefault(); 
+            openDetailModal(this);
+        });
+    });
+
+    // Menutup modal bila tombol 'X' atau area abu-abu diklik
+    modalDetail.addEventListener("click", e => {
+        if (e.target.dataset.close) closeDetailModal();
     });
 
     // === FITUR MODAL LOGOUT ===

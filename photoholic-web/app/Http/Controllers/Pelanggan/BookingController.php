@@ -9,7 +9,8 @@ use App\Models\Booking;
 use App\Models\ActivityLog;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str; // Penting untuk INV-XXXXXXX
+use Illuminate\Support\Str; 
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class BookingController extends Controller
 {
@@ -131,5 +132,17 @@ class BookingController extends Controller
         ];
 
         return view('pelanggan.pembayaran.index', compact('user', 'bookings', 'summary'));
+    }
+
+    // 6. Fungsi untuk mengunduh Invoice (PDF)
+    public function invoice(Booking $booking)
+    {
+        if ($booking->user_id !== Auth::id()) {
+            abort(403, 'Anda tidak memiliki akses ke invoice ini.');
+        }
+
+        $booking->load(['user', 'studio']);
+        $pdf = Pdf::loadView('admin.bookings.invoice', compact('booking'));
+        return $pdf->download('invoice-' . $booking->booking_code . '.pdf');
     }
 }

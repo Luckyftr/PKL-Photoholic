@@ -158,9 +158,22 @@
               <div class="paymentCard__bottom">
                 <p class="paymentNote">{{ $noteText }}</p>
                 <div class="paymentActions">
-                  <a href="#" class="paymentBtn">Lihat Detail</a>
+                  <button type="button" class="paymentBtn detailBtn"
+                  data-id="{{ $booking->booking_code }}"
+                  data-date="{{ $booking->booking_date->translatedFormat('d F Y') }}"
+                  data-time="{{ \Carbon\Carbon::parse($booking->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($booking->end_time)->format('H:i') }} WIB"
+                  data-studio="{{ $booking->studio->name }}"
+                  data-name="{{ $user->name }}"
+                  data-phone="{{ $user->phone ?? '-' }}"
+                  data-email="{{ $user->email ?? '-' }}"
+                  data-method="{{ strtoupper($booking->payment_method) }}"
+                  data-status="{{ $statusText }}"
+                  data-price="{{ $booking->total_price }}"
+                  data-sessions="{{ $booking->jumlah_sesi ?? 1 }}">
+                  Lihat Detail
+                  </button>
                   @if($booking->status == 'confirmed')
-                    <a href="#" class="paymentBtn paymentBtn--outline">Unduh Invoice</a>
+                    <a href="{{ route('pelanggan.bookings.invoice', $booking->id) }}" class="paymentBtn paymentBtn--outline">Unduh Invoice</a>
                   @endif
                 </div>
               </div>
@@ -214,6 +227,71 @@
     </div>
   </section>
 
+<!-- KODE BARU: Struktur Modal/Pop-up Detail Pembayaran -->
+<div class="modal" id="modalDetail" aria-hidden="true">
+  <div class="modal__overlay" data-close="true"></div>
+
+  <div class="receipt" role="dialog" aria-modal="true">
+      <button class="receipt__close" type="button" data-close="true">×</button>
+
+      <div class="receipt__head">
+          <h2 class="receipt__title">Detail Pesanan</h2>
+          <div class="receipt__headRight">
+              <div class="receipt__small" id="rcDate">-</div>
+              <div class="receipt__small">No. Pesanan <b id="rcProof">-</b></div>
+          </div>
+      </div>
+
+      <div class="receipt__hr"></div>
+
+      <div class="receipt__grid2">
+          <div>
+              <div class="receipt__label">Pemesan:</div>
+              <div class="receipt__text" id="rcToName">-</div>
+              <div class="receipt__text" id="rcToPhone">-</div>
+              <div class="receipt__text" id="rcToEmail">-</div>
+          </div>
+
+          <div>
+              <div class="receipt__label">Informasi Studio:</div>
+              <div class="receipt__text" id="rcInfoDate">-</div>
+              <div class="receipt__text" id="rcInfoStudio">-</div>
+              <div class="receipt__text" id="rcInfoTime">-</div>
+          </div>
+      </div>
+
+      <div class="receipt__hr"></div>
+
+      <div class="receipt__table">
+          <div class="receipt__tableHead">
+              <div>Deskripsi</div>
+              <div>Sesi</div>
+              <div>Jumlah</div>
+          </div>
+
+          <div class="receipt__tableRow">
+              <div id="rcDesc">Photo Session</div>
+              <div id="rcSess">-</div>
+              <div id="rcAmount">-</div>
+          </div>
+      </div>
+
+      <div class="receipt__hr"></div>
+
+      <div class="receipt__payGrid">
+          <div>
+              <div class="receipt__label">Metode Pembayaran</div>
+              <div class="receipt__text" id="rcMethod">-</div>
+              <div class="receipt__text">Status: <b id="rcStatus">-</b></div>
+          </div>
+
+          <div class="receipt__sum">
+              <div class="sumRow sumRow--total"><span>Total</span><b id="rcTotal">-</b></div>
+          </div>
+      </div>
+  </div>
+</div>
+
 <div class="modal" id="logoutModal" aria-hidden="true">
   <div class="modal__overlay" id="logoutOverlay"></div>
   <div class="modal__box" role="dialog" aria-modal="true" aria-labelledby="logoutTitle">
@@ -257,6 +335,74 @@
           }
         });
       });
+    });
+
+    // === FITUR MODAL LIHAT DETAIL ===
+    const modalDetail = document.getElementById("modalDetail");
+    const detailBtns = document.querySelectorAll(".detailBtn");
+
+    // Menyiapkan variabel untuk mengisi teks di dalam pop-up
+    const detailData = {
+        date: document.getElementById("rcDate"),
+        proof: document.getElementById("rcProof"),
+        name: document.getElementById("rcToName"),
+        phone: document.getElementById("rcToPhone"),
+        email: document.getElementById("rcToEmail"),
+        infoDate: document.getElementById("rcInfoDate"),
+        infoStudio: document.getElementById("rcInfoStudio"),
+        infoTime: document.getElementById("rcInfoTime"),
+        sess: document.getElementById("rcSess"),
+        amount: document.getElementById("rcAmount"),
+        method: document.getElementById("rcMethod"),
+        status: document.getElementById("rcStatus"),
+        total: document.getElementById("rcTotal"),
+    };
+
+    // Fungsi untuk membuka modal dan mengisi datanya
+    function openDetailModal(btn) {
+        // Mengambil data dari tombol yang diklik
+        const rawPrice = btn.getAttribute("data-price");
+        const formattedPrice = "Rp " + Number(rawPrice).toLocaleString("id-ID");
+
+        // Memasukkan data ke elemen HTML di dalam pop-up
+        detailData.date.textContent = btn.getAttribute("data-date");
+        detailData.proof.textContent = btn.getAttribute("data-id");
+        detailData.name.textContent = btn.getAttribute("data-name");
+        detailData.phone.textContent = btn.getAttribute("data-phone");
+        detailData.email.textContent = btn.getAttribute("data-email");
+        detailData.infoDate.textContent = btn.getAttribute("data-date");
+        detailData.infoStudio.textContent = btn.getAttribute("data-studio");
+        detailData.infoTime.textContent = btn.getAttribute("data-time");
+        detailData.sess.textContent = btn.getAttribute("data-sessions") + " sesi";
+        detailData.amount.textContent = formattedPrice;
+        detailData.method.textContent = btn.getAttribute("data-method");
+        detailData.status.textContent = btn.getAttribute("data-status");
+        detailData.total.textContent = formattedPrice;
+
+        // Tampilkan pop-up
+        modalDetail.classList.add("is-open");
+        modalDetail.style.display = "flex";
+        document.body.classList.add("no-scroll"); // Mencegah layar belakang bisa di-scroll
+    }
+
+    // Fungsi untuk menutup modal
+    function closeDetailModal() {
+        modalDetail.classList.remove("is-open");
+        modalDetail.style.display = "none";
+        document.body.classList.remove("no-scroll");
+    }
+
+    // Memberikan perintah klik pada semua tombol "Lihat Detail"
+    detailBtns.forEach(btn => {
+        btn.addEventListener("click", function(e) {
+            e.preventDefault(); // Mencegah halaman melompat ke atas
+            openDetailModal(this);
+        });
+    });
+
+    // Menutup modal jika tombol 'X' atau area gelap (overlay) diklik
+    modalDetail.addEventListener("click", e => {
+        if (e.target.dataset.close) closeDetailModal();
     });
 
     // === FITUR MODAL LOGOUT ===

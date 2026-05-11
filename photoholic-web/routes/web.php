@@ -65,6 +65,9 @@ Route::prefix('pelanggan')->name('pelanggan.')->group(function () {
         Route::get('/api/booked-slots', [PelangganBookingController::class, 'getBookedSlots'])->name('booking.slots');
         Route::post('/booking/store', [PelangganBookingController::class, 'store'])->name('booking.store');
         Route::get('/bookings/{booking}/invoice', [App\Http\Controllers\Pelanggan\BookingController::class, 'invoice'])->name('bookings.invoice');
+        Route::post('/booking/{id}/upload-payment', [App\Http\Controllers\Pelanggan\BookingController::class, 'uploadPayment']);
+        Route::post('/booking/{id}/cancel-payment', [App\Http\Controllers\Pelanggan\BookingController::class, 'cancelPayment']);
+        Route::get('/booking/{id}/pay', [App\Http\Controllers\Pelanggan\BookingController::class, 'pay'])->name('booking.pay');
         
         Route::get('/profile', [App\Http\Controllers\Pelanggan\ProfileController::class, 'index'])->name('profile.index');
         Route::put('/profile/update', [App\Http\Controllers\Pelanggan\ProfileController::class, 'update'])->name('profile.update');

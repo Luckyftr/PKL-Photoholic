@@ -175,6 +175,12 @@
                   @if($booking->status == 'confirmed')
                     <a href="{{ route('pelanggan.bookings.invoice', $booking->id) }}" class="paymentBtn paymentBtn--outline">Unduh Invoice</a>
                   @endif
+                  {{-- KODE BARU: Tombol Selesaikan Pembayaran untuk status Menunggu/Pending --}}
+                  @if($booking->status == 'pending')
+                    <a href="{{ route('pelanggan.booking.pay', $booking->id) }}" class="paymentBtn" style="background-color: #ff4a5d; color: white; border: none;">
+                        Selesaikan Pembayaran
+                    </a>
+                  @endif
                 </div>
               </div>
             </div>

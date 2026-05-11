@@ -112,7 +112,13 @@
         .modal.is-open{ display:block; }
         .modal__overlay{ position:absolute; inset:0; background: rgba(0,0,0,.25); }
         .modal__card{ position:absolute; left:50%; top:50%; transform: translate(-50%, -50%); width: min(820px, 94%); max-height: 86vh; overflow:auto; background: #fff; border-radius: 16px; padding: 14px 14px 18px; box-shadow: 10px 10px 0 var(--shadow-blue); }
-        
+        /* TAMBAHAN UNTUK TOMBOL TOLAK DAN GAMBAR BUKTI */
+        .rejectBtn { width:100%; height:40px; border:none; border-radius:12px; background: var(--accent-red); color:#fff; font-weight:900; cursor:pointer; margin-top:10px; }
+        .actionGroup { display: flex; gap: 10px; margin-top: 10px; }
+        .actionGroup button { margin-top: 0; width: 50%; }
+        .proofImage { width: 100%; max-width: 250px; border-radius: 8px; border: 1px solid var(--soft-border); margin-top: 8px; display: block; object-fit: cover; }
+        .proofImage:hover { opacity: 0.8; cursor: zoom-in; }        
+        .pill--dibatalkan{ background: #fee2e2; border-color: #ef4444; color: #b91c1c; }
         .invoice{ border: 1.5px solid rgba(255,74,93,.35); border-radius: 10px; padding: 14px; }
 
         .alert-success { background: #dcfce3; color: #166534; padding: 12px; border-radius: 10px; margin-bottom: 15px; font-size: 13px; font-weight: 700; border: 1px solid #86efac; }
@@ -128,6 +134,13 @@
         $end = \Carbon\Carbon::parse($b->end_time);
         $sessionCount = ceil($start->diffInMinutes($end) / $b->studio->session_duration);
         
+        $statusDisplay = 'Pending';
+        if ($b->status === 'confirmed') {
+            $statusDisplay = 'Lunas';
+        } elseif ($b->status === 'canceled') {
+            $statusDisplay = 'Dibatalkan';
+        }
+
         $jsBookings[] = [
             'db_id' => $b->id, // ID asli untuk form ACC
             'id' => $b->booking_code,
@@ -141,10 +154,11 @@
             'hargaSesi' => (int)($b->studio->price ?? 0),
             'jumlahSesi' => $sessionCount,
             'hargaTotal' => (int)$b->total_price,
-            'statusBayar' => ($b->status === 'confirmed') ? 'Lunas' : 'Pending',
+            'statusBayar' => $statusDisplay,
             'metode' => strtoupper($b->payment_method),
             'tglBayar' => ($b->status === 'confirmed') ? \Carbon\Carbon::parse($b->updated_at)->translatedFormat('d F Y') : '-',
-            'notes' => $b->notes ?? '-'
+            'notes' => $b->notes ?? '-',
+            'paymentProof' => $b->payment_proof ? asset('storage/' . $b->payment_proof) : null
         ];
     }
 @endphp
@@ -187,7 +201,12 @@
 </main>
 
 <form id="accForm" method="POST" style="display:none;">
-    @csrf
+  @csrf
+</form>
+
+<!-- TAMBAHAN: Form untuk menolak pesanan -->
+<form id="rejectForm" method="POST" style="display:none;">
+  @csrf
 </form>
 
 <a href="{{ route('bookings.create') }}" class="fab">+</a>
@@ -255,7 +274,7 @@
         renderDetail();
     }
 
-    // 4. Fungsi Render Detail (Sisi Kanan) - SUDAH DIRAPIKAN
+    // 4. Fungsi Render Detail (Sisi Kanan)
     function renderDetail(){
         const b = bookings.find(x => x.id === selectedId);
         if(!b) {
@@ -263,17 +282,29 @@
             return;
         }
 
-        // Hitung Sesi secara manual karena tidak ada di array
         const durasiMenit = parseInt(b.durasi);
         const jumlahSesi = Math.ceil(durasiMenit / 5);
 
-        // Tombol ACC hanya muncul jika pending
-        let accButton = "";
+        // Menyiapkan tombol aksi (ACC & Tolak) berdampingan jika status pending
+        let actionButtons = "";
         if(b.statusBayar.toLowerCase() === 'pending'){
-            accButton = `<button class="accBtn" onclick="confirmPayment(${b.db_id})">Konfirmasi Pembayaran (ACC)</button>`;
+            actionButtons = `
+            <div class="actionGroup">
+                <button class="rejectBtn" onclick="rejectPayment(${b.db_id})">Tolak</button>
+                <button class="accBtn" onclick="confirmPayment(${b.db_id})">Konfirmasi (ACC)</button>
+            </div>`;
         }
 
-        // Tampilkan Tanggal Bayar & Catatan hanya jika ada isinya
+        // Menyiapkan elemen gambar bukti pembayaran
+        const rowBuktiBayar = b.paymentProof 
+            ? `<div class="boxRow" style="flex-direction: column; align-items: flex-start;">
+                 <div class="k">Bukti Pembayaran</div>
+                 <a href="${b.paymentProof}" target="_blank" title="Klik untuk memperbesar">
+                    <img src="${b.paymentProof}" class="proofImage" alt="Bukti Pembayaran">
+                 </a>
+               </div>`
+            : `<div class="boxRow"><div class="k">Bukti Pembayaran</div><div class="v" style="color:var(--accent-red);">Belum ada foto</div></div>`;
+
         const rowTglBayar = (b.tglBayar && b.tglBayar !== '-') 
             ? `<div class="boxRow"><div class="k">Tanggal Bayar</div><div class="v">${b.tglBayar}</div></div>` 
             : '';
@@ -315,32 +346,42 @@
                 <div class="boxRow">
                     <div class="k">Status</div>
                     <div class="v">
-                        <span class="pill ${b.statusBayar === 'Lunas' ? 'pill--lunas' : 'pill--pending'}">
+                        <span class="pill ${b.statusBayar === 'Lunas' ? 'pill--lunas' : (b.statusBayar === 'Dibatalkan' ? 'pill--dibatalkan' : 'pill--pending')}">
                             ${b.statusBayar}
                         </span>
                     </div>
                 </div>
                 ${rowTglBayar}
                 ${rowNotes}
-                ${accButton}
+                ${rowBuktiBayar} <!-- FOTO BUKTI BAYAR DITAMPILKAN DI SINI -->
+                ${actionButtons} <!-- TOMBOL TOLAK DAN ACC DITAMPILKAN DI SINI -->
             </div>
         `;
     }
 
-    // 5. Fungsi Konfirmasi
+    // 5. Fungsi Konfirmasi (ACC)
     function confirmPayment(dbId) {
         if (confirm("Apakah Anda yakin ingin mengonfirmasi pembayaran ini?")) {
             accForm.action = `/admin/bookings/${dbId}/accept`;
             const btn = document.querySelector('.accBtn');
-            if(btn) {
-                btn.disabled = true;
-                btn.innerText = "Memproses...";
-            }
+            if(btn) { btn.disabled = true; btn.innerText = "Memproses..."; }
             accForm.submit();
         }
     }
 
-    // 6. Inisialisasi Event
+    // 6. Fungsi Tolak (Baru)
+    function rejectPayment(dbId) {
+        if (confirm("Bukti pembayaran tidak valid. Yakin ingin MENOLAK pesanan ini?")) {
+            const rejectForm = document.getElementById("rejectForm");
+            // Mengarahkan ke rute 'cancel' yang sudah ada di Controller-mu
+            rejectForm.action = `/admin/bookings/${dbId}/cancel`; 
+            const btn = document.querySelector('.rejectBtn');
+            if(btn) { btn.disabled = true; btn.innerText = "Memproses..."; }
+            rejectForm.submit();
+        }
+    }
+
+    // 7. Inisialisasi Event
     document.getElementById("q").addEventListener("input", renderList);
     document.getElementById("status").addEventListener("change", renderList);
     

@@ -21,6 +21,7 @@ return new class extends Migration
             $table->time('end_time');
             $table->enum('payment_method', ['cash', 'qris', 'voucher']);
             $table->decimal('total_price', 10, 2)->default(0);
+            $table->string('payment_proof')->nullable(); 
             $table->text('notes')->nullable();
             $table->enum('status', ['pending', 'confirmed', 'completed', 'canceled'])->default('pending');
             $table->timestamps();

@@ -136,17 +136,27 @@
         </div>
       </div>
 
-      <div class="paymentNote">
-        <p>⚠ Setelah pembayaran berhasil, Pemesanan tidak dapat dibatalkan.</p>
-        <p>Status akan otomatis berubah menjadi <strong>Berhasil</strong> atau <strong>Gagal</strong>.</p>
+      <!-- AREA BARU: Timer dan Upload Bukti -->
+      <div style="margin-top: 20px; text-align: center;">
+          <h3 style="color: #dc3545; font-weight: bold;">Sisa Waktu: <span id="countdownTimer">10:00</span></h3>
+          <p>Selesaikan pembayaran sebelum waktu habis agar tidak otomatis dibatalkan.</p>
+          
+          <div style="margin-top: 15px; padding: 15px; border: 1px dashed #ccc; border-radius: 8px;">
+              <label for="bukti_bayar" style="font-weight: bold; display: block; margin-bottom: 8px;">Upload Bukti Pembayaran:</label>
+              <input type="file" id="bukti_bayar" accept="image/*">
+          </div>
+      </div>
+
+      <div class="paymentNote" style="margin-top: 20px;">
+        <p>⚠ Setelah pembayaran berhasil, Pemesanan akan masuk ke tahap pending menunggu konfirmasi Admin.</p>
       </div>
     </div>
 
     <div class="actionRow between">
       <button class="secondaryBtn" id="backTo2">Kembali</button>
       <div class="paymentActionGroup">
-        <button class="dangerBtn" id="simulateFail">Simulasi Gagal</button>
-        <button class="primaryBtn" id="simulateSuccess">Saya Sudah Bayar</button>
+        <!-- Tombol simulasi dihapus, diganti jadi tombol konfirmasi beneran -->
+        <button class="primaryBtn" id="btnKonfirmasiBayar">Konfirmasi & Saya Sudah Bayar</button>
       </div>
     </div>
   </div>
@@ -251,7 +261,8 @@
   
   let selectedSlots = []; 
   let selectedStudioData = null;
-  let bookedSlots = []; // Sekarang dinamis dari DB
+  let bookedSlots = []; 
+  let currentBookingId = null; 
 
   // ==== 1. FUNGSI AMBIL DATA DARI SERVER (DATABASE) ====
   async function fetchBookedSlots() {
@@ -412,7 +423,98 @@
   document.getElementById("toStep3").addEventListener("click", () => showStep(3));
   document.getElementById("backTo2").addEventListener("click", () => showStep(2));
 
-  document.getElementById("simulateSuccess").addEventListener("click", async () => {
+  // Variabel untuk menyimpan timer
+  let countdownInterval;
+
+  // FUNGSI MULAI TIMER 10 MENIT
+  function startTimer() {
+    let time = 10 * 60; // 10 menit dalam hitungan detik
+    const timerEl = document.getElementById('countdownTimer');
+    
+    // Bersihkan timer lama jika ada
+    clearInterval(countdownInterval);
+
+    countdownInterval = setInterval(() => {
+      let minutes = Math.floor(time / 60);
+      let seconds = time % 60;
+      timerEl.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+      if (time <= 0) {
+        clearInterval(countdownInterval);
+        alert("Waktu pembayaran habis! Pemesanan otomatis dibatalkan.");
+        
+        // Panggil API untuk membatalkan pesanan di database
+        if (currentBookingId) {
+            fetch(`/booking/${currentBookingId}/cancel-payment`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                }
+            }).then(() => {
+                window.location.reload(); // Muat ulang halaman
+            });
+        }
+      }
+      time--;
+    }, 1000);
+  }
+
+  // FUNGSI PENGIRIMAN DATA (Digunakan untuk Sukses maupun Gagal)
+  async function sendBookingData(status = 'pending') {
+    const start_time = selectedSlots[0].time;
+    const end_time = addFiveMinutes(selectedSlots[selectedSlots.length - 1].time); 
+
+    // KITA HARUS PAKAI FormData KARENA MENGIRIM FILE GAMBAR
+    const formData = new FormData();
+    formData.append('studio_id', studioSelect.value);
+    formData.append('booking_date', tanggalInput.value);
+    formData.append('start_time', start_time);
+    formData.append('end_time', end_time);
+    formData.append('notes', document.getElementById("catatan").value || '');
+    formData.append('status', status);
+
+    // Kalau statusnya pending (berarti dia klik tombol bayar), wajib upload file
+    if (status === 'pending') {
+        const buktiFile = document.getElementById("bukti_bayar").files[0];
+        if (!buktiFile) {
+            alert("Harap pilih foto bukti pembayaran terlebih dahulu!");
+            return;
+        }
+        formData.append('payment_proof', buktiFile);
+    }
+
+    try {
+        const response = await fetch("{{ route('pelanggan.booking.store') }}", {
+            method: 'POST',
+            headers: {
+                // Catatan: Jika pakai FormData, jangan set 'Content-Type' (biarkan browser mengatur otomatis)
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json'
+            },
+            body: formData
+        });
+
+        const result = await response.json();
+        if (response.ok && result.success) {
+            if (status === 'pending') alert(result.message); 
+            window.location.href = result.redirect_url; 
+        } else {
+            alert(result.message || "Gagal menyimpan.");
+        }
+    } catch (error) {
+        alert("Gagal terhubung ke server.");
+    }
+  }
+
+  // JALANKAN TIMER SAAT MASUK STEP 3
+  document.getElementById("toStep3").addEventListener("click", async () => {
+    // Kunci slot ke Database terlebih dahulu
+    const btn = document.getElementById("toStep3");
+    btn.textContent = "Mengunci Jadwal...";
+    btn.disabled = true;
+
     const start_time = selectedSlots[0].time;
     const end_time = addFiveMinutes(selectedSlots[selectedSlots.length - 1].time); 
 
@@ -434,18 +536,37 @@
             },
             body: JSON.stringify(dataKeServer)
         });
+        
         const result = await response.json();
         if (response.ok && result.success) {
-            alert(result.message); 
-            window.location.href = result.redirect_url; 
+            // Simpan ID pesanan dan tampilkan kode invoice
+            currentBookingId = result.booking_id; 
+            document.getElementById("payId").textContent = result.booking_code; 
+            
+            showStep(3);
+            startTimer(); // Mulai timer 10 menit
         } else {
-            alert(result.message || "Gagal menyimpan.");
+            alert(result.message || "Gagal mengunci jadwal.");
         }
     } catch (error) {
         alert("Gagal terhubung ke server.");
+    } finally {
+        btn.textContent = "Lanjut Pembayaran";
+        btn.disabled = false;
     }
   });
 
+  // HENTIKAN TIMER JIKA KEMBALI KE STEP 2
+  document.getElementById("backTo2").addEventListener("click", () => {
+    clearInterval(countdownInterval); // Matikan timer sementara
+    showStep(2);
+  });
+
+  // AKSI SAAT TOMBOL "KONFIRMASI" DIKLIK
+  document.getElementById("btnKonfirmasiBayar").addEventListener("click", () => {
+    // Tombol di-klik berarti status pending, menunggu admin mengecek
+    sendBookingData('pending');
+  });
   generateTimeSlots(); // Awal load
 </script>
 @endsection

@@ -48,7 +48,7 @@ class BookingController extends Controller
         return response()->json(['unavailable' => $unavailable]);
     }
 
-    // 3. Menyimpan pesanan (AJAX)
+    // 3. Menyimpan pesanan AWAL (Mengunci Jadwal)
     public function store(Request $request)
     {
         $request->validate([
@@ -70,12 +70,10 @@ class BookingController extends Controller
             })->exists();
 
         if ($isBooked) {
-            return response()->json(['success' => false, 'message' => 'Jadwal sudah terisi!'], 422);
+            return response()->json(['success' => false, 'message' => 'Jadwal sudah terisi oleh orang lain!'], 422);
         }
 
         $studio = Studio::findOrFail($request->studio_id);
-
-        // Hitung Harga Otomatis
         $start = Carbon::parse($request->start_time);
         $end = Carbon::parse($request->end_time);
         $sessionsCount = ceil($start->diffInMinutes($end) / 5);
@@ -89,9 +87,33 @@ class BookingController extends Controller
             'start_time' => $request->start_time,
             'end_time' => $request->end_time,
             'payment_method' => 'qris', 
-            'status' => 'pending',     
+            'status' => 'pending', // LANGSUNG PENDING UNTUK MENGUNCI SLOT!
             'total_price' => $totalPrice,
             'notes' => $request->notes,
+        ]);
+
+        // Mengembalikan ID pesanan agar bisa digunakan oleh Javascript nanti
+        return response()->json([
+            'success' => true,
+            'booking_id' => $booking->id,
+            'booking_code' => $booking->booking_code
+        ]);
+    }
+
+    // FUNGSI BARU 1: Mengunggah Bukti Bayar
+    public function uploadPayment(Request $request, $id)
+    {
+        $request->validate([
+            'payment_proof' => 'required|image|mimes:jpeg,png,jpg|max:2048'
+        ]);
+
+        // Cari pesanan berdasarkan ID
+        $booking = Booking::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
+
+        $paymentProofPath = $request->file('payment_proof')->store('payment_proofs', 'public');
+
+        $booking->update([
+            'payment_proof' => $paymentProofPath
         ]);
 
         return response()->json([
@@ -99,6 +121,18 @@ class BookingController extends Controller
             'message' => 'Pembayaran berhasil dikirim! Mohon tunggu konfirmasi admin.',
             'redirect_url' => route('pelanggan.pembayaran.index') 
         ]);
+    }
+
+    // FUNGSI BARU 2: Membatalkan Pesanan Otomatis (Timeout)
+    public function cancelPayment($id)
+    {
+        $booking = Booking::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
+        
+        $booking->update([
+            'status' => 'canceled'
+        ]);
+
+        return response()->json(['success' => true]);
     }
 
     // 4. Menampilkan Jadwal Saya (Tanpa Grouping yang bikin error)
@@ -144,5 +178,35 @@ class BookingController extends Controller
         $booking->load(['user', 'studio']);
         $pdf = Pdf::loadView('admin.bookings.invoice', compact('booking'));
         return $pdf->download('invoice-' . $booking->booking_code . '.pdf');
+    }
+
+    // FUNGSI BARU 3: Menampilkan halaman lanjut bayar
+    public function pay($id)
+    {
+        $booking = Booking::with('studio')->where('id', $id)->where('user_id', Auth::id())->firstOrFail();
+
+        // 1. Jika status sudah bukan pending, kembalikan ke riwayat
+        if ($booking->status !== 'pending') {
+            return redirect()->route('pelanggan.pembayaran.index')->with('error', 'Status pesanan sudah berubah.');
+        }
+
+        // 2. LOGIKA WAKTU YANG LEBIH AKURAT DAN AMAN
+        $waktuDibuat = Carbon::parse($booking->created_at);
+        
+        // Garis Finish: Waktu dibuat + 10 Menit
+        $batasWaktu = $waktuDibuat->copy()->addMinutes(10);
+        $sekarang = Carbon::now();
+
+        // Parameter 'false' membuat hasilnya menjadi minus (-) jika batas waktu sudah terlewati
+        $sisaDetik = $sekarang->diffInSeconds($batasWaktu, false);
+
+        // 3. Jika sisa detiknya 0 atau minus, langsung batalkan!
+        if ($sisaDetik <= 0) {
+            $booking->update(['status' => 'canceled']);
+            return redirect()->route('pelanggan.pembayaran.index')->with('error', 'Waktu pembayaran telah habis. Pesanan dibatalkan otomatis.');
+        }
+
+        // 4. Jika waktu masih ada, tampilkan halaman dengan sisa detik yang murni
+        return view('pelanggan.booking.pay', compact('booking', 'sisaDetik'));
     }
 }

@@ -11,25 +11,40 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // 1. Membuat tabel Users dengan struktur yang sudah digabung (bersih)
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            
+            // Kolom google_id untuk fitur login Google (boleh kosong)
+            $table->string('google_id')->nullable(); 
+            
             $table->timestamp('email_verified_at')->nullable();
             $table->string('phone')->nullable(); 
+            
+            // Tambahan: Kolom alamat dan foto (boleh kosong)
+            $table->text('address')->nullable(); 
+            $table->string('photo')->nullable();
+            
             $table->enum('role', ['admin', 'customer'])->default('customer');
             $table->enum('status', ['active', 'inactive'])->default('active');
-            $table->string('password');
+            
+            // Password dibuat nullable karena user dari Google Login tidak mengisi password
+            $table->string('password')->nullable(); 
+            
             $table->rememberToken();       
             $table->timestamps();
         });
 
+        // 2. Membuat tabel Password Reset Tokens (Bawaan Laravel)
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
             $table->string('token');
             $table->timestamp('created_at')->nullable();
         });
 
+        // 3. Membuat tabel Sessions (Bawaan Laravel)
         Schema::create('sessions', function (Blueprint $table) {
             $table->string('id')->primary();
             $table->foreignId('user_id')->nullable()->index();
@@ -45,6 +60,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+        // Menghapus tabel jika migrasi di-rollback
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');

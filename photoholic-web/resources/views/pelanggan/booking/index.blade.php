@@ -436,7 +436,7 @@
         alert("Waktu pembayaran habis! Pemesanan otomatis dibatalkan.");
         
         if (currentBookingId) {
-            fetch(`/pelanggan/booking/${bookingId}/cancel-payment`, {
+            fetch(`/pelanggan/booking/${currentBookingId}/cancel-payment`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -444,10 +444,7 @@
                     'Accept': 'application/json'
                 }
             }).then(() => {
-                window.location.href = "{{ route('pelanggan.pembayaran.index') }}";
-            }).catch(err => {
-                console.error(err);
-                window.location.href = "{{ route('pelanggan.pembayaran.index') }}";
+                window.location.reload(); 
             });
         }
       }
@@ -509,68 +506,61 @@
 
   // ==== TOMBOL KONFIRMASI UPLOAD FOTO (STEP 3) ====
   document.getElementById("btnKonfirmasiBayar").addEventListener("click", async () => {
-    const buktiFile = document.getElementById("bukti_bayar").files[0];
+      const buktiFile = document.getElementById("bukti_bayar").files[0];
 
-    if (!buktiFile) {
-        alert("Harap pilih foto bukti pembayaran terlebih dahulu!");
-        return;
-    }
+      if (!buktiFile) {
+          alert("Harap pilih foto bukti pembayaran terlebih dahulu!");
+          return;
+      }
 
-    if (!currentBookingId) {
-        alert("ID Booking tidak ditemukan. Silakan ulangi pemesanan.");
-        return;
-    }
+      if (!currentBookingId) {
+          alert("ID Booking tidak ditemukan. Silakan ulangi pemesanan.");
+          return;
+      }
 
-    const btn = document.getElementById("btnKonfirmasiBayar");
-    btn.textContent = "Mengunggah Data...";
-    btn.disabled = true;
+      const btn = document.getElementById("btnKonfirmasiBayar");
+      btn.textContent = "Mengunggah Data...";
+      btn.disabled = true;
 
-    const formData = new FormData();
-    formData.append('payment_proof', buktiFile);
+      const formData = new FormData();
+      formData.append('payment_proof', buktiFile);
 
-    const urlUpload = `{{ url('/pelanggan/booking') }}/${currentBookingId}/upload-payment`;
+      const urlUpload = `{{ url('/pelanggan/booking') }}/${currentBookingId}/upload-payment`;
 
-    try {
-        const response = await fetch(urlUpload, {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                'Accept': 'application/json'
-            },
-            body: formData
-        });
+      try {
+          const response = await fetch(urlUpload, {
+              method: 'POST',
+              headers: {
+                  'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                  'Accept': 'application/json' 
+              },
+              body: formData
+          });
 
-        let result;
+          const textResponse = await response.text();
+          console.log(textResponse);
 
-        try {
-            result = await response.json();
-        } catch (e) {
-            console.error("Response bukan JSON:", await response.text());
-            alert("Server error (bukan JSON). Cek log Laravel.");
-            return;
-        }
+          const contentType = response.headers.get("content-type");
 
-        console.log("UPLOAD RESULT:", result);
+          if (!contentType || !contentType.includes("application/json")) {
+              throw new Error("Server error (Bukan JSON). Cek terminal Laravel.");
+          }
 
-        if (response.ok && result.success) {
-            alert(result.message);
-
-            // HARD FIX - NO BACKEND REDIRECT
-            window.location.href = "/pelanggan/riwayat-pembayaran";
-            return;
-        }
-
-        } else {
-            alert(result.message || "Gagal upload.");
-        }
-
-    } catch (error) {
-        console.error(error);
-        alert("Gagal terhubung ke server.");
-    } finally {
-        btn.textContent = "Konfirmasi & Saya Sudah Bayar";
-        btn.disabled = false;
-    }
+          const result = JSON.parse(textResponse);
+                    
+          if (response.ok && result.success) {
+              alert(result.message); 
+              window.location.href = result.redirect_url; 
+          } else {
+              alert(result.message || "Gagal mengunggah bukti pembayaran.");
+          }
+      } catch (error) {
+          console.error("Terjadi masalah:", error);
+          alert(error.message || "Gagal terhubung ke server.");
+      } finally {
+          btn.textContent = "Konfirmasi & Saya Sudah Bayar";
+          btn.disabled = false;
+      }
   });
 
   generateTimeSlots(); // Awal load

@@ -103,24 +103,43 @@ class BookingController extends Controller
     // FUNGSI BARU 1: Mengunggah Bukti Bayar
     public function uploadPayment(Request $request, $id)
     {
-        $request->validate([
-            'payment_proof' => 'required|image|mimes:jpeg,png,jpg|max:2048'
-        ]);
+        try {
+            // 1. Validasi
+            $request->validate([
+                'payment_proof' => 'required|image|mimes:jpeg,png,jpg|max:2048'
+            ]);
 
-        // Cari pesanan berdasarkan ID
-        $booking = Booking::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
+            // 2. Cari pesanan
+            $booking = Booking::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
 
-        $paymentProofPath = $request->file('payment_proof')->store('payment_proofs', 'public');
+            // 3. Pastikan file benar-benar ada dan bisa diupload
+            if ($request->hasFile('payment_proof')) {
+                $paymentProofPath = $request->file('payment_proof')->store('payment_proofs', 'public');
+                
+                $booking->update([
+                    'payment_proof' => $paymentProofPath
+                ]);
 
-        $booking->update([
-            'payment_proof' => $paymentProofPath
-        ]);
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Pembayaran berhasil dikirim! Mohon tunggu konfirmasi admin.',
+                    'redirect_url' => route('pelanggan.pembayaran.index') 
+                ]);
+            }
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Pembayaran berhasil dikirim! Mohon tunggu konfirmasi admin.',
-            'redirect_url' => route('pelanggan.pembayaran.index') 
-        ]);
+            // Jika file tidak terbaca
+            return response()->json(['success' => false, 'message' => 'Gagal membaca file gambar.'], 400);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Tangkap error jika ukuran terlalu besar atau format salah
+            return response()->json([
+                'success' => false, 
+                'message' => $e->errors()['payment_proof'][0] // Ambil pesan error validasinya
+            ], 422);
+        } catch (\Exception $e) {
+            // Tangkap error sistem lainnya
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
+        }
     }
 
     // FUNGSI BARU 2: Membatalkan Pesanan Otomatis (Timeout)

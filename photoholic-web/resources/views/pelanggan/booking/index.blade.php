@@ -67,7 +67,7 @@
     </div>
 
     <div class="actionRow">
-      <button class="primaryBtn" id="toStep2">Lanjut Isi Data</button>
+      <button type="button" class="primaryBtn" id="toStep2">Lanjut Isi Data</button>
     </div>
   </div>
 
@@ -114,7 +114,7 @@
     </div>
 
     <div class="actionRow between">
-      <button class="secondaryBtn" id="backTo1">Kembali</button>
+      <button type="button" class="secondaryBtn" id="backTo1">Kembali</button>
       <button class="primaryBtn" id="toStep3">Lanjut Pembayaran</button>
     </div>
   </div>
@@ -153,10 +153,10 @@
     </div>
 
     <div class="actionRow between">
-      <button class="secondaryBtn" id="backTo2">Kembali</button>
+      <button type="button" class="secondaryBtn" id="backTo2">Kembali</button>
       <div class="paymentActionGroup">
         <!-- Tombol simulasi dihapus, diganti jadi tombol konfirmasi beneran -->
-        <button class="primaryBtn" id="btnKonfirmasiBayar">Konfirmasi & Saya Sudah Bayar</button>
+        <button type="button" class="primaryBtn" id="btnKonfirmasiBayar">Konfirmasi & Saya Sudah Bayar</button>
       </div>
     </div>
   </div>
@@ -176,7 +176,7 @@
     </div>
 
     <div class="actionRow center">
-      <button class="primaryBtn" id="toStep5">Lihat Invoice</button>
+      <button type="button" class="primaryBtn" id="toStep5">Lihat Invoice</button>
     </div>
   </div>
 
@@ -236,7 +236,7 @@
     </div>
 
     <div class="actionRow center">
-      <button class="primaryBtn" onclick="window.print()">Cetak Invoice</button>
+      <button type="button" class="primaryBtn" onclick="window.print()">Cetak Invoice</button>
     </div>
   </div>
 </section>
@@ -263,6 +263,7 @@
   let selectedStudioData = null;
   let bookedSlots = []; 
   let currentBookingId = null; 
+  let countdownInterval;
 
   // ==== 1. FUNGSI AMBIL DATA DARI SERVER (DATABASE) ====
   async function fetchBookedSlots() {
@@ -275,20 +276,17 @@
         const response = await fetch(`{{ route('pelanggan.booking.slots') }}?studio_id=${studioId}&date=${date}`);
         const data = await response.json();
        
-        // Simpan data jam yang sudah dipesan ke variabel global
         bookedSlots = data.unavailable.map(t => {
-            // ambil hanya jam:menit dari format apapun
             return t.split(' ')[1]?.slice(0,5) || t.slice(0,5);
         });
         
-        // Render ulang tampilan jam (Tetap cantik dengan logic generatemu)
         generateTimeSlots(); 
     } catch (error) {
         console.error("Gagal mengambil data slot:", error);
     }
   }
 
-  // ==== 2. LOGIKA GENERATE TAMPILAN JAM (TETAP CANTIK) ====
+  // ==== 2. LOGIKA GENERATE TAMPILAN JAM ====
   function generateTimeSlots() {
     slotGrid.innerHTML = ""; 
     let currentTime = new Date();
@@ -303,12 +301,11 @@
       let timestamp = currentTime.getTime();
       
       let btn = document.createElement("button");
-      btn.className = "slotBtn"; // Tetap pakai class CSS-mu
+      btn.className = "slotBtn"; 
       btn.textContent = timeStr;
       
-      // CEK APAKAH TERISI (DATA DARI DB)
       if(bookedSlots.includes(timeStr)) {
-        btn.classList.add("unavailable"); // Tetap abu-abu sesuai CSS
+        btn.classList.add("unavailable"); 
         btn.disabled = true;
       } else {
         btn.onclick = () => handleSlotClick(timeStr, timestamp);
@@ -349,7 +346,7 @@
     updateSummary();
   }
 
-  // FORMATTER & UPDATE UI LAINNYA
+  // FORMATTER & UPDATE UI
   const formatRupiah = (angka) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka);
   function formatTanggal(tanggal){
     if(!tanggal) return "-";
@@ -399,17 +396,17 @@
     document.getElementById("payHarga").textContent = hargaFormat;
   }
 
-  // EVENT LISTENERS
+  // EVENT LISTENERS AWAL
   studioSelect.addEventListener("change", () => {
     selectedSlots = [];
     updateStudioPreview();
-    fetchBookedSlots(); // Panggil data asli
+    fetchBookedSlots(); 
     updateSummary();
   });
 
   tanggalInput.addEventListener("change", () => {
     selectedSlots = [];
-    fetchBookedSlots(); // Panggil data asli
+    fetchBookedSlots(); 
     updateSummary();
   });
 
@@ -420,18 +417,13 @@
   });
 
   document.getElementById("backTo1").addEventListener("click", () => showStep(1));
-  document.getElementById("toStep3").addEventListener("click", () => showStep(3));
   document.getElementById("backTo2").addEventListener("click", () => showStep(2));
 
-  // Variabel untuk menyimpan timer
-  let countdownInterval;
-
-  // FUNGSI MULAI TIMER 10 MENIT
+  // ==== FUNGSI MULAI TIMER 10 MENIT ====
   function startTimer() {
-    let time = 10 * 60; // 10 menit dalam hitungan detik
+    let time = 10 * 60; 
     const timerEl = document.getElementById('countdownTimer');
     
-    // Bersihkan timer lama jika ada
     clearInterval(countdownInterval);
 
     countdownInterval = setInterval(() => {
@@ -443,9 +435,8 @@
         clearInterval(countdownInterval);
         alert("Waktu pembayaran habis! Pemesanan otomatis dibatalkan.");
         
-        // Panggil API untuk membatalkan pesanan di database
         if (currentBookingId) {
-            fetch(`/booking/${currentBookingId}/cancel-payment`, {
+            fetch(`/pelanggan/booking/${currentBookingId}/cancel-payment`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -453,7 +444,7 @@
                     'Accept': 'application/json'
                 }
             }).then(() => {
-                window.location.reload(); // Muat ulang halaman
+                window.location.reload(); 
             });
         }
       }
@@ -461,59 +452,16 @@
     }, 1000);
   }
 
-  // FUNGSI PENGIRIMAN DATA (Digunakan untuk Sukses maupun Gagal)
-  async function sendBookingData(status = 'pending') {
-    const start_time = selectedSlots[0].time;
-    const end_time = addFiveMinutes(selectedSlots[selectedSlots.length - 1].time); 
-
-    // KITA HARUS PAKAI FormData KARENA MENGIRIM FILE GAMBAR
-    const formData = new FormData();
-    formData.append('studio_id', studioSelect.value);
-    formData.append('booking_date', tanggalInput.value);
-    formData.append('start_time', start_time);
-    formData.append('end_time', end_time);
-    formData.append('notes', document.getElementById("catatan").value || '');
-    formData.append('status', status);
-
-    // Kalau statusnya pending (berarti dia klik tombol bayar), wajib upload file
-    if (status === 'pending') {
-        const buktiFile = document.getElementById("bukti_bayar").files[0];
-        if (!buktiFile) {
-            alert("Harap pilih foto bukti pembayaran terlebih dahulu!");
-            return;
-        }
-        formData.append('payment_proof', buktiFile);
-    }
-
-    try {
-        const response = await fetch("{{ route('pelanggan.booking.store') }}", {
-            method: 'POST',
-            headers: {
-                // Catatan: Jika pakai FormData, jangan set 'Content-Type' (biarkan browser mengatur otomatis)
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Accept': 'application/json'
-            },
-            body: formData
-        });
-
-        const result = await response.json();
-        if (response.ok && result.success) {
-            if (status === 'pending') alert(result.message); 
-            window.location.href = result.redirect_url; 
-        } else {
-            alert(result.message || "Gagal menyimpan.");
-        }
-    } catch (error) {
-        alert("Gagal terhubung ke server.");
-    }
-  }
-
-  // JALANKAN TIMER SAAT MASUK STEP 3
+  // ==== TOMBOL LANJUT PEMBAYARAN (STEP 2 -> STEP 3) ====
   document.getElementById("toStep3").addEventListener("click", async () => {
-    // Kunci slot ke Database terlebih dahulu
     const btn = document.getElementById("toStep3");
     btn.textContent = "Mengunci Jadwal...";
     btn.disabled = true;
+
+    if (selectedSlots.length === 0) {
+        alert("Silakan pilih jam terlebih dahulu.");
+        return;
+    }
 
     const start_time = selectedSlots[0].time;
     const end_time = addFiveMinutes(selectedSlots[selectedSlots.length - 1].time); 
@@ -539,12 +487,12 @@
         
         const result = await response.json();
         if (response.ok && result.success) {
-            // Simpan ID pesanan dan tampilkan kode invoice
+            // BERHASIL DAPAT ID!
             currentBookingId = result.booking_id; 
             document.getElementById("payId").textContent = result.booking_code; 
             
-            showStep(3);
-            startTimer(); // Mulai timer 10 menit
+            showStep(3); // Pindah halaman HANYA JIKA SUKSES
+            startTimer(); 
         } else {
             alert(result.message || "Gagal mengunci jadwal.");
         }
@@ -556,17 +504,65 @@
     }
   });
 
-  // HENTIKAN TIMER JIKA KEMBALI KE STEP 2
-  document.getElementById("backTo2").addEventListener("click", () => {
-    clearInterval(countdownInterval); // Matikan timer sementara
-    showStep(2);
+  // ==== TOMBOL KONFIRMASI UPLOAD FOTO (STEP 3) ====
+  document.getElementById("btnKonfirmasiBayar").addEventListener("click", async () => {
+      const buktiFile = document.getElementById("bukti_bayar").files[0];
+
+      if (!buktiFile) {
+          alert("Harap pilih foto bukti pembayaran terlebih dahulu!");
+          return;
+      }
+
+      if (!currentBookingId) {
+          alert("ID Booking tidak ditemukan. Silakan ulangi pemesanan.");
+          return;
+      }
+
+      const btn = document.getElementById("btnKonfirmasiBayar");
+      btn.textContent = "Mengunggah Data...";
+      btn.disabled = true;
+
+      const formData = new FormData();
+      formData.append('payment_proof', buktiFile);
+
+      const urlUpload = `{{ url('/pelanggan/booking') }}/${currentBookingId}/upload-payment`;
+
+      try {
+          const response = await fetch(urlUpload, {
+              method: 'POST',
+              headers: {
+                  'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                  'Accept': 'application/json' 
+              },
+              body: formData
+          });
+
+          const textResponse = await response.text();
+          console.log(textResponse);
+
+          const contentType = response.headers.get("content-type");
+
+          if (!contentType || !contentType.includes("application/json")) {
+              throw new Error("Server error (Bukan JSON). Cek terminal Laravel.");
+          }
+
+          const result = JSON.parse(textResponse);
+                    
+          if (response.ok && result.success) {
+              alert(result.message); 
+              window.location.href = result.redirect_url; 
+          } else {
+              alert(result.message || "Gagal mengunggah bukti pembayaran.");
+          }
+      } catch (error) {
+          console.error("Terjadi masalah:", error);
+          alert(error.message || "Gagal terhubung ke server.");
+      } finally {
+          btn.textContent = "Konfirmasi & Saya Sudah Bayar";
+          btn.disabled = false;
+      }
   });
 
-  // AKSI SAAT TOMBOL "KONFIRMASI" DIKLIK
-  document.getElementById("btnKonfirmasiBayar").addEventListener("click", () => {
-    // Tombol di-klik berarti status pending, menunggu admin mengecek
-    sendBookingData('pending');
-  });
   generateTimeSlots(); // Awal load
 </script>
 @endsection

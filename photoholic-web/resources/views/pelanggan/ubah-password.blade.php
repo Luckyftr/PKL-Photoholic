@@ -535,7 +535,6 @@
     // =========================
     resetBtn.addEventListener("click", () => {
       openModal("Reset Form?", "Semua data yang sudah Anda isi akan dihapus dari form ini.", [
-        { label: "Batal", className: "modalBtn--cancel", onClick: closeModal },
         {
           label: "Ya, Reset",
           className: "modalBtn--danger",
@@ -553,7 +552,9 @@
 
             closeModal();
           }
-        }
+        },
+        // Posisi "Batal" ditaruh di bawah/belakang agar muncul di sebelah kanan
+        { label: "Batal", className: "modalBtn--cancel", onClick: closeModal }
       ]);
     });
 
@@ -564,14 +565,15 @@
       e.preventDefault();
       // Kita manfaatkan modal yang sudah ada untuk logika logout
       openModal("Keluar dari Akun?", "Anda yakin ingin keluar dari akun Photoholic?", [
-        { label: "Batal", className: "modalBtn--cancel", onClick: closeModal },
         {
           label: "Ya, Keluar",
           className: "modalBtn--danger",
           onClick: () => {
             logoutForm.submit(); // Memanggil route logout
           }
-        }
+        },
+        // Posisi "Batal" ditaruh di bawah/belakang agar muncul di sebelah kanan
+        { label: "Batal", className: "modalBtn--cancel", onClick: closeModal }
       ]);
     });
   });

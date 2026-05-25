@@ -321,23 +321,19 @@
   </div>
 </div>
 
-<div class="modal" id="logoutModal" aria-hidden="true">
+{{-- MODAL LOGOUT --}}
+<div class="modal" id="logoutModal" aria-hidden="true" style="display: none;">
   <div class="modal__overlay" id="logoutOverlay"></div>
-  <div class="modal__box" role="dialog" aria-modal="true" aria-labelledby="logoutTitle">
-    <h2 class="modal__title" id="logoutTitle">Apakah anda yakin ingin<br>mengeluarkan akun?</h2>
-
+  <div class="modal__card" role="dialog" aria-modal="true" aria-labelledby="logoutTitle">
+    <h2 class="modal__title" id="logoutTitle">Apakah Anda yakin ingin keluar?</h2>
+    <p class="modal__text">Anda akan keluar dari akun Photoholic.</p>
+    
     <div class="modal__actions">
       <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
           @csrf
       </form>
-      
-      <button class="modal__btn modal__btn--yes" type="button" id="logoutYes" aria-label="Yes logout" onclick="document.getElementById('logout-form').submit();">
-        <span class="modal__circle modal__circle--yes">✓</span>
-      </button>
-
-      <button class="modal__btn modal__btn--no" type="button" id="logoutNo" aria-label="Cancel logout">
-        <span class="modal__circle modal__circle--no">✕</span>
-      </button>
+      <button class="modalBtn modalBtn--danger" type="button" id="logoutYes" onclick="document.getElementById('logout-form').submit();">Ya, Keluar</button>
+      <button class="modalBtn modalBtn--cancel" type="button" id="logoutNo">Batal</button>
     </div>
   </div>
 </div>
@@ -437,31 +433,35 @@
     });
 
     // === FITUR MODAL LOGOUT ===
-    const logoutBtn = document.getElementById("logoutBtn");
-    const modal = document.getElementById("logoutModal");
-    const overlay = document.getElementById("logoutOverlay");
-    const noBtn = document.getElementById("logoutNo");
-
-    function openModal(){
-      modal.classList.add("is-open");
-      modal.setAttribute("aria-hidden", "false");
-      document.body.classList.add("no-scroll");
-    }
-
-    function closeModal(){
-      modal.classList.remove("is-open");
-      modal.setAttribute("aria-hidden", "true");
-      document.body.classList.remove("no-scroll");
-    }
+    const logoutBtn = document.getElementById('logoutBtn');
+    const logoutModal = document.getElementById('logoutModal');
+    const logoutNo = document.getElementById('logoutNo');
+    const logoutOverlay = document.getElementById('logoutOverlay');
 
     if(logoutBtn) {
-      logoutBtn.addEventListener("click", openModal);
-      overlay.addEventListener("click", closeModal);
-      noBtn.addEventListener("click", closeModal);
+      // Buka modal
+      logoutBtn.addEventListener('click', () => { 
+        logoutModal.style.display = 'flex'; 
+        document.body.classList.add("no-scroll"); // Opsional: mencegah background bisa discroll
+      });
+      
+      // Tutup modal lewat tombol batal
+      logoutNo.addEventListener('click', () => { 
+        logoutModal.style.display = 'none'; 
+        document.body.classList.remove("no-scroll");
+      });
+      
+      // Tutup modal lewat klik background gelap
+      logoutOverlay.addEventListener('click', () => { 
+        logoutModal.style.display = 'none'; 
+        document.body.classList.remove("no-scroll");
+      });
 
+      // Tutup modal dengan tombol Escape di keyboard (Fitur tambahan yang bagus dari jadwal sebelumnya)
       document.addEventListener("keydown", (e) => {
-        if(e.key === "Escape" && modal.classList.contains("is-open")){
-          closeModal();
+        if(e.key === "Escape" && logoutModal.style.display === 'flex'){
+          logoutModal.style.display = 'none';
+          document.body.classList.remove("no-scroll");
         }
       });
     }

@@ -17,32 +17,32 @@
     <section class="stats" aria-label="Ringkasan statistik">
       <div class="statCard">
         <div class="statCard__label">Pendapatan Hari Ini</div>
-        <div class="statCard__value">Rp {{ number_format($revenueToday, 0, ',', '.') }}</div>
+        <div class="statCard__value">Rp {{ number_format($revenueToday ?? 0, 0, ',', '.') }}</div>
       </div>
 
       <div class="statCard">
         <div class="statCard__label">Booking Hari Ini</div>
-        <div class="statCard__value">{{ $bookingsToday }} Booking</div>
+        <div class="statCard__value">{{ $bookingsToday ?? 0 }} Booking</div>
       </div>
 
       <div class="statCard statCard--active">
         <div class="statCard__label">Jumlah Pengunjung</div>
-        <div class="statCard__value">{{ $totalUsers }} Orang</div>
+        <div class="statCard__value">{{ $totalUsers ?? 0 }} Orang</div>
       </div>
 
       <div class="statCard">
         <div class="statCard__label">Studio Aktif</div>
-        <div class="statCard__value">{{ $activeStudiosCount }} / {{ $totalStudiosCount }} Studio</div>
+        <div class="statCard__value">{{ $activeStudiosCount ?? 0 }} / {{ $totalStudiosCount ?? 0 }} Studio</div>
       </div>
 
       <div class="statCard">
         <div class="statCard__label">Booking Bulan Ini</div>
-        <div class="statCard__value">{{ $bookingsThisMonth }} Booking</div>
+        <div class="statCard__value">{{ $bookingsThisMonth ?? 0 }} Booking</div>
       </div>
 
       <div class="statCard">
         <div class="statCard__label">Pembayaran Pending</div>
-        <div class="statCard__value">{{ $pendingPayments }} Transaksi</div>
+        <div class="statCard__value">{{ $pendingPayments ?? 0 }} Transaksi</div>
       </div>
     </section>
 
@@ -81,13 +81,13 @@
 
     <section class="card">
       <div class="sectionHead">
-        <h2 class="sectionTitle">Grafik Pengunjung per Jam</h2>
-        <p class="sectionSub">Melihat waktu paling ramai hari ini</p>
+        <h2 class="sectionTitle">Grafik Booking 30 Hari Terakhir</h2>
+        <p class="sectionSub">Melihat tren pemesanan studio selama sebulan</p>
       </div>
 
       <div class="card__body">
         <div class="chartWrap">
-          <canvas id="trafficChart" aria-label="Grafik pengunjung per jam" role="img"></canvas>
+          <canvas id="trafficChart" aria-label="Grafik pengunjung sebulan" role="img"></canvas>
         </div>
       </div>
     </section>
@@ -101,17 +101,14 @@
         </div>
 
         <div class="scheduleList">
-          @forelse($todaySchedules as $schedule)
+          @forelse($todaySchedules ?? [] as $schedule)
           @php
               $now = time();
-
-              // ambil tanggal doang
               $date = date('Y-m-d', strtotime($schedule->booking_date));
-
               $start = strtotime($date . ' ' . str_replace('.', ':', $schedule->start_time));
               $end = strtotime($date . ' ' . str_replace('.', ':', $schedule->end_time));
 
-              if ($schedule->status == 'canceled') {
+              if ($schedule->status == 'canceled' || $schedule->status == 'batal') {
                   $pillClass = 'pill--red';
                   $statusText = 'Batal';
               } elseif ($now > $end) {
@@ -147,7 +144,7 @@
         </div>
 
         <div class="activityList">
-          @forelse($logs as $log)
+          @forelse($logs ?? [] as $log)
               <div class="activityItem">
                 <div class="activityItem__dot"></div>
                 <div class="activityItem__text">
@@ -185,9 +182,9 @@
             </thead>
 
             <tbody id="bookingTbody">
-              @forelse($latestBookings as $index => $booking)
+              @forelse($latestBookings ?? [] as $index => $booking)
               @php
-                  // TAMBAHAN: Hitung jumlah sesi di dashboard
+                  // Hitung jumlah sesi
                   $start = \Carbon\Carbon::parse($booking->start_time);
                   $end = \Carbon\Carbon::parse($booking->end_time);
                   $durasiMenit = $start->diffInMinutes($end);
@@ -200,17 +197,22 @@
                 <td>{{ \Carbon\Carbon::parse($booking->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($booking->end_time)->format('H:i') }}</td>
                 
                 <td>
-                    @if($booking->status == 'selesai')
+                    {{-- PEMBEDAAN WARNA STATUS --}}
+                    @if(strtolower($booking->status) == 'selesai')
                         <span class="badge badge--done">Selesai</span>
-                    @elseif($booking->status == 'pending')
+                    @elseif(strtolower($booking->status) == 'pending')
                         <span class="badge badge--waiting">Menunggu</span>
+                    @elseif(in_array(strtolower($booking->status), ['canceled', 'batal']))
+                        <span class="badge" style="background-color: #ffe5e5; color: #ff4a5d; font-weight: bold; padding: 4px 10px; border-radius: 4px;">Canceled</span>
+                    @elseif(in_array(strtolower($booking->status), ['confirmed', 'dikonfirmasi']))
+                        <span class="badge" style="background-color: #e3f2fd; color: #0d47a1; font-weight: bold; padding: 4px 10px; border-radius: 4px;">Confirmed</span>
                     @else
                         <span class="badge badge--progress">{{ ucfirst($booking->status) }}</span>
                     @endif
                 </td>
                 
                 <td>
-                     @if($booking->status == 'pending')
+                     @if(strtolower($booking->status) == 'pending')
                         <span class="badge badge--pending">Pending</span>
                     @else
                         <span class="badge badge--paid">Lunas</span>
@@ -228,8 +230,7 @@
                       data-sesi="{{ \Carbon\Carbon::parse($booking->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($booking->end_time)->format('H:i') }}"
                       data-studio="{{ $booking->studio->name ?? '-' }}"
                       data-status="{{ ucfirst($booking->status) }}"
-                      data-bayar="{{ $booking->status == 'pending' ? 'Pending' : 'Lunas' }}"
-                      
+                      data-bayar="{{ strtolower($booking->status) == 'pending' ? 'Pending' : 'Lunas' }}"
                       data-price="{{ $booking->studio->price ?? 0 }}"
                       data-sessions="{{ $jumlahSesi }}"
                   >Lihat Rincian</button>
@@ -263,4 +264,74 @@
 @section('scripts')
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script src="{{ asset('js/admin/admin_beranda.js') }}"></script>
+    
+    {{-- AKTIVASI GRAFIK MULTI-LINE 30 HARI PER STUDIO --}}
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const ctx = document.getElementById('trafficChart');
+        if (ctx) {
+          const existingChart = Chart.getChart(ctx);
+          if (existingChart) {
+            existingChart.destroy();
+          }
+
+          const labels = @json($chartLabels ?? []);
+          // Tarik variabel datasets yang sudah kita buat di Controller
+          const datasets = @json($chartDatasets ?? []);
+
+          new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: labels,
+              datasets: datasets // Masukkan semua garis studio di sini
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { 
+                  display: true, // WAJIB TRUE agar ketahuan garis mana punya studio mana
+                  position: 'top',
+                  labels: {
+                    usePointStyle: true,
+                    boxWidth: 8,
+                    padding: 20,
+                    font: {
+                        family: "'Inter', sans-serif",
+                        size: 12
+                    }
+                  }
+                },
+                tooltip: {
+                  mode: 'index',
+                  intersect: false,
+                }
+              },
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  ticks: {
+                    stepSize: 1,
+                    color: '#666'
+                  },
+                  grid: { color: 'rgba(0,0,0,0.05)' }
+                },
+                x: {
+                  ticks: { 
+                    color: '#666',
+                    maxTicksLimit: 10
+                  },
+                  grid: { display: false }
+                }
+              },
+              interaction: {
+                mode: 'nearest',
+                axis: 'x',
+                intersect: false
+              }
+            }
+          });
+        }
+      });
+    </script>
 @endsection

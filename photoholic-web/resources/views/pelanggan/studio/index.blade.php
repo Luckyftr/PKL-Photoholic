@@ -26,13 +26,6 @@
     </div>
   </section>
 
-  <section class="studioFilter">
-    <button class="filterBtn active">Semua</button>
-    <button class="filterBtn">Premium</button>
-    <button class="filterBtn">Favorit</button>
-    <button class="filterBtn">Budget Friendly</button>
-  </section>
-
   <section class="studioGrid">
 
     @forelse ($studios as $studio)
@@ -47,11 +40,12 @@
           @endif
   
           {{-- OPTIONAL BADGE --}}
-          @if($studio->is_premium)
-            <span class="studioBadge premium">Premium</span>
-          @elseif($studio->is_favorite)
-            <span class="studioBadge bestseller">Best Seller</span>
-          @endif
+          <div class="studioBadgeWrapper"> @if($studio->is_premium)
+                <span class="studioBadge premium">Premium</span>
+              @elseif($studio->is_favorite)
+                <span class="studioBadge bestseller">Best Seller</span>
+              @endif
+          </div>
         </div>
   
         {{-- BODY --}}
@@ -64,7 +58,7 @@
             </span>
           </div>
   
-          {{-- DESKRIPSI (dibikin lebih natural kayak HTML awal) --}}
+          {{-- DESKRIPSI --}}
           <p class="studioDesc">
             Maks {{ $studio->max_people_per_session }} orang • 
             {{ $studio->session_duration }} menit • 
@@ -73,10 +67,11 @@
   
           {{-- ACTION --}}
           <div class="studioActions">
-            <a href="#" class="btn btn-outline">Lihat Detail</a>
-  
+            {{-- Tombol Lihat Detail dihapus --}}
+            
+            {{-- Tombol booking dengan passing parameter studio_id --}}
             <a href="{{ route('pelanggan.booking.index', ['studio_id' => $studio->id]) }}" 
-               class="btn btn-main">
+               class="btn btn-main" style="width: 100%; text-align: center;">
               Booking
             </a>
           </div>

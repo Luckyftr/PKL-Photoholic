@@ -50,19 +50,14 @@
 </section>
 
 <section class="filterBar">
-  <button class="filterChip active">Semua</button>
-  <button class="filterChip">Tersedia</button>
-  <button class="filterChip">Tidak Tersedia</button>
-  @if(isset($studios))
-      @foreach($studios->pluck('name')->unique() as $studioName)
-          <button class="filterChip">{{ $studioName }}</button>
-      @endforeach
-  @endif
+  <button class="filterChip active" data-filter="all">Semua</button>
+  <button class="filterChip" data-filter="available">Tersedia</button>
+  <button class="filterChip" data-filter="unavailable">Tidak Tersedia</button>
 </section>
 
 <section class="studioGrid">
     @forelse($studios ?? [] as $studio)
-      <article class="studioCard">
+      <article class="studioCard" data-status="{{ $studio->is_active ? 'available' : 'unavailable' }}">
         <div class="studioCard__img">
             <img src="{{ $studio->photo ? asset('storage/' . $studio->photo) : asset('img/admin/logo-photoholic.png') }}" alt="{{ $studio->name }}">
         </div>
@@ -107,6 +102,7 @@
 @section('scripts')
 <script>
   document.addEventListener("DOMContentLoaded", () => {
+    // --- SLIDER LOGIC ---
     const track = document.getElementById("bannerTrack");
     const slides = document.querySelectorAll(".bannerCard");
     const dots = document.querySelectorAll(".bannerDot");
@@ -158,6 +154,36 @@
         updateSlider();
         startAutoSlide();
     }
+
+    // --- FILTERING LOGIC ---
+    const filterChips = document.querySelectorAll('.filterChip');
+    const studioCards = document.querySelectorAll('.studioCard');
+
+    filterChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        // 1. Hapus efek aktif dari semua chip
+        filterChips.forEach(c => c.classList.remove('active'));
+        // 2. Berikan efek aktif ke chip yang diklik
+        chip.classList.add('active');
+
+        // 3. Ambil data target filter yang kita klik
+        const filterValue = chip.getAttribute('data-filter');
+
+        // 4. Lakukan seleksi pada semua studioCard
+        studioCards.forEach(card => {
+          const status = card.getAttribute('data-status');
+
+          if (filterValue === 'all') {
+            card.style.display = ''; // Kosongkan agar kembali ke pengaturan CSS asli (flex/grid/block)
+          } else if (filterValue === status) {
+            card.style.display = ''; // Tampilkan jika statusnya sesuai
+          } else {
+            card.style.display = 'none'; // Sembunyikan yang tidak sesuai
+          }
+        });
+      });
+    });
+
   });
 </script>
 @endsection

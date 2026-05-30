@@ -144,7 +144,7 @@
     <aside class="sidebarCard">
         <div class="userCard">
             <div class="userCard__avatar">
-                <img src="{{ asset('img/admin/logo-photoholic.png') }}" alt="Avatar admin">
+                <img id="sidebarAvatar" src="{{ auth()->user()->photo ? asset('storage/'.auth()->user()->photo) : asset('img/admin/logo-photoholic.png') }}" alt="Avatar admin">
             </div>
             <div class="userCard__info">
                 <div class="userCard__name">{{ auth()->user()->name ?? 'Minphotoholic' }}</div>

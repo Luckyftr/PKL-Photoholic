@@ -110,7 +110,7 @@
   <aside class="sidebarCard">
     <div class="userCard">
       <div class="userCard__avatar">
-        <img src="{{ asset('img/admin/logo-photoholic.png') }}" alt="Avatar admin">
+        <img id="sidebarAvatar" src="{{ auth()->user()->photo ? asset('storage/'.auth()->user()->photo) : asset('img/admin/logo-photoholic.png') }}" alt="Avatar admin">
       </div>
       <div class="userCard__info">
         <div class="userCard__name">{{ auth()->user()->name ?? 'Minphotoholic' }}</div>
@@ -183,28 +183,38 @@
     </div>
 
     <div class="profileBody">
+
       <div class="photoBox">
         <div class="photoBox__avatar">
-          <img id="profilePreview" src="{{ asset('img/admin/logo-photoholic.png') }}" alt="Foto profil">
+          {{-- Ganti src-nya biar nampilin foto beneran dari database --}}
+          <img id="profilePreview" src="{{ auth()->user()->photo ? asset('storage/'.auth()->user()->photo) : asset('img/admin/logo-photoholic.png') }}" alt="Foto profil">
         </div>
-        <input id="photoInput" type="file" accept="image/*" hidden>
+        {{-- WAJIB: Tambahkan name="photo" dan form="profileForm" --}}
+        <input id="photoInput" type="file" name="photo" form="profileForm" accept="image/*" hidden>
         <button class="photoBox__link" type="button" id="changePhotoBtn">Ubah Foto Profil</button>
       </div>
 
-      <form class="profileForm" id="profileForm">
+      {{-- WAJIB: Tambahkan action, method, enctype, dan CSRF --}}
+      <form class="profileForm" id="profileForm" action="{{ route('admin.profile.update') }}" method="POST" enctype="multipart/form-data">
+        @csrf
+        @method('PUT')
+
         <div class="field">
           <label for="nama">Nama Lengkap</label>
-          <input id="nama" type="text" value="{{ auth()->user()->name ?? '' }}" />
+          {{-- WAJIB: Tambahkan name="name" --}}
+          <input id="nama" name="name" type="text" value="{{ old('name', auth()->user()->name ?? '') }}" required />
         </div>
 
         <div class="field">
           <label for="email">Email</label>
-          <input id="email" type="email" value="{{ auth()->user()->email ?? '' }}" />
+          {{-- WAJIB: Tambahkan name="email" --}}
+          <input id="email" name="email" type="email" value="{{ old('email', auth()->user()->email ?? '') }}" required />
         </div>
 
         <div class="field">
           <label for="telp">No. Telepon</label>
-          <input id="telp" type="tel" value="{{ auth()->user()->phone ?? '-' }}" />
+          {{-- WAJIB: Tambahkan name="phone" --}}
+          <input id="telp" name="phone" type="tel" value="{{ old('phone', auth()->user()->phone ?? '') }}" />
         </div>
 
         <div class="actions">
@@ -256,47 +266,58 @@
   modal.addEventListener("click", (e) => { if (e.target.dataset.close === "true") closeModal(); });
 
   /* =========================
-     UBAH FOTO PROFIL
+     UBAH FOTO PROFIL (LIVE PREVIEW KONTEN & SIDEBAR)
   ========================= */
   const photoInput = document.getElementById("photoInput");
   const profilePreview = document.getElementById("profilePreview");
+  const sidebarAvatar = document.getElementById("sidebarAvatar");
+
   document.getElementById("changePhotoBtn").addEventListener("click", () => photoInput.click());
 
   photoInput.addEventListener("change", (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    
     const reader = new FileReader();
-    reader.onload = () => profilePreview.src = reader.result;
+    reader.onload = () => {
+      profilePreview.src = reader.result; // Ubah foto tengah
+      if (sidebarAvatar) {
+          sidebarAvatar.src = reader.result; // Ubah foto sidebar
+      }
+    };
     reader.readAsDataURL(file);
   });
 
   /* =========================
-     LOGIKA FORM PROFIL (SIMULASI)
+     LOGIKA FORM PROFIL (REAL SUBMIT)
   ========================= */
   const profileForm = document.getElementById("profileForm");
   const namaEl = document.getElementById("nama");
   const emailEl = document.getElementById("email");
-  const telpEl = document.getElementById("telp");
-
-  let initialData = { nama: namaEl.value, email: emailEl.value, telp: telpEl.value, photo: profilePreview.src };
 
   profileForm.addEventListener("submit", (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Tahan dulu biar modal konfirmasi bisa muncul
+
     if (!namaEl.value || !emailEl.value) {
-      openModal({ title: "Data Belum Lengkap", text: "Mohon isi semua data.", actions: [{ label: "Oke", className: "modalBtn--ok", onClick: closeModal }] });
+      openModal({ 
+        title: "Data Belum Lengkap", 
+        text: "Mohon isi semua data.", 
+        actions: [{ label: "Oke", className: "modalBtn--ok", onClick: closeModal }] 
+      });
       return;
     }
+
+    // Munculkan konfirmasi, JIKA YES -> Submit beneran ke Laravel!
     openModal({
       title: "Simpan Perubahan?",
-      text: "Perubahan data profil admin akan disimpan.",
+      text: "Perubahan data profil admin akan disimpan ke database.",
       actions: [
         {
           label: "Simpan",
           className: "modalBtn--ok",
           onClick: () => {
-            initialData = { nama: namaEl.value, email: emailEl.value, telp: telpEl.value, photo: profilePreview.src };
             closeModal();
-            openModal({ title: "Berhasil", text: "Data profil berhasil diperbarui.", actions: [{ label: "Oke", className: "modalBtn--ok", onClick: closeModal }] });
+            profileForm.submit(); // Eksekusi form beneran
           }
         },
         { label: "Batal", className: "modalBtn--cancel", onClick: closeModal }
@@ -304,17 +325,18 @@
     });
   });
 
+  // Tombol batal hapus data yang belum disave (reset form)
   document.getElementById("resetBtn").addEventListener("click", () => {
     openModal({
       title: "Batalkan Perubahan?",
-      text: "Semua perubahan yang belum disimpan akan hilang.",
+      text: "Form akan dikembalikan ke data awal.",
       actions: [
         {
           label: "Batalkan",
           className: "modalBtn--danger",
           onClick: () => {
-            namaEl.value = initialData.nama; emailEl.value = initialData.email; telpEl.value = initialData.telp; profilePreview.src = initialData.photo;
-            closeModal();
+            profileForm.reset(); // Reset field text
+            window.location.reload(); // Refresh untuk mengembalikan foto awal
           }
         },
         { label: "Kembali", className: "modalBtn--cancel", onClick: closeModal }

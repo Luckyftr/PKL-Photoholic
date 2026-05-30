@@ -100,6 +100,8 @@ Route::prefix('admin')->middleware('auth')->group(function () {
 
     // Route khusus halaman profil admin
     Route::view('/profile', 'admin.profile')->name('admin.profile');
+    Route::get('/profile', [App\Http\Controllers\Admin\ProfileController::class, 'index'])->name('admin.profile');
+    Route::put('/profile', [App\Http\Controllers\Admin\ProfileController::class, 'update'])->name('admin.profile.update');
 
     // Menambahkan rute Ubah Password khusus Admin
     Route::get('/ubah-password', [AuthController::class, 'showUbahPasswordAdmin'])->name('admin.password.form');

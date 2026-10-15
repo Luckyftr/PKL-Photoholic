@@ -16,6 +16,7 @@ use App\Http\Controllers\Pelanggan\BookingController as PelangganBookingControll
 |--------------------------------------------------------------------------
 | Hanya berisi rute yang bisa diakses tanpa login (publik).
 */
+Route::redirect('/', '/login');
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

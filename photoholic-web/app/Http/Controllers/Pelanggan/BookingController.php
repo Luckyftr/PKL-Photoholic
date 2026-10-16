@@ -195,8 +195,8 @@ class BookingController extends Controller
         }
 
         $booking->load(['user', 'studio']);
-        $pdf = Pdf::loadView('admin.bookings.invoice', compact('booking'));
-        return $pdf->download('invoice-' . $booking->booking_code . '.pdf');
+    
+         return view('admin.bookings.invoice', compact('booking'));
     }
 
     // FUNGSI BARU 3: Menampilkan halaman lanjut bayar

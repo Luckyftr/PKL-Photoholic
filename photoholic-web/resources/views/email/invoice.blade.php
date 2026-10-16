@@ -110,5 +110,33 @@
             <p>&copy; {{ date('Y') }} Photoholic Studio. All rights reserved.</p>
         </div>
     </div>
+
+    <!-- Tombol Cetak / Simpan PDF (Hanya tampil di layar, hilang saat diprint) -->
+<div style="text-align: center; margin-top: 30px;" class="no-print">
+    <button onclick="window.print()" style="background-color: #ff4a5d; color: white; border: none; padding: 12px 24px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        🖨️ Cetak / Simpan sebagai PDF
+    </button>
+    <br><br>
+    <a href="javascript:history.back()" style="color: #6b7280; text-decoration: none; font-size: 14px;">&larr; Kembali ke Halaman Sebelumnya</a>
+</div>
+
+<!-- CSS Khusus Print agar tombol tersembunyi dan kertas rapi -->
+<style>
+    @media print {
+        .no-print {
+            display: none !important;
+        }
+        body {
+            background-color: #ffffff !important;
+            padding: 0 !important;
+        }
+        .container {
+            box-shadow: none !important;
+            border: none !important;
+            padding: 0 !important;
+            max-width: 100% !important;
+        }
+    }
+</style>
 </body>
 </html>

@@ -171,8 +171,7 @@ class BookingController extends Controller
     {
         $booking->load(['user', 'studio']);
 
-        $pdf = Pdf::loadView('admin.bookings.invoice', compact('booking'));
-
-        return $pdf->download('invoice-'.$booking->id.'.pdf');
+        return view('admin.bookings.invoice', compact('booking'));
+    }
     }
 }

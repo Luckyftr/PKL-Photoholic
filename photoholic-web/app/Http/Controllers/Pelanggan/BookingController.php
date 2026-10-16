@@ -196,7 +196,7 @@ class BookingController extends Controller
 
         $booking->load(['user', 'studio']);
     
-         return view('admin.bookings.invoice', compact('booking'));
+        return view('admin.bookings.invoice', compact('booking'));
     }
 
     // FUNGSI BARU 3: Menampilkan halaman lanjut bayar

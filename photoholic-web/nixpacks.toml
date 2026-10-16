@@ -6,5 +6,6 @@ nixPkgs = [
     "php82Extensions.xml",
     "php82Extensions.curl",
     "php82Extensions.zip",
+    "php82Extensions.pdo_sqlite",
     "composer"
 ]

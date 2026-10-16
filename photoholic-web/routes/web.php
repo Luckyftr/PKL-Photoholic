@@ -77,8 +77,8 @@ Route::prefix('pelanggan')->name('pelanggan.')->group(function () {
         Route::get('/riwayat-pembayaran', [App\Http\Controllers\Pelanggan\BookingController::class, 'riwayatPembayaran'])->name('pembayaran.index');
         
         // Menambahkan rute Ubah Password khusus Pelanggan
-        Route::get('/ubah-password', [AuthController::class, 'showUbahPasswordPelanggan'])->name('password.form');
-        Route::post('/ubah-password', [AuthController::class, 'updatePasswordAdmin'])->name('password.update');
+        Route::get('/ubah-password', [AuthController::class, 'showUbahPasswordPelanggan'])->name('pelanggan.password.form');
+        Route::post('/ubah-password', [AuthController::class, 'updatePasswordAdmin'])->name('pelanggan.password.update.action');
     });
 });
 
@@ -106,8 +106,8 @@ Route::prefix('admin')->middleware('auth')->group(function () {
 
     // Menambahkan rute Ubah Password khusus Admin
     Route::get('/ubah-password', [AuthController::class, 'showUbahPasswordAdmin'])->name('admin.password.form');
-    Route::post('/ubah-password', [AuthController::class, 'updatePasswordAdmin'])->name('admin.password.update');
-
+    Route::post('/ubah-password', [AuthController::class, 'updatePasswordAdmin'])->name('admin.password.update.action');
+    
     // Resource Route untuk CRUD otomatis
     Route::resource('users', UserController::class);
     Route::resource('studios', StudioController::class);

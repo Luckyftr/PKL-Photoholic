@@ -77,9 +77,8 @@ Route::prefix('pelanggan')->name('pelanggan.')->group(function () {
         Route::get('/riwayat-pembayaran', [App\Http\Controllers\Pelanggan\BookingController::class, 'riwayatPembayaran'])->name('pembayaran.index');
         
         // Menambahkan rute Ubah Password khusus Pelanggan
-        Route::get('/ubah-password', [AuthController::class, 'showUbahPasswordPelanggan'])->name('pelanggan.password.form');
-        Route::post('/ubah-password', [AuthController::class, 'updatePasswordAdmin'])->name('pelanggan.password.update.action');
-    });
+        Route::get('/ubah-password', [AuthController::class, 'showUbahPasswordPelanggan'])->name('password.form');
+        Route::post('/ubah-password', [AuthController::class, 'updatePasswordAdmin'])->name('password.update');
 });
 
 /*

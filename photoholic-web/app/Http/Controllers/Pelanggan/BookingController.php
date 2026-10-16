@@ -199,6 +199,7 @@ class BookingController extends Controller
         return view('admin.bookings.invoice', compact('booking'));
     }
 
+
     // FUNGSI BARU 3: Menampilkan halaman lanjut bayar
     public function pay($id)
     {

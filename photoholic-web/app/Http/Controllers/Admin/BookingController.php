@@ -172,5 +172,6 @@ class BookingController extends Controller
         $booking->load(['user', 'studio']);
 
         return view('admin.bookings.invoice', compact('booking'));
+    }
     
 }

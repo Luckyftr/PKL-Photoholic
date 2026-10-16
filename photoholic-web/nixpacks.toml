@@ -1,11 +1,10 @@
 [phases.setup]
 nixPkgs = [
-    "php",
-    "phpExtensions.gd",
-    "phpExtensions.sqlite3",
-    "phpExtensions.pdo_sqlite",
-    "phpExtensions.mbstring",
-    "phpExtensions.xml",
-    "phpExtensions.curl",
-    "phpExtensions.zip"
+    "php82",
+    "php82Extensions.gd",
+    "php82Extensions.mbstring",
+    "php82Extensions.xml",
+    "php82Extensions.curl",
+    "php82Extensions.zip",
+    "composer"
 ]

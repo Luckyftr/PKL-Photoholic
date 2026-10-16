@@ -6,22 +6,28 @@
     <title>Invoice Pemesanan - Photoholic</title>
     <style>
         body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f3f4f6; margin: 0; padding: 20px; color: #1f2937; }
-        .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); border-top: 6px solid #ff4a5d; }
+        .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 30px; border-radius: 8px; border-top: 6px solid #ff4a5d; }
         .header { text-align: center; margin-bottom: 30px; }
         .header h1 { color: #ff4a5d; margin: 0; font-size: 24px; }
         .header p { color: #6b7280; margin: 5px 0 0; font-size: 14px; }
         .content { margin-bottom: 30px; }
         .invoice-box { background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; padding: 20px; margin-bottom: 20px; }
         .invoice-box h3 { margin-top: 0; margin-bottom: 15px; font-size: 16px; border-bottom: 1px solid #e5e7eb; padding-bottom: 10px; }
-        .row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; }
-        .row .label { color: #6b7280; font-weight: 500; }
-        .row .value { font-weight: 600; text-align: right; }
+        
+        /* Menggunakan tabel untuk layout baris agar aman dari error flexbox Dompdf */
+        .table-row { width: 100%; border-collapse: collapse; margin-bottom: 6px; }
+        .table-row td { padding: 4px 0; border: none; font-size: 14px; }
+        .label { color: #6b7280; font-weight: 500; width: 40%; text-align: left; }
+        .value { font-weight: 600; text-align: right; width: 60%; }
+
         .status-badge { display: inline-block; padding: 4px 10px; border-radius: 99px; font-size: 12px; font-weight: bold; background-color: #fef08a; color: #a16207; }
         .status-badge.confirmed { background-color: #bbf7d0; color: #166534; }
         .footer { text-align: center; border-top: 1px solid #e5e7eb; padding-top: 20px; color: #9ca3af; font-size: 12px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { text-align: left; padding: 8px 0; border-bottom: 1px solid #e5e7eb; font-size: 14px; }
-        th { color: #6b7280; font-weight: 500; }
+        
+        /* Tabel utama rincian harga */
+        table.main-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        table.main-table th, table.main-table td { text-align: left; padding: 8px 0; border-bottom: 1px solid #e5e7eb; font-size: 14px; }
+        table.main-table th { color: #6b7280; font-weight: 500; }
         .total-row td { font-weight: bold; font-size: 16px; color: #ff4a5d; border-bottom: none; padding-top: 15px; }
     </style>
 </head>
@@ -38,39 +44,42 @@
 
             <div class="invoice-box">
                 <h3>Detail Booking: {{ $booking->booking_code }}</h3>
-                <div class="row">
-                    <span class="label">Status:</span>
-                    <span class="value">
-                        <span class="status-badge {{ $booking->status == 'confirmed' ? 'confirmed' : '' }}">
-                            {{ strtoupper($booking->status) }}
-                        </span>
-                    </span>
-                </div>
-                <div class="row">
-                    <span class="label">Nama Studio:</span>
-                    <span class="value">{{ $booking->studio->name ?? 'Studio Dihapus' }}</span>
-                </div>
-                <div class="row">
-                    <span class="label">Tanggal:</span>
-                    <span class="value">{{ $booking->booking_date->format('d F Y') }}</span>
-                </div>
-                <div class="row">
-                    <span class="label">Waktu:</span>
-                    <span class="value">{{ $booking->start_time }} - {{ $booking->end_time }} WIB</span>
-                </div>
-                <div class="row">
-                    <span class="label">Metode Pembayaran:</span>
-                    <span class="value">{{ strtoupper($booking->payment_method) }}</span>
-                </div>
-                @if($booking->notes)
-                <div class="row">
-                    <span class="label">Catatan:</span>
-                    <span class="value">{{ $booking->notes }}</span>
-                </div>
-                @endif
+                
+                <table class="table-row">
+                    <tr>
+                        <td class="label">Status:</td>
+                        <td class="value">
+                            <span class="status-badge {{ $booking->status == 'confirmed' ? 'confirmed' : '' }}">
+                                {{ strtoupper($booking->status) }}
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">Nama Studio:</td>
+                        <td class="value">{{ $booking->studio->name ?? 'Studio Dihapus' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Tanggal:</td>
+                        <td class="value">{{ optional($booking->booking_date)->format('d F Y') ?? $booking->booking_date }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Waktu:</td>
+                        <td class="value">{{ $booking->start_time }} - {{ $booking->end_time }} WIB</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Metode Pembayaran:</td>
+                        <td class="value">{{ strtoupper($booking->payment_method) }}</td>
+                    </tr>
+                    @if($booking->notes)
+                    <tr>
+                        <td class="label">Catatan:</td>
+                        <td class="value">{{ $booking->notes }}</td>
+                    </tr>
+                    @endif
+                </table>
             </div>
 
-            <table>
+            <table class="main-table">
                 <thead>
                     <tr>
                         <th>Deskripsi</th>
@@ -79,7 +88,7 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Sesi Foto ({{ $booking->studio->name }})</td>
+                        <td>Sesi Foto ({{ $booking->studio->name ?? 'Studio' }})</td>
                         <td style="text-align: right;">Rp {{ number_format($booking->studio->price ?? 0, 0, ',', '.') }}</td>
                     </tr>
                     <tr class="total-row">

@@ -270,7 +270,7 @@
     <!-- TOMBOL AKSI CETAK / SIMPAN PDF (Hilang otomatis saat diprint) -->
     <div class="action-container no-print">
       <button onclick="window.print()" class="btn-print">
-        🖨️ Cetak / Simpan sebagai PDF
+        Simpan sebagai PDF
       </button>
       <br>
       <a href="javascript:history.back()" class="btn-back">&larr; Kembali ke Halaman Sebelumnya</a>

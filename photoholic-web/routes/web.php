@@ -79,6 +79,7 @@ Route::prefix('pelanggan')->name('pelanggan.')->group(function () {
         // Menambahkan rute Ubah Password khusus Pelanggan
         Route::get('/ubah-password', [AuthController::class, 'showUbahPasswordPelanggan'])->name('password.form');
         Route::post('/ubah-password', [AuthController::class, 'updatePasswordAdmin'])->name('password.update');
+    });
 });
 
 /*

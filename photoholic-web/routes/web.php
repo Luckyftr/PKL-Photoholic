@@ -106,8 +106,8 @@ Route::prefix('admin')->middleware('auth')->group(function () {
 
     // Menambahkan rute Ubah Password khusus Admin
     Route::get('/ubah-password', [AuthController::class, 'showUbahPasswordAdmin'])->name('admin.password.form');
-    Route::post('/ubah-password', [AuthController::class, 'updatePasswordAdmin'])->name('admin.password.update.action');
-    
+    Route::post('/ubah-password', [AuthController::class, 'updatePasswordAdmin'])->name('admin.password.update');
+
     // Resource Route untuk CRUD otomatis
     Route::resource('users', UserController::class);
     Route::resource('studios', StudioController::class);

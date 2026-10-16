@@ -220,7 +220,7 @@
       <div class="field">
         <label for="oldPass">Kata Sandi Lama</label>
         <div class="inputWrap">
-          <input id="oldPass" type="password" placeholder="Masukkan kata sandi lama" required>
+          <input id="oldPass" type="password" name="old_password" placeholder="Masukkan kata sandi lama" required>
 
           <button class="eyeBtn" type="button" data-target="oldPass" data-state="hidden" aria-label="Lihat password">
             <svg class="icon-eye icon-eye-open" viewBox="0 0 24 24">
@@ -241,7 +241,7 @@
       <div class="field">
         <label for="newPass">Kata Sandi Baru</label>
         <div class="inputWrap">
-          <input id="newPass" type="password" placeholder="Masukkan kata sandi baru" required>
+          <input id="newPass" type="password" name="new_password" placeholder="Masukkan kata sandi baru" required>
 
           <button class="eyeBtn" type="button" data-target="newPass" data-state="hidden" aria-label="Lihat password">
             <svg class="icon-eye icon-eye-open" viewBox="0 0 24 24">
@@ -277,7 +277,7 @@
       <div class="field">
         <label for="confirmPass">Konfirmasi Kata Sandi Baru</label>
         <div class="inputWrap">
-          <input id="confirmPass" type="password" placeholder="Ulangi kata sandi baru" required>
+          <input id="confirmPass" type="password" name="new_password_confirmation" placeholder="Ulangi kata sandi baru" required>
 
           <button class="eyeBtn" type="button" data-target="confirmPass" data-state="hidden" aria-label="Lihat password">
             <svg class="icon-eye icon-eye-open" viewBox="0 0 24 24">

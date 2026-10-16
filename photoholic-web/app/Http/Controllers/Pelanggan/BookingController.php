@@ -164,7 +164,7 @@ class BookingController extends Controller
             ->orderBy('start_time', 'asc')
             ->get();
 
-        return view('pelanggan.jadwal.index', compact('user', 'bookings'));
+        return view('pelanggan.Jadwal.index', compact('user', 'bookings'));
     }
 
     // 5. Riwayat Pembayaran (Sederhana & Lancar)
